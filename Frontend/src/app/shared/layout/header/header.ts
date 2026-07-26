@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 /**
  * En-tête applicatif : marque, navigation et zone d'actions.
@@ -33,11 +36,22 @@ export class Header {
 
   protected readonly menuOpen = signal(false);
 
-  protected toggleMenu(): void {
-    this.menuOpen.update((open) => !open);
+  private readonly router = inject(Router);
+
+  constructor() {
+    // Referme le menu mobile après une navigation. On s'appuie sur le routeur
+    // plutôt que sur un clic posé sur le <nav> : un gestionnaire de clic sur un
+    // élément non interactif est inatteignable au clavier, ce que le lint
+    // d'accessibilité signale à juste titre.
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => this.menuOpen.set(false));
   }
 
-  protected closeMenu(): void {
-    this.menuOpen.set(false);
+  protected toggleMenu(): void {
+    this.menuOpen.update((open) => !open);
   }
 }

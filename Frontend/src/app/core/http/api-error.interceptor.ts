@@ -24,9 +24,7 @@ export const apiErrorInterceptor: HttpInterceptorFn = (request, next) => {
 
       // Un dépassement de `timeout` n'est pas une HttpErrorResponse : on le
       // ramène malgré tout à la forme normalisée, avec le statut 408.
-      return throwError(() =>
-        toApiError(new HttpErrorResponse({ status: 408, url: request.url })),
-      );
+      return throwError(() => toApiError(new HttpErrorResponse({ status: 408, url: request.url })));
     }),
   );
 };

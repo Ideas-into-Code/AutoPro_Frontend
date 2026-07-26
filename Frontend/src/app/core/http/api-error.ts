@@ -71,14 +71,15 @@ export function toApiError(response: HttpErrorResponse): ApiError {
 
   // Le backend peut préciser un message et des erreurs par champ ; on préfère
   // toujours son message s'il est exploitable, sinon on retombe sur le nôtre.
+  // `'message' in body` suffit à restreindre le type : pas besoin d'assertion.
   const detail =
     typeof body === 'object' && body !== null && 'message' in body
-      ? String((body as { message: unknown }).message)
+      ? String(body.message)
       : undefined;
 
   const fieldErrors =
     typeof body === 'object' && body !== null && 'errors' in body
-      ? ((body as { errors: Readonly<Record<string, string>> }).errors ?? undefined)
+      ? (body as { errors?: Readonly<Record<string, string>> }).errors
       : undefined;
 
   return {

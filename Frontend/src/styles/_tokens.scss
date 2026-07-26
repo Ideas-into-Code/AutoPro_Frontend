@@ -80,13 +80,7 @@ $color-info-surface: #eaf2f9;
 // Le cahier des charges impose de minimiser la consommation de données sur
 // réseau 3G instable — une webfont coûterait 50 à 200 ko au premier rendu.
 $font-family-base:
-  -apple-system,
-  BlinkMacSystemFont,
-  'Segoe UI',
-  Roboto,
-  'Helvetica Neue',
-  Arial,
-  sans-serif;
+  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 $font-family-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
 // Échelle typographique modulaire (ratio ~1.2), base 16 px.
@@ -144,11 +138,16 @@ $shadow-lg: 0 8px 24px rgba(20, 24, 28, 0.14);
 // -----------------------------------------------------------------------------
 // Android est prioritaire au Sénégal : le mobile est le cas par défaut,
 // ces seuils ne servent qu'à élargir la mise en page vers le haut.
+// Équivalents en pixels, à base 16 :
+//   sm =  480px  grand mobile
+//   md =  768px  tablette
+//   lg = 1024px  desktop, back-office admin
+//   xl = 1280px  grand écran
 $breakpoints: (
-  sm: 30rem,   // 480px  — grand mobile
-  md: 48rem,   // 768px  — tablette
-  lg: 64rem,   // 1024px — desktop, back-office admin
-  xl: 80rem,   // 1280px — grand écran
+  sm: 30rem,
+  md: 48rem,
+  lg: 64rem,
+  xl: 80rem,
 );
 
 $container-max-width: 75rem; // 1200px

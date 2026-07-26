@@ -55,13 +55,13 @@ features/mechanics/
 
 ## 2. Application de SOLID
 
-| Principe | Application concrète |
-|---|---|
-| **S** — responsabilité unique | Un composant affiche, un service décide, un dépôt transporte. Un composant ne fait jamais d'appel HTTP directement. |
-| **O** — ouvert/fermé | Ajouter un microservice = ajouter une entrée dans `MicroserviceName`, sans modifier les dépôts existants. `PageShell` accepte n'importe quel en-tête projeté. |
-| **L** — substitution de Liskov | Tout `HttpRepository` respecte le contrat `ReadRepository` : un dépôt factice est interchangeable avec le vrai en test. |
-| **I** — ségrégation des interfaces | `ReadRepository`, `WriteRepository` et `DeleteRepository` sont séparés : un dépôt en lecture seule n'hérite pas de méthodes d'écriture inutiles. |
-| **D** — inversion des dépendances | Les composants dépendent d'abstractions (`ReadRepository`, `API_CONFIG`), jamais de `HttpClient` ni d'une URL en dur. |
+| Principe                           | Application concrète                                                                                                                                          |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **S** — responsabilité unique      | Un composant affiche, un service décide, un dépôt transporte. Un composant ne fait jamais d'appel HTTP directement.                                           |
+| **O** — ouvert/fermé               | Ajouter un microservice = ajouter une entrée dans `MicroserviceName`, sans modifier les dépôts existants. `PageShell` accepte n'importe quel en-tête projeté. |
+| **L** — substitution de Liskov     | Tout `HttpRepository` respecte le contrat `ReadRepository` : un dépôt factice est interchangeable avec le vrai en test.                                       |
+| **I** — ségrégation des interfaces | `ReadRepository`, `WriteRepository` et `DeleteRepository` sont séparés : un dépôt en lecture seule n'hérite pas de méthodes d'écriture inutiles.              |
+| **D** — inversion des dépendances  | Les composants dépendent d'abstractions (`ReadRepository`, `API_CONFIG`), jamais de `HttpClient` ni d'une URL en dur.                                         |
 
 ## 3. Motifs de conception en place
 
@@ -112,15 +112,15 @@ Non négociable, vérifié en revue :
 
 ## 7. Nommage
 
-| Élément | Convention | Exemple |
-|---|---|---|
-| Fichier | kebab-case | `http-repository.base.ts` |
-| Classe | PascalCase | `MechanicRepository` |
-| Variable, fonction | camelCase | `buildServiceUrl` |
-| Type, interface | PascalCase, sans préfixe `I` | `ApiConfig` |
-| Sélecteur de composant | préfixe `app-` | `app-page-shell` |
-| Custom property CSS | préfixe `--ap-` | `--ap-space-4` |
-| Dossier | kebab-case, au pluriel pour un domaine | `features/mechanics/` |
+| Élément                | Convention                             | Exemple                   |
+| ---------------------- | -------------------------------------- | ------------------------- |
+| Fichier                | kebab-case                             | `http-repository.base.ts` |
+| Classe                 | PascalCase                             | `MechanicRepository`      |
+| Variable, fonction     | camelCase                              | `buildServiceUrl`         |
+| Type, interface        | PascalCase, sans préfixe `I`           | `ApiConfig`               |
+| Sélecteur de composant | préfixe `app-`                         | `app-page-shell`          |
+| Custom property CSS    | préfixe `--ap-`                        | `--ap-space-4`            |
+| Dossier                | kebab-case, au pluriel pour un domaine | `features/mechanics/`     |
 
 Les alias d'import évitent les chemins relatifs fragiles :
 

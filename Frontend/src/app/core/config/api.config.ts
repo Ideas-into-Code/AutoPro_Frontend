@@ -64,11 +64,7 @@ export const DEFAULT_API_CONFIG: ApiConfig = {
  * Construit l'URL d'une ressource d'un microservice.
  * Fonction pure, donc testable sans conteneur d'injection.
  */
-export function buildServiceUrl(
-  config: ApiConfig,
-  service: MicroserviceName,
-  path = '',
-): string {
+export function buildServiceUrl(config: ApiConfig, service: MicroserviceName, path = ''): string {
   const segments = [config.gateway, config.services[service], path]
     .filter((segment) => segment !== '')
     .map((segment) => segment.replace(/^\/+|\/+$/g, ''));
