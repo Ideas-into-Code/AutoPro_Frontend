@@ -1,0 +1,43 @@
+@use 'index' as ds;
+
+:host {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ap-spinner__circle {
+  border: var(--ap-border-width-thick) solid var(--ap-border-subtle);
+  border-top-color: var(--ap-color-primary);
+  border-radius: var(--ap-radius-full);
+  animation: ap-spinner-spin var(--ap-duration-slow) linear infinite;
+
+  @include ds.respect-reduced-motion {
+    animation-duration: 1.5s;
+  }
+}
+
+:host(.ap-spinner--sm) .ap-spinner__circle {
+  width: 1rem;
+  height: 1rem;
+}
+
+:host(.ap-spinner--md) .ap-spinner__circle {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+:host(.ap-spinner--lg) .ap-spinner__circle {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+// Annoncé aux lecteurs d'écran, invisible à l'œil.
+.ap-spinner__label {
+  @include ds.visually-hidden;
+}
+
+@keyframes ap-spinner-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}

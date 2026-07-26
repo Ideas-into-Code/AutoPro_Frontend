@@ -1,0 +1,32 @@
+<div class="ap-header__bar">
+  <span class="ap-header__brand">{{ brand() }}</span>
+
+  <div class="ap-header__actions">
+    <ng-content select="[actions]" />
+  </div>
+
+  @if (showNavToggle()) {
+    <button
+      type="button"
+      class="ap-header__toggle"
+      [attr.aria-expanded]="menuOpen()"
+      aria-controls="ap-header-nav"
+      (click)="toggleMenu()"
+    >
+      <span class="ap-header__toggle-label">
+        {{ menuOpen() ? 'Fermer le menu' : 'Ouvrir le menu' }}
+      </span>
+      <span class="ap-header__toggle-icon" aria-hidden="true"></span>
+    </button>
+  }
+</div>
+
+<nav
+  id="ap-header-nav"
+  class="ap-header__nav"
+  [class.ap-header__nav--open]="menuOpen()"
+  aria-label="Navigation principale"
+  (click)="closeMenu()"
+>
+  <ng-content select="[nav]" />
+</nav>
