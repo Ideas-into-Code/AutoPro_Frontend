@@ -2,13 +2,16 @@
  * Composants d'interface réutilisables, sans aucune logique métier.
  * Un seul import suffit côté appelant :
  *
- *   import { Button, Card, Spinner } from '@shared/ui';
+ *   import { Button, Card, FormField } from '@shared/ui';
  */
 
 export { Button } from './button/button';
 export type { ButtonSize, ButtonVariant } from './button/button';
 
 export { Card } from './card/card';
+
+export { FormField } from './form-field/form-field';
+export type { FormFieldType } from './form-field/form-field';
 
 export { Spinner } from './spinner/spinner';
 export type { SpinnerSize } from './spinner/spinner';

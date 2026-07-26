@@ -15,8 +15,10 @@ src/
     │   ├── http/              intercepteurs, normalisation des erreurs
     │   └── models/            types partagés par plusieurs domaines
     ├── shared/                réutilisable, SANS logique métier
-    │   ├── ui/                composants d'interface (button, card, spinner)
-    │   └── layout/            structure de page (header, footer, page-shell)
+    │   ├── ui/                button, card, form-field, spinner
+    │   ├── layout/            header, footer, page-shell
+    │   ├── pages/             pages transverses (404)
+    │   └── validators/        validateurs et messages d'erreur en français
     └── features/              un dossier = un domaine = un microservice
         ├── auth/              authentification, OTP
         ├── onboarding/        parcours de première utilisation
@@ -124,6 +126,32 @@ le bundle initial et annulerait le découpage.
   spécifique à un écran : ce qui varie est projeté ou passé en entrée.
 - Dès qu'un bloc de balisage apparaît une deuxième fois, il devient un composant
   de `shared/ui`.
+
+## 5 bis. Formulaires
+
+- **Formulaires réactifs** (`ReactiveFormsModule`) uniquement, jamais `ngModel`.
+- Un champ se déclare avec `<app-form-field>`, qui porte déjà le libellé, la
+  saisie, l'aide et le message d'erreur :
+
+```html
+<app-form-field
+  label="Numéro de téléphone"
+  type="tel"
+  autocomplete="tel"
+  [control]="formulaire.controls.telephone"
+  required
+/>
+```
+
+- **Aucun message d'erreur écrit en dur dans un écran.** Les messages vivent
+  dans `shared/validators/validation-messages.ts`. Ajouter un validateur, c'est
+  y ajouter son message.
+- Une erreur ne s'affiche qu'une fois le champ **touché ou modifié** : reprocher
+  un champ vide avant que l'utilisateur l'ait atteint est hostile.
+- Un seul message à la fois par champ.
+- Les erreurs renvoyées par le serveur arrivent normalisées dans
+  `ApiError.fieldErrors` (`kind: 'validation'` sur un 422) : pas besoin
+  d'interpréter le code HTTP dans l'écran.
 
 ## 6. Accessibilité
 
