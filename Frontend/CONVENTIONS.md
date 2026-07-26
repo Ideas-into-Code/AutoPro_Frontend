@@ -53,6 +53,31 @@ features/mechanics/
 └── mechanics.routes.ts        routes chargées en différé
 ```
 
+### Routage
+
+`app.routes.ts` ne contient **que** des déclarations, jamais de logique. Chaque
+domaine est chargé en différé et expose ses routes dans son propre fichier :
+
+```ts
+// app.routes.ts
+{ path: 'compte', loadChildren: () => import('@features/auth/auth.routes')
+                                        .then((m) => m.authRoutes) }
+```
+
+Trois règles :
+
+- **Chargement différé obligatoire.** Le code d'une feature ne doit jamais
+  partir dans le bundle initial. Sur une 3G instable, envoyer le back-office
+  admin à un client qui cherche un mécanicien est du gaspillage de données.
+- **Les gardes vivent dans le fichier de routes de leur feature**, au plus près
+  de la règle qu'ils appliquent — pas dans `app.routes.ts`.
+- **La route joker `**` reste en dernier.** Placée plus haut, elle avalerait
+  toutes les routes suivantes.
+
+Un composant chargé en différé s'importe **directement** par son chemin, jamais
+via un barrel `index.ts` : passer par un barrel réintroduirait le composant dans
+le bundle initial et annulerait le découpage.
+
 ## 2. Application de SOLID
 
 | Principe                           | Application concrète                                                                                                                                          |

@@ -1,6 +1,8 @@
 @use 'index' as ds;
 
 // Aucune valeur brute ici : tout provient des tokens du design system.
+// Les états neutralisés visent la classe `.ap-button--disabled` et non la
+// pseudo-classe `:disabled`, qui ne s'applique pas à un <a>.
 :host {
   display: inline-flex;
   align-items: center;
@@ -11,6 +13,7 @@
   font-weight: var(--ap-font-weight-medium);
   line-height: var(--ap-line-height-tight);
   text-align: center;
+  text-decoration: none;
   cursor: pointer;
   transition:
     background-color var(--ap-duration-fast) var(--ap-easing-standard),
@@ -19,10 +22,16 @@
 
   @include ds.focus-ring;
 
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.55;
+  // Neutralise le soulignement hérité des liens (voir styles/_base.scss).
+  &:hover {
+    text-decoration: none;
   }
+}
+
+:host(.ap-button--disabled) {
+  cursor: not-allowed;
+  opacity: 0.55;
+  pointer-events: none;
 }
 
 // --- Tailles -----------------------------------------------------------------
@@ -54,11 +63,11 @@
   background-color: var(--ap-color-primary);
   color: var(--ap-text-on-primary);
 
-  &:hover:not(:disabled) {
+  &:hover {
     background-color: var(--ap-color-primary-hover);
   }
 
-  &:active:not(:disabled) {
+  &:active {
     background-color: var(--ap-color-primary-active);
   }
 }
@@ -68,7 +77,7 @@
   border-color: var(--ap-border-strong);
   color: var(--ap-text-primary);
 
-  &:hover:not(:disabled) {
+  &:hover {
     background-color: var(--ap-surface-sunken);
   }
 }
@@ -77,7 +86,7 @@
   background-color: transparent;
   color: var(--ap-color-primary);
 
-  &:hover:not(:disabled) {
+  &:hover {
     background-color: var(--ap-color-primary-50);
   }
 }
@@ -86,7 +95,7 @@
   background-color: var(--ap-color-danger);
   color: var(--ap-text-on-primary);
 
-  &:hover:not(:disabled) {
+  &:hover {
     filter: brightness(0.92);
   }
 }
