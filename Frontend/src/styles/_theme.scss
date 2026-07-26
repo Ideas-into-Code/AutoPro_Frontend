@@ -1,0 +1,141 @@
+// =============================================================================
+// AutoPro — Exposition des tokens en custom properties CSS
+// =============================================================================
+// Traduit les variables SCSS de `_tokens.scss` en variables CSS `--ap-*`.
+// C'est ce que les composants consomment :
+//
+//   .bouton { background: var(--ap-color-primary); padding: var(--ap-space-3); }
+//
+// Passer par des custom properties plutôt que des variables SCSS permet de
+// changer un thème à l'exécution (ex. mode sombre) sans recompiler, et évite
+// de dupliquer les valeurs dans chaque feuille de style de composant.
+// =============================================================================
+
+@use 'tokens' as t;
+
+:root {
+  // --- Couleurs de marque -----------------------------------------------------
+  --ap-color-primary-50: #{t.shade(t.$palette-primary, 50)};
+  --ap-color-primary-100: #{t.shade(t.$palette-primary, 100)};
+  --ap-color-primary-200: #{t.shade(t.$palette-primary, 200)};
+  --ap-color-primary-300: #{t.shade(t.$palette-primary, 300)};
+  --ap-color-primary-400: #{t.shade(t.$palette-primary, 400)};
+  --ap-color-primary-500: #{t.shade(t.$palette-primary, 500)};
+  --ap-color-primary-600: #{t.shade(t.$palette-primary, 600)};
+  --ap-color-primary-700: #{t.shade(t.$palette-primary, 700)};
+  --ap-color-primary-800: #{t.shade(t.$palette-primary, 800)};
+  --ap-color-primary-900: #{t.shade(t.$palette-primary, 900)};
+
+  --ap-color-accent-100: #{t.shade(t.$palette-accent, 100)};
+  --ap-color-accent-300: #{t.shade(t.$palette-accent, 300)};
+  --ap-color-accent-500: #{t.shade(t.$palette-accent, 500)};
+  --ap-color-accent-700: #{t.shade(t.$palette-accent, 700)};
+
+  --ap-color-neutral-0: #{t.shade(t.$palette-neutral, 0)};
+  --ap-color-neutral-50: #{t.shade(t.$palette-neutral, 50)};
+  --ap-color-neutral-100: #{t.shade(t.$palette-neutral, 100)};
+  --ap-color-neutral-200: #{t.shade(t.$palette-neutral, 200)};
+  --ap-color-neutral-300: #{t.shade(t.$palette-neutral, 300)};
+  --ap-color-neutral-400: #{t.shade(t.$palette-neutral, 400)};
+  --ap-color-neutral-500: #{t.shade(t.$palette-neutral, 500)};
+  --ap-color-neutral-600: #{t.shade(t.$palette-neutral, 600)};
+  --ap-color-neutral-700: #{t.shade(t.$palette-neutral, 700)};
+  --ap-color-neutral-800: #{t.shade(t.$palette-neutral, 800)};
+  --ap-color-neutral-900: #{t.shade(t.$palette-neutral, 900)};
+
+  // --- Raccourcis de marque ---------------------------------------------------
+  --ap-color-primary: var(--ap-color-primary-600);
+  --ap-color-primary-hover: var(--ap-color-primary-700);
+  --ap-color-primary-active: var(--ap-color-primary-800);
+  --ap-color-accent: var(--ap-color-accent-500);
+
+  // --- Couleurs sémantiques ---------------------------------------------------
+  --ap-color-success: #{t.$color-success};
+  --ap-color-success-surface: #{t.$color-success-surface};
+  --ap-color-warning: #{t.$color-warning};
+  --ap-color-warning-surface: #{t.$color-warning-surface};
+  --ap-color-danger: #{t.$color-danger};
+  --ap-color-danger-surface: #{t.$color-danger-surface};
+  --ap-color-info: #{t.$color-info};
+  --ap-color-info-surface: #{t.$color-info-surface};
+
+  // --- Rôles d'interface ------------------------------------------------------
+  // Les composants visent ces rôles, pas les teintes brutes : basculer le
+  // thème (mode sombre) ne demandera que de réaffecter ce bloc.
+  --ap-surface-page: var(--ap-color-neutral-50);
+  --ap-surface-raised: var(--ap-color-neutral-0);
+  --ap-surface-sunken: var(--ap-color-neutral-100);
+  --ap-text-primary: var(--ap-color-neutral-900);
+  --ap-text-secondary: var(--ap-color-neutral-600);
+  --ap-text-muted: var(--ap-color-neutral-500);
+  --ap-text-on-primary: var(--ap-color-neutral-0);
+  --ap-border-subtle: var(--ap-color-neutral-200);
+  --ap-border-strong: var(--ap-color-neutral-300);
+  --ap-focus-ring: var(--ap-color-primary-400);
+
+  // --- Typographie ------------------------------------------------------------
+  --ap-font-family-base: #{t.$font-family-base};
+  --ap-font-family-mono: #{t.$font-family-mono};
+
+  --ap-font-size-xs: #{t.$font-size-xs};
+  --ap-font-size-sm: #{t.$font-size-sm};
+  --ap-font-size-base: #{t.$font-size-base};
+  --ap-font-size-lg: #{t.$font-size-lg};
+  --ap-font-size-xl: #{t.$font-size-xl};
+  --ap-font-size-2xl: #{t.$font-size-2xl};
+  --ap-font-size-3xl: #{t.$font-size-3xl};
+
+  --ap-font-weight-regular: #{t.$font-weight-regular};
+  --ap-font-weight-medium: #{t.$font-weight-medium};
+  --ap-font-weight-semibold: #{t.$font-weight-semibold};
+  --ap-font-weight-bold: #{t.$font-weight-bold};
+
+  --ap-line-height-tight: #{t.$line-height-tight};
+  --ap-line-height-base: #{t.$line-height-base};
+  --ap-line-height-relaxed: #{t.$line-height-relaxed};
+
+  // --- Espacements ------------------------------------------------------------
+  --ap-space-0: #{t.$space-0};
+  --ap-space-1: #{t.$space-1};
+  --ap-space-2: #{t.$space-2};
+  --ap-space-3: #{t.$space-3};
+  --ap-space-4: #{t.$space-4};
+  --ap-space-5: #{t.$space-5};
+  --ap-space-6: #{t.$space-6};
+  --ap-space-8: #{t.$space-8};
+  --ap-space-10: #{t.$space-10};
+  --ap-space-12: #{t.$space-12};
+  --ap-space-16: #{t.$space-16};
+  --ap-space-20: #{t.$space-20};
+
+  // --- Rayons et bordures -----------------------------------------------------
+  --ap-radius-sm: #{t.$radius-sm};
+  --ap-radius-md: #{t.$radius-md};
+  --ap-radius-lg: #{t.$radius-lg};
+  --ap-radius-xl: #{t.$radius-xl};
+  --ap-radius-full: #{t.$radius-full};
+
+  --ap-border-width-thin: #{t.$border-width-thin};
+  --ap-border-width-thick: #{t.$border-width-thick};
+
+  // --- Ombres -----------------------------------------------------------------
+  --ap-shadow-sm: #{t.$shadow-sm};
+  --ap-shadow-md: #{t.$shadow-md};
+  --ap-shadow-lg: #{t.$shadow-lg};
+
+  // --- Mise en page -----------------------------------------------------------
+  --ap-container-max-width: #{t.$container-max-width};
+
+  // --- Transitions ------------------------------------------------------------
+  --ap-duration-fast: #{t.$duration-fast};
+  --ap-duration-base: #{t.$duration-base};
+  --ap-duration-slow: #{t.$duration-slow};
+  --ap-easing-standard: #{t.$easing-standard};
+
+  // --- Plans de superposition -------------------------------------------------
+  --ap-z-dropdown: #{t.$z-dropdown};
+  --ap-z-sticky: #{t.$z-sticky};
+  --ap-z-overlay: #{t.$z-overlay};
+  --ap-z-modal: #{t.$z-modal};
+  --ap-z-toast: #{t.$z-toast};
+}
