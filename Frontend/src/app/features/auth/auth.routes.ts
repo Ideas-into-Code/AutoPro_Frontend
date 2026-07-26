@@ -2,14 +2,25 @@ import { Routes } from '@angular/router';
 
 /**
  * Routes du domaine « Authentification ».
- * Inscription et connexion par téléphone/OTP ou e-mail.
- *
- * Structure attendue dans ce dossier (CONVENTIONS.md §1) :
- *   data/        dépôts d'accès au microservice « auth »
- *   models/      types propres au domaine
- *   components/  composants réutilisés dans cette feature uniquement
- *   pages/       composants routés, à déclarer ci-dessous
- *
- * À remplir par le ticket #2 — Écrans d'authentification.
+ * Inscription, connexion par téléphone/OTP ou e-mail, sélection de rôle.
  */
-export const authRoutes: Routes = [];
+export const authRoutes: Routes = [
+  {
+    path: 'connexion',
+    loadComponent: () => import('./pages/login/login').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'selection-role',
+    loadComponent: () =>
+      import('./pages/role-selection/role-selection').then((m) => m.RoleSelectionComponent),
+  },
+  {
+    path: 'inscription',
+    loadComponent: () => import('./pages/register/register').then((m) => m.RegisterComponent),
+  },
+  {
+    path: '',
+    redirectTo: 'connexion',
+    pathMatch: 'full',
+  },
+];
