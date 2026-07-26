@@ -1,0 +1,126 @@
+@use 'index' as ds;
+
+// Aucune valeur brute ici : tout provient des tokens du design system.
+// Les états neutralisés visent la classe `.ap-button--disabled` et non la
+// pseudo-classe `:disabled`, qui ne s'applique pas à un <a>.
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ap-space-2);
+  border-radius: var(--ap-radius-md);
+  border: var(--ap-border-width-thin) solid transparent;
+  font-weight: var(--ap-font-weight-medium);
+  line-height: var(--ap-line-height-tight);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--ap-duration-fast) var(--ap-easing-standard),
+    border-color var(--ap-duration-fast) var(--ap-easing-standard),
+    color var(--ap-duration-fast) var(--ap-easing-standard);
+
+  @include ds.focus-ring;
+
+  // Neutralise le soulignement hérité des liens (voir styles/_base.scss).
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+:host(.ap-button--disabled) {
+  cursor: not-allowed;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+// --- Tailles -----------------------------------------------------------------
+// La hauteur minimale de 44 px respecte la cible tactile recommandée sur mobile.
+:host(.ap-button--sm) {
+  min-height: 2rem;
+  padding: var(--ap-space-1) var(--ap-space-3);
+  font-size: var(--ap-font-size-sm);
+}
+
+:host(.ap-button--md) {
+  min-height: 2.75rem;
+  padding: var(--ap-space-2) var(--ap-space-4);
+  font-size: var(--ap-font-size-base);
+}
+
+:host(.ap-button--lg) {
+  min-height: 3.25rem;
+  padding: var(--ap-space-3) var(--ap-space-6);
+  font-size: var(--ap-font-size-lg);
+}
+
+:host(.ap-button--block) {
+  width: 100%;
+}
+
+// --- Variantes ---------------------------------------------------------------
+:host(.ap-button--primary) {
+  background-color: var(--ap-color-primary);
+  color: var(--ap-text-on-primary);
+
+  &:hover {
+    background-color: var(--ap-color-primary-hover);
+  }
+
+  &:active {
+    background-color: var(--ap-color-primary-active);
+  }
+}
+
+:host(.ap-button--secondary) {
+  background-color: var(--ap-surface-raised);
+  border-color: var(--ap-border-strong);
+  color: var(--ap-text-primary);
+
+  &:hover {
+    background-color: var(--ap-surface-sunken);
+  }
+}
+
+:host(.ap-button--ghost) {
+  background-color: transparent;
+  color: var(--ap-color-primary);
+
+  &:hover {
+    background-color: var(--ap-color-primary-50);
+  }
+}
+
+:host(.ap-button--danger) {
+  background-color: var(--ap-color-danger);
+  color: var(--ap-text-on-primary);
+
+  &:hover {
+    filter: brightness(0.92);
+  }
+}
+
+// --- Chargement --------------------------------------------------------------
+.ap-button__spinner {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  border: var(--ap-border-width-thick) solid currentcolor;
+  border-top-color: transparent;
+  border-radius: var(--ap-radius-full);
+  animation: ap-button-spin var(--ap-duration-slow) linear infinite;
+
+  @include ds.respect-reduced-motion {
+    animation: none;
+  }
+}
+
+.ap-button__label {
+  @include ds.truncate;
+}
+
+@keyframes ap-button-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}

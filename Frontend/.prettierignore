@@ -1,0 +1,7 @@
+# Artefacts de compilation
+dist/
+.angular/
+node_modules/
+
+# Genere par npm, ne pas reformater
+package-lock.json

@@ -1,1 +1,15 @@
-/* You can add global styles to this file, and also import other style files */
+// =============================================================================
+// AutoPro — Feuille de style globale
+// =============================================================================
+// Chargée une seule fois pour toute l'application. L'ordre compte :
+//   1. theme  — déclare les custom properties `--ap-*` consommées par la suite
+//   2. reset  — normalise le comportement des navigateurs
+//   3. base   — applique les tokens aux éléments HTML nus
+//
+// Ne rien ajouter d'autre ici : les styles d'un composant appartiennent au
+// fichier `.scss` de ce composant, encapsulé par Angular.
+// =============================================================================
+
+@use 'styles/theme';
+@use 'styles/reset';
+@use 'styles/base';

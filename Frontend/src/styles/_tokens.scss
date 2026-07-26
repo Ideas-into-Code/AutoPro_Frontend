@@ -1,0 +1,192 @@
+// =============================================================================
+// AutoPro — Tokens du design system
+// =============================================================================
+// SOURCE UNIQUE DE VERITE. Aucun composant ne doit ecrire une valeur brute
+// (couleur hexa, taille en px, rayon...) : tout passe par ces tokens.
+//
+// /!\ PALETTE PROVISOIRE : ces valeurs sont a remplacer par celles de la
+// maquette Figma de l'equipe. C'est le SEUL fichier a modifier pour cela ;
+// `_theme.scss` les expose ensuite en custom properties CSS et tous les
+// composants consomment ces variables.
+//
+// Ces variables SCSS servent au temps de compilation (media queries, calculs).
+// Pour styliser un composant, utiliser les custom properties `--ap-*`.
+// =============================================================================
+
+@use 'sass:map';
+
+// -----------------------------------------------------------------------------
+// Couleurs — palettes brutes
+// -----------------------------------------------------------------------------
+
+// Bleu : couleur de marque. Registre de la confiance et du sérieux technique.
+$palette-primary: (
+  50: #eaf2f9,
+  100: #c9dcee,
+  200: #a5c4e2,
+  300: #7fabd5,
+  400: #5f92c6,
+  500: #2f6da8,
+  600: #0f4c81,
+  700: #0c3e6a,
+  800: #092f52,
+  900: #06203a,
+);
+
+// Ambre : couleur d'accent, évoque l'atelier et la signalisation routière.
+// Réservée aux actions secondaires et aux mises en avant, jamais au corps de texte.
+$palette-accent: (
+  50: #fff8e6,
+  100: #ffecbf,
+  200: #ffdf94,
+  300: #ffd169,
+  400: #ffc548,
+  500: #f5a623,
+  600: #d98a12,
+  700: #b06d0b,
+  800: #855107,
+  900: #5a3604,
+);
+
+// Gris neutres : surfaces, bordures, textes.
+$palette-neutral: (
+  0: #ffffff,
+  50: #f7f8f9,
+  100: #eef0f2,
+  200: #dfe3e6,
+  300: #c5cbd1,
+  400: #9aa3ad,
+  500: #6f7883,
+  600: #525a64,
+  700: #3b424a,
+  800: #262b31,
+  900: #14181c,
+);
+
+// Couleurs sémantiques : retours d'état à l'utilisateur.
+$color-success: #1b8a5a;
+$color-success-surface: #e6f5ee;
+$color-warning: #b06d0b;
+$color-warning-surface: #fff5e0;
+$color-danger: #c0392b;
+$color-danger-surface: #fdecea;
+$color-info: #2f6da8;
+$color-info-surface: #eaf2f9;
+
+// -----------------------------------------------------------------------------
+// Typographie
+// -----------------------------------------------------------------------------
+// Pile de polices système volontairement : aucun téléchargement de fonte.
+// Le cahier des charges impose de minimiser la consommation de données sur
+// réseau 3G instable — une webfont coûterait 50 à 200 ko au premier rendu.
+$font-family-base:
+  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-family-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+// Échelle typographique modulaire (ratio ~1.2), base 16 px.
+$font-size-xs: 0.75rem; // 12px — mentions légales, métadonnées
+$font-size-sm: 0.875rem; // 14px — texte secondaire, libellés
+$font-size-base: 1rem; // 16px — corps de texte
+$font-size-lg: 1.125rem; // 18px — accroche
+$font-size-xl: 1.375rem; // 22px — titre de section
+$font-size-2xl: 1.75rem; // 28px — titre de page
+$font-size-3xl: 2.125rem; // 34px — titre principal
+
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+$line-height-tight: 1.2; // titres
+$line-height-base: 1.5; // corps de texte
+$line-height-relaxed: 1.7; // paragraphes longs
+
+// -----------------------------------------------------------------------------
+// Espacements — échelle de base 4 px
+// -----------------------------------------------------------------------------
+$space-0: 0;
+$space-1: 0.25rem; // 4px
+$space-2: 0.5rem; // 8px
+$space-3: 0.75rem; // 12px
+$space-4: 1rem; // 16px
+$space-5: 1.25rem; // 20px
+$space-6: 1.5rem; // 24px
+$space-8: 2rem; // 32px
+$space-10: 2.5rem; // 40px
+$space-12: 3rem; // 48px
+$space-16: 4rem; // 64px
+$space-20: 5rem; // 80px
+
+// -----------------------------------------------------------------------------
+// Rayons, ombres, épaisseurs
+// -----------------------------------------------------------------------------
+$radius-sm: 0.25rem;
+$radius-md: 0.5rem;
+$radius-lg: 0.75rem;
+$radius-xl: 1rem;
+$radius-full: 9999px;
+
+$border-width-thin: 1px;
+$border-width-thick: 2px;
+
+$shadow-sm: 0 1px 2px rgba(20, 24, 28, 0.06);
+$shadow-md: 0 2px 8px rgba(20, 24, 28, 0.1);
+$shadow-lg: 0 8px 24px rgba(20, 24, 28, 0.14);
+
+// -----------------------------------------------------------------------------
+// Points de rupture — approche mobile-first
+// -----------------------------------------------------------------------------
+// Android est prioritaire au Sénégal : le mobile est le cas par défaut,
+// ces seuils ne servent qu'à élargir la mise en page vers le haut.
+// Équivalents en pixels, à base 16 :
+//   sm =  480px  grand mobile
+//   md =  768px  tablette
+//   lg = 1024px  desktop, back-office admin
+//   xl = 1280px  grand écran
+$breakpoints: (
+  sm: 30rem,
+  md: 48rem,
+  lg: 64rem,
+  xl: 80rem,
+);
+
+$container-max-width: 75rem; // 1200px
+
+// -----------------------------------------------------------------------------
+// Transitions
+// -----------------------------------------------------------------------------
+$duration-fast: 150ms;
+$duration-base: 200ms;
+$duration-slow: 300ms;
+$easing-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
+
+// -----------------------------------------------------------------------------
+// Plans de superposition
+// -----------------------------------------------------------------------------
+// Centralisés pour éviter la surenchère de z-index dispersés dans le code.
+$z-base: 0;
+$z-dropdown: 1000;
+$z-sticky: 1100;
+$z-overlay: 1200;
+$z-modal: 1300;
+$z-toast: 1400;
+
+// -----------------------------------------------------------------------------
+// Accesseurs
+// -----------------------------------------------------------------------------
+
+/// Renvoie une teinte d'une palette, avec erreur explicite si absente.
+@function shade($palette, $step) {
+  @if not map.has-key($palette, $step) {
+    @error "Teinte `#{$step}` inexistante dans cette palette.";
+  }
+  @return map.get($palette, $step);
+}
+
+/// Renvoie la largeur d'un point de rupture.
+@function breakpoint($name) {
+  @if not map.has-key($breakpoints, $name) {
+    @error "Point de rupture `#{$name}` inconnu. Valeurs possibles : #{map.keys($breakpoints)}.";
+  }
+  @return map.get($breakpoints, $name);
+}

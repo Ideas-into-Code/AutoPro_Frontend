@@ -1,12 +1,22 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
-
-import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
+import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
+
+import { provideCore } from './core/core.providers';
+import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes), provideClientHydration()
-  ]
+    provideRouter(
+      routes,
+      // Lie les paramètres de route aux `input()` des composants : évite
+      // d'injecter ActivatedRoute juste pour lire un identifiant.
+      withComponentInputBinding(),
+      // Restaure la position de défilement lors d'un retour arrière.
+      withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
+    ),
+    provideClientHydration(),
+    provideCore(),
+  ],
 };
