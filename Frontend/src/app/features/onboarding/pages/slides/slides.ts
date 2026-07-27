@@ -125,12 +125,12 @@ export class SlidesComponent {
   }
 
   onSkip(): void {
-    void this.router.navigate(['/compte/connexion']);
+    void this.router.navigate(['/compte/selection-role']);
   }
 
   onNext(): void {
     if (this.isLastSlide()) {
-      void this.router.navigate(['/compte/connexion']);
+      void this.router.navigate(['/compte/selection-role']);
     } else {
       this.activeIndex.update((index) => index + 1);
     }
