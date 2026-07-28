@@ -1,0 +1,195 @@
+<div class="ap-register-page">
+  <!-- Header -->
+  <header class="ap-register-page__header">
+    <div class="ap-register-page__brand">
+      <span class="material-symbols-outlined ap-register-page__brand-icon" aria-hidden="true">
+        directions_car
+      </span>
+      <span class="ap-register-page__brand-name">AutoPro</span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="ap-register-page__main">
+    <div class="ap-register-card ap-fade-in">
+      <!-- Title Section -->
+      <div class="ap-register-card__header">
+        <div class="ap-register-card__role-badge">
+          <span class="material-symbols-outlined" aria-hidden="true">
+            {{ userRole() === 'mecanicien' ? 'handyman' : 'person' }}
+          </span>
+          <span>Compte {{ userRole() === 'mecanicien' ? 'Mécanicien Partenaire' : 'Client' }}</span>
+        </div>
+        <h1 class="ap-register-card__title">Créer votre compte</h1>
+        <p class="ap-register-card__subtitle">
+          Inscrivez-vous pour profiter des meilleurs services d'entretien automobile au Sénégal.
+        </p>
+      </div>
+
+      <!-- Registration Form -->
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="ap-register-card__form">
+        <!-- Full Name Field -->
+        <div class="ap-field">
+          <label for="fullName" class="ap-field__label">Nom complet</label>
+          <div class="ap-field__input-box">
+            <span class="material-symbols-outlined ap-field__icon" aria-hidden="true">person</span>
+            <input
+              id="fullName"
+              type="text"
+              formControlName="fullName"
+              placeholder="Amadou Diallo"
+              class="ap-field__input"
+              [class.ap-field__input--error]="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid"
+            />
+          </div>
+          @if (registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid) {
+            <span class="ap-field__error">Veuillez saisir votre nom complet.</span>
+          }
+        </div>
+
+        <!-- Email Field -->
+        <div class="ap-field">
+          <label for="email" class="ap-field__label">Adresse e-mail</label>
+          <div class="ap-field__input-box">
+            <span class="material-symbols-outlined ap-field__icon" aria-hidden="true">mail</span>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="nom@exemple.com"
+              class="ap-field__input"
+              [class.ap-field__input--error]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid"
+            />
+          </div>
+          @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
+            <span class="ap-field__error">Veuillez saisir une adresse e-mail valide.</span>
+          }
+        </div>
+
+        <!-- Phone Number Field -->
+        <div class="ap-field">
+          <label for="phoneNumber" class="ap-field__label">Numéro de téléphone</label>
+          <div class="ap-field__input-box">
+            <div class="ap-field__country-select">
+              <span>🇸🇳 +221</span>
+            </div>
+            <input
+              id="phoneNumber"
+              type="tel"
+              formControlName="phoneNumber"
+              placeholder="77 123 45 67"
+              class="ap-field__input"
+              [class.ap-field__input--error]="registerForm.get('phoneNumber')?.touched && registerForm.get('phoneNumber')?.invalid"
+            />
+          </div>
+          @if (registerForm.get('phoneNumber')?.touched && registerForm.get('phoneNumber')?.invalid) {
+            <span class="ap-field__error">Numéro invalide (ex: 771234567).</span>
+          }
+        </div>
+
+        <!-- Workshop Name Field (Mechanics Only) -->
+        @if (userRole() === 'mecanicien') {
+          <div class="ap-field ap-fade-in">
+            <label for="workshopName" class="ap-field__label">Nom de l'atelier / Garage</label>
+            <div class="ap-field__input-box">
+              <span class="material-symbols-outlined ap-field__icon" aria-hidden="true">store</span>
+              <input
+                id="workshopName"
+                type="text"
+                formControlName="workshopName"
+                placeholder="Dakar Auto Care"
+                class="ap-field__input"
+                [class.ap-field__input--error]="registerForm.get('workshopName')?.touched && registerForm.get('workshopName')?.invalid"
+              />
+            </div>
+            @if (registerForm.get('workshopName')?.touched && registerForm.get('workshopName')?.invalid) {
+              <span class="ap-field__error">Veuillez indiquer le nom de votre atelier.</span>
+            }
+          </div>
+        }
+
+        <!-- Password Field -->
+        <div class="ap-field">
+          <label for="password" class="ap-field__label">Mot de passe</label>
+          <div class="ap-field__input-box">
+            <span class="material-symbols-outlined ap-field__icon" aria-hidden="true">lock</span>
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="••••••••"
+              class="ap-field__input"
+              [class.ap-field__input--error]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid"
+            />
+            <button
+              type="button"
+              class="ap-field__toggle-btn"
+              (click)="togglePasswordVisibility()"
+              [aria-label]="showPassword() ? 'Masquer' : 'Afficher'"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">
+                {{ showPassword() ? 'visibility_off' : 'visibility' }}
+              </span>
+            </button>
+          </div>
+          @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
+            <span class="ap-field__error">Au moins 6 caractères requis.</span>
+          }
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div class="ap-field">
+          <label for="confirmPassword" class="ap-field__label">Confirmer le mot de passe</label>
+          <div class="ap-field__input-box">
+            <span class="material-symbols-outlined ap-field__icon" aria-hidden="true">lock_reset</span>
+            <input
+              id="confirmPassword"
+              [type]="showConfirmPassword() ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              placeholder="••••••••"
+              class="ap-field__input"
+              [class.ap-field__input--error]="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid"
+            />
+            <button
+              type="button"
+              class="ap-field__toggle-btn"
+              (click)="toggleConfirmPasswordVisibility()"
+              [aria-label]="showConfirmPassword() ? 'Masquer' : 'Afficher'"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">
+                {{ showConfirmPassword() ? 'visibility_off' : 'visibility' }}
+              </span>
+            </button>
+          </div>
+          @if (registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.hasError('passwordMismatch')) {
+            <span class="ap-field__error">Les mots de passe ne correspondent pas.</span>
+          }
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="ap-register-card__submit-btn"
+          [disabled]="isLoading()"
+        >
+          @if (isLoading()) {
+            <span class="ap-register-card__spinner" aria-hidden="true"></span>
+            <span>Création en cours...</span>
+          } @else {
+            <span>Créer mon compte</span>
+          }
+        </button>
+      </form>
+
+      <!-- Footer Prompt -->
+      <footer class="ap-register-card__footer">
+        <p class="ap-register-card__footer-text">
+          Vous avez déjà un compte ?
+          <button type="button" class="ap-register-card__login-link" (click)="onLogin()">
+            Se connecter
+          </button>
+        </p>
+      </footer>
+    </div>
+  </main>
+</div>
