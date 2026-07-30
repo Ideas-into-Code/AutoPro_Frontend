@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ import { Router, RouterLink } from '@angular/router';
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
 
   // Tab State: 'email' | 'phone'
   protected readonly activeTab = signal<'email' | 'phone'>('email');
@@ -80,23 +82,38 @@ export class LoginComponent {
 
     this.isLoading.set(true);
 
-    // Simulate login for demonstration before navigating to selection-role or home
-    setTimeout(() => {
-      this.isLoading.set(false);
-      void this.router.navigate(['/compte/selection-role']);
-    }, 800);
+    const identifier =
+      this.activeTab() === 'email'
+        ? this.emailForm.value.email!
+        : `${this.phoneForm.value.countryCode}${this.phoneForm.value.phoneNumber}`;
+
+    const password = this.emailForm.value.password ?? 'password123';
+
+    // Appel du service d'authentification mock
+    this.authService.login(identifier, password).subscribe({
+      next: () => {
+        this.isLoading.set(false);
+        void this.router.navigate(['/compte/selection-role']);
+      },
+      error: (err: { message?: string }) => {
+        this.isLoading.set(false);
+        this.errorMessage.set(err?.message ?? 'Échec de la connexion.');
+      },
+    });
   }
 
   onSocialLogin(_provider: 'google' | 'apple'): void {
     this.isLoading.set(true);
-    setTimeout(() => {
-      this.isLoading.set(false);
-      void this.router.navigate(['/compte/selection-role']);
-    }, 600);
+    this.authService.login('moussa@example.sn', 'social-auth').subscribe({
+      next: () => {
+        this.isLoading.set(false);
+        void this.router.navigate(['/compte/selection-role']);
+      },
+    });
   }
 
   onForgotPassword(): void {
-    // Navigate or display feedback
     alert('Un lien de réinitialisation sera envoyé à votre adresse e-mail.');
   }
 }
+

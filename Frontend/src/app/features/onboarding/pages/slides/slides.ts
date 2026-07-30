@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { OnboardingService } from '../../services/onboarding.service';
 
 export interface SlideFeature {
   icon: string;
@@ -44,6 +45,7 @@ export interface OnboardingSlide {
 })
 export class SlidesComponent {
   private readonly router = inject(Router);
+  private readonly onboardingService = inject(OnboardingService);
 
   protected readonly slides: OnboardingSlide[] = [
     {
@@ -125,11 +127,13 @@ export class SlidesComponent {
   }
 
   onSkip(): void {
+    this.onboardingService.markAsSeen();
     void this.router.navigate(['/compte/selection-role']);
   }
 
   onNext(): void {
     if (this.isLastSlide()) {
+      this.onboardingService.markAsSeen();
       void this.router.navigate(['/compte/selection-role']);
     } else {
       this.activeIndex.update((index) => index + 1);
@@ -145,6 +149,7 @@ export class SlidesComponent {
   }
 
   onLogin(): void {
+    this.onboardingService.markAsSeen();
     void this.router.navigate(['/compte/connexion']);
   }
 
@@ -154,3 +159,4 @@ export class SlidesComponent {
     }
   }
 }
+
