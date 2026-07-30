@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
+import { OnboardingService } from '../../services/onboarding.service';
 
 @Component({
   selector: 'app-splash',
@@ -22,6 +23,7 @@ export class SplashComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly onboardingService = inject(OnboardingService);
 
   protected readonly progress = signal(0);
   protected readonly isComplete = signal(false);
@@ -61,6 +63,11 @@ export class SplashComponent implements OnInit {
   }
 
   onContinue(): void {
-    void this.router.navigate(['/bienvenue/presentation']);
+    if (this.onboardingService.hasSeenOnboarding()) {
+      void this.router.navigate(['/compte/selection-role']);
+    } else {
+      void this.router.navigate(['/bienvenue/presentation']);
+    }
   }
 }
+
