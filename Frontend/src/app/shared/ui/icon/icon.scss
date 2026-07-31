@@ -1,0 +1,35 @@
+// Aucun `@use 'index'` ici : ce composant ne consomme que des custom
+// properties `--ap-*`, déjà globales. Importer le design system sans utiliser
+// ni mixin ni fonction n'apporterait rien.
+
+:host {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  // Le pictogramme s'aligne sur la ligne de base du texte qu'il accompagne
+  // plutôt que de déborder sous elle.
+  vertical-align: middle;
+}
+
+.ap-icon__glyph {
+  width: 100%;
+  height: 100%;
+}
+
+// Les tailles suivent l'échelle typographique : une icône posée à côté d'un
+// texte reste proportionnée si l'échelle change.
+:host(.ap-icon--sm) {
+  width: var(--ap-font-size-base);
+  height: var(--ap-font-size-base);
+}
+
+:host(.ap-icon--md) {
+  width: var(--ap-font-size-xl);
+  height: var(--ap-font-size-xl);
+}
+
+:host(.ap-icon--lg) {
+  width: var(--ap-font-size-3xl);
+  height: var(--ap-font-size-3xl);
+}

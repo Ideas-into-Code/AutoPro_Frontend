@@ -13,5 +13,10 @@ export { Card } from './card/card';
 export { FormField } from './form-field/form-field';
 export type { FormFieldType } from './form-field/form-field';
 
+export { Icon } from './icon/icon';
+export type { IconName, IconSize } from './icon/icon';
+
+export { SearchBar } from './search-bar/search-bar';
+
 export { Spinner } from './spinner/spinner';
 export type { SpinnerSize } from './spinner/spinner';
