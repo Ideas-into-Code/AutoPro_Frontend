@@ -10,6 +10,19 @@ import { Mechanic } from '../../models/mechanic.model';
 import { MechanicRepository } from '../../data/mechanic.repository';
 
 /**
+ * Ramène un paramètre d'URL absent à la chaîne vide.
+ *
+ * `withComponentInputBinding()` **écrit `undefined`** dans l'entrée quand le
+ * paramètre ne figure pas dans l'URL : la valeur par défaut d'`input()` ne joue
+ * qu'avant la première liaison et ne protège donc de rien. Sans cette
+ * normalisation, `/mecaniciens` sans filtre s'intitulait
+ * « Résultats pour « undefined » ».
+ */
+function versChaine(valeur: string | undefined): string {
+  return valeur ?? '';
+}
+
+/**
  * Liste des mécaniciens, filtrée par catégorie et par terme de recherche.
  *
  * C'est la destination des cartes de l'accueil : sans elle, « navigation vers
@@ -36,10 +49,10 @@ export class MechanicListPage {
   private readonly categories = inject(ServiceCategoryRepository);
 
   /** `slug` de catégorie, issu du paramètre d'URL `categorie`. */
-  readonly categorie = input('');
+  readonly categorie = input('', { transform: versChaine });
 
   /** Terme libre, issu du paramètre d'URL `recherche`. */
-  readonly recherche = input('');
+  readonly recherche = input('', { transform: versChaine });
 
   protected readonly mecaniciensResource = rxResource({
     params: () => ({ categorySlug: this.categorie(), search: this.recherche() }),
