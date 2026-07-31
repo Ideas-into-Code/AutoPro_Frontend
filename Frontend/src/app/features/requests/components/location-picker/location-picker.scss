@@ -1,0 +1,67 @@
+@use 'index' as ds;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
+}
+
+.ap-location-picker__gps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-3);
+  align-items: center;
+}
+
+.ap-location-picker__found {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-2);
+  align-items: center;
+  margin: 0;
+  padding: var(--ap-space-3);
+  color: var(--ap-color-success);
+  font-size: var(--ap-font-size-sm);
+  background-color: var(--ap-color-success-surface);
+  border-radius: var(--ap-radius-md);
+}
+
+.ap-location-picker__accuracy {
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-xs);
+}
+
+.ap-location-picker__forget {
+  padding: var(--ap-space-1) var(--ap-space-2);
+  color: var(--ap-text-secondary);
+  font-family: inherit;
+  font-size: var(--ap-font-size-xs);
+  background: none;
+  border: 0;
+  border-radius: var(--ap-radius-sm);
+  cursor: pointer;
+  text-decoration: underline;
+
+  @include ds.focus-ring;
+
+  &:hover {
+    color: var(--ap-text-primary);
+  }
+}
+
+// Ton d'avertissement et non d'erreur : le GPS indisponible n'empêche pas
+// d'envoyer la demande, l'adresse saisie suffit.
+.ap-location-picker__error {
+  margin: 0;
+  padding: var(--ap-space-3);
+  color: var(--ap-color-warning);
+  font-size: var(--ap-font-size-sm);
+  background-color: var(--ap-color-warning-surface);
+  border-radius: var(--ap-radius-md);
+}
+
+// Le conteneur disparaît tant qu'aucune carte n'est projetée : pas d'espace
+// vide réservé à un composant qui n'existe pas encore.
+.ap-location-picker__map:empty {
+  display: none;
+}

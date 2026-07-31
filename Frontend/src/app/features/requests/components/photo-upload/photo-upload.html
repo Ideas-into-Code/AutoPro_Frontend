@@ -1,0 +1,65 @@
+<label class="ap-photo-upload__label" [for]="fieldId">
+  Photos du problème
+  <span class="ap-photo-upload__hint">
+    Facultatif — jusqu'à {{ maxPhotos() }} photos de {{ maxSizeMo() }} Mo. Une photo permet au
+    mécanicien d'apporter la bonne pièce.
+  </span>
+</label>
+
+<!--
+  `capture="environment"` ouvre directement l'appareil photo arrière sur mobile,
+  au lieu du gestionnaire de fichiers : c'est le geste attendu quand on est
+  devant son véhicule en panne.
+-->
+<input
+  #champ
+  class="ap-photo-upload__input"
+  type="file"
+  accept="image/*"
+  capture="environment"
+  multiple
+  [id]="fieldId"
+  [disabled]="estPleine()"
+  (change)="ajouter(champ.files); champ.value = ''"
+/>
+
+@if (estPleine()) {
+  <p class="ap-photo-upload__full">
+    Nombre maximal atteint. Retirez une photo pour en ajouter une autre.
+  </p>
+}
+
+@if (rejets().length > 0) {
+  <ul class="ap-photo-upload__errors" role="alert">
+    @for (motif of rejets(); track motif) {
+      <li>{{ motif }}</li>
+    }
+  </ul>
+}
+
+@if (photos().length > 0) {
+  <ul class="ap-photo-upload__previews">
+    @for (photo of photos(); track photo.id) {
+      <li class="ap-photo-upload__preview">
+        <!--
+          `alt` porte le nom du fichier : c'est la seule information dont
+          dispose un lecteur d'écran pour distinguer deux photos jointes.
+        -->
+        <img
+          class="ap-photo-upload__thumb"
+          [src]="photo.previewUrl"
+          [alt]="'Photo jointe : ' + photo.file.name"
+        />
+
+        <button
+          type="button"
+          class="ap-photo-upload__remove"
+          (click)="retirer(photo.id)"
+          [attr.aria-label]="'Retirer la photo ' + photo.file.name"
+        >
+          <app-icon name="croix" size="sm" />
+        </button>
+      </li>
+    }
+  </ul>
+}
