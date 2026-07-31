@@ -1,0 +1,99 @@
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { Router, RouterLink } from '@angular/router';
+import { of } from 'rxjs';
+
+import { ServiceCategoryRepository, emptyPage } from '@core';
+import { Footer, Header, PageShell } from '@shared/layout';
+import { Button, Card, Icon, SearchBar, Spinner } from '@shared/ui';
+import { Mechanic } from '../../models/mechanic.model';
+import { MechanicRepository } from '../../data/mechanic.repository';
+
+/**
+ * Liste des mécaniciens, filtrée par catégorie et par terme de recherche.
+ *
+ * C'est la destination des cartes de l'accueil : sans elle, « navigation vers
+ * les catégories » se terminerait sur une page introuvable.
+ *
+ * Les deux critères arrivent par l'URL (`?categorie=freinage&recherche=dakar`)
+ * et non par un service d'état partagé. Une recherche est ainsi partageable,
+ * ajoutable aux favoris, et le bouton « précédent » du navigateur la restitue
+ * telle quelle — trois comportements qu'un état en mémoire ferait perdre.
+ *
+ * `withComponentInputBinding()` étant actif, les paramètres d'URL alimentent
+ * directement ces entrées : pas besoin d'injecter `ActivatedRoute`.
+ */
+@Component({
+  selector: 'app-mechanic-list',
+  imports: [RouterLink, PageShell, Header, Footer, Button, Card, Icon, SearchBar, Spinner],
+  templateUrl: './mechanic-list.html',
+  styleUrl: './mechanic-list.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class MechanicListPage {
+  private readonly router = inject(Router);
+  private readonly mechanics = inject(MechanicRepository);
+  private readonly categories = inject(ServiceCategoryRepository);
+
+  /** `slug` de catégorie, issu du paramètre d'URL `categorie`. */
+  readonly categorie = input('');
+
+  /** Terme libre, issu du paramètre d'URL `recherche`. */
+  readonly recherche = input('');
+
+  protected readonly mecaniciensResource = rxResource({
+    params: () => ({ categorySlug: this.categorie(), search: this.recherche() }),
+    stream: ({ params }) =>
+      this.mechanics.search({
+        categorySlug: params.categorySlug === '' ? undefined : params.categorySlug,
+        search: params.search === '' ? undefined : params.search,
+      }),
+    defaultValue: emptyPage<Mechanic>(),
+  });
+
+  /**
+   * Intitulé de la catégorie filtrée. Chargé séparément parce qu'il ne dépend
+   * que du `slug` : inutile de le redemander à chaque frappe dans la recherche.
+   */
+  protected readonly categorieResource = rxResource({
+    params: () => this.categorie(),
+    stream: ({ params }) => (params === '' ? of(null) : this.categories.findBySlug(params)),
+    defaultValue: null,
+  });
+
+  protected readonly mecaniciens = computed(() => this.mecaniciensResource.value().items);
+
+  protected readonly total = computed(() => this.mecaniciensResource.value().totalItems);
+
+  protected readonly hasFailed = computed(() => this.mecaniciensResource.error() !== undefined);
+
+  protected readonly isFiltered = computed(
+    () => this.categorie() !== '' || this.recherche() !== '',
+  );
+
+  protected readonly titre = computed(() => {
+    const categorie = this.categorieResource.value();
+
+    if (categorie !== null) {
+      return categorie.label;
+    }
+
+    return this.recherche() === ''
+      ? 'Tous les mécaniciens'
+      : `Résultats pour « ${this.recherche()} »`;
+  });
+
+  /** Conserve la catégorie en cours : rechercher n'annule pas le filtre. */
+  protected rechercher(terme: string): void {
+    void this.router.navigate([], {
+      queryParams: {
+        categorie: this.categorie() === '' ? null : this.categorie(),
+        recherche: terme === '' ? null : terme,
+      },
+    });
+  }
+
+  protected reessayer(): void {
+    this.mecaniciensResource.reload();
+  }
+}

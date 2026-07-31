@@ -1,0 +1,131 @@
+@use 'index' as ds;
+
+.ap-mechanic-list {
+  @include ds.container;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-5);
+  padding-block: var(--ap-space-6) var(--ap-space-12);
+}
+
+.ap-mechanic-list__intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
+  align-items: flex-start;
+}
+
+.ap-mechanic-list__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ap-space-2);
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+  text-decoration: none;
+  border-radius: var(--ap-radius-sm);
+
+  @include ds.focus-ring;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// La flèche « suivant » sert de flèche « retour » une fois retournée : un seul
+// tracé à maintenir dans le jeu de pictogrammes.
+.ap-mechanic-list__back-icon {
+  transform: rotate(180deg);
+}
+
+.ap-mechanic-list__title {
+  margin: 0;
+  font-size: var(--ap-font-size-2xl);
+  line-height: var(--ap-line-height-tight);
+}
+
+.ap-mechanic-list__search {
+  width: 100%;
+  max-width: 34rem;
+}
+
+.ap-mechanic-list__count {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+}
+
+.ap-mechanic-list__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  gap: var(--ap-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ap-mechanic-list__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ap-space-2);
+  margin: 0;
+  font-size: var(--ap-font-size-lg);
+}
+
+.ap-mechanic-list__verified {
+  padding: var(--ap-space-1) var(--ap-space-2);
+  color: var(--ap-color-success);
+  font-weight: var(--ap-font-weight-medium);
+  font-size: var(--ap-font-size-xs);
+  background-color: var(--ap-color-success-surface);
+  border-radius: var(--ap-radius-full);
+}
+
+.ap-mechanic-list__workshop,
+.ap-mechanic-list__address,
+.ap-mechanic-list__rating {
+  display: flex;
+  align-items: center;
+  gap: var(--ap-space-2);
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+}
+
+.ap-mechanic-list__specialties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ap-mechanic-list__specialty {
+  padding: var(--ap-space-1) var(--ap-space-3);
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-xs);
+  background-color: var(--ap-surface-sunken);
+  border-radius: var(--ap-radius-full);
+}
+
+.ap-mechanic-list__state {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
+  align-items: flex-start;
+  margin: 0;
+  color: var(--ap-text-secondary);
+
+  p {
+    margin: 0;
+  }
+}
+
+.ap-mechanic-list__state--error {
+  padding: var(--ap-space-4);
+  color: var(--ap-color-danger);
+  background-color: var(--ap-color-danger-surface);
+  border-radius: var(--ap-radius-md);
+}
