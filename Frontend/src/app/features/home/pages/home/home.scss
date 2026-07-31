@@ -1,0 +1,82 @@
+@use 'index' as ds;
+
+.ap-home {
+  @include ds.container;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-8);
+  padding-block: var(--ap-space-6) var(--ap-space-12);
+}
+
+.ap-home__intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
+}
+
+.ap-home__title {
+  margin: 0;
+  font-size: var(--ap-font-size-2xl);
+  line-height: var(--ap-line-height-tight);
+
+  @include ds.from(md) {
+    font-size: var(--ap-font-size-3xl);
+  }
+}
+
+.ap-home__subtitle {
+  max-width: 48ch;
+  margin: 0;
+  color: var(--ap-text-secondary);
+  line-height: var(--ap-line-height-relaxed);
+}
+
+.ap-home__search {
+  margin-top: var(--ap-space-2);
+}
+
+.ap-home__section-title {
+  margin: 0 0 var(--ap-space-4);
+  font-size: var(--ap-font-size-xl);
+}
+
+.ap-home__grid {
+  display: grid;
+  // `auto-fill` plutôt qu'un nombre de colonnes par point de rupture : la
+  // grille se réorganise seule, y compris si une catégorie est ajoutée côté
+  // serveur, sans nouvelle media query.
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: var(--ap-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ap-home__grid-item {
+  display: flex;
+}
+
+app-category-card {
+  width: 100%;
+}
+
+.ap-home__state {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
+  align-items: flex-start;
+  margin: 0;
+  color: var(--ap-text-secondary);
+}
+
+.ap-home__state--error {
+  padding: var(--ap-space-4);
+  color: var(--ap-color-danger);
+  background-color: var(--ap-color-danger-surface);
+  border-radius: var(--ap-radius-md);
+
+  p {
+    margin: 0;
+  }
+}

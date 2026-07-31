@@ -1,0 +1,68 @@
+<app-page-shell>
+  <app-header header brand="AutoPro">
+    <a nav routerLink="/mecaniciens">Mécaniciens</a>
+    <a nav routerLink="/carte">Carte</a>
+    <a nav routerLink="/demandes">Mes demandes</a>
+  </app-header>
+
+  <div class="ap-home">
+    <header class="ap-home__intro">
+      <h1 class="ap-home__title">Un mécanicien de confiance, près de vous</h1>
+      <p class="ap-home__subtitle">
+        Décrivez votre panne ou choisissez une catégorie : nous vous mettons en relation avec un
+        professionnel vérifié.
+      </p>
+
+      <app-search-bar
+        class="ap-home__search"
+        label="Rechercher un mécanicien, une panne ou un quartier"
+        placeholder="Batterie, embrayage, Keur Massar…"
+        (searchSubmit)="rechercher($event)"
+      />
+    </header>
+
+    <app-sos-button
+      class="ap-home__sos"
+      [link]="ecranSignalement"
+      [linkParams]="{ urgence: 'true' }"
+    />
+
+    <section class="ap-home__categories" aria-labelledby="ap-home-categories-titre">
+      <h2 class="ap-home__section-title" id="ap-home-categories-titre">Par type d'intervention</h2>
+
+      @if (categoriesResource.isLoading()) {
+        <p class="ap-home__state">
+          <app-spinner label="Chargement des catégories de service" />
+        </p>
+      } @else if (hasFailed()) {
+        <!--
+          Un échec de chargement n'est pas une impasse : on explique, et on
+          propose de réessayer. `role="alert"` fait annoncer le message
+          immédiatement, sans que l'utilisateur ait à le chercher.
+        -->
+        <div class="ap-home__state ap-home__state--error" role="alert">
+          <p>Les catégories n'ont pas pu être chargées. Vérifiez votre connexion.</p>
+          <button appButton type="button" variant="secondary" size="sm" (click)="reessayer()">
+            Réessayer
+          </button>
+        </div>
+      } @else {
+        <ul class="ap-home__grid">
+          @for (categorie of categories(); track categorie.id) {
+            <li class="ap-home__grid-item">
+              <app-category-card
+                [category]="categorie"
+                [link]="ecranMecaniciens"
+                [linkParams]="{ categorie: categorie.slug }"
+              />
+            </li>
+          } @empty {
+            <li class="ap-home__state">Aucune catégorie n'est disponible pour le moment.</li>
+          }
+        </ul>
+      }
+    </section>
+  </div>
+
+  <app-footer footer />
+</app-page-shell>
