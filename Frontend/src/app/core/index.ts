@@ -15,11 +15,15 @@ export type {
   WriteRepository,
 } from './data/repository';
 
+export { provideHttpRepositories, provideMockRepositories } from './data/repositories.providers';
+export { ServiceCategoryRepository } from './data/service-category.repository';
+
 export { toApiError } from './http/api-error';
 export type { ApiError, ApiErrorKind } from './http/api-error';
 export { apiErrorInterceptor } from './http/api-error.interceptor';
 
 export { DEFAULT_PAGE_SIZE, FIRST_PAGE, emptyPage } from './models/pagination';
 export type { Page, PageRequest } from './models/pagination';
+export type { ServiceCategory } from './models/service-category';
 
 export { provideCore } from './core.providers';

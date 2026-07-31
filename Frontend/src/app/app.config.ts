@@ -3,6 +3,7 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 
 import { provideCore } from './core/core.providers';
+import { provideMockRepositories } from './core/data/repositories.providers';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -18,5 +19,10 @@ export const appConfig: ApplicationConfig = {
     ),
     provideClientHydration(),
     provideCore(),
+    // Tant que le backend n'est pas en ligne, les dépôts servent des données
+    // fabriquées. Le jour où il l'est, cette ligne devient
+    // `provideHttpRepositories()` et rien d'autre ne bouge.
+    // Voir core/data/repositories.providers.ts.
+    provideMockRepositories(),
   ],
 };
