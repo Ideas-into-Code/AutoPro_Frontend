@@ -1,0 +1,23 @@
+<a class="ap-category-card__link" [routerLink]="link()" [queryParams]="linkParams()">
+  <app-card interactive>
+    <h3 card-title class="ap-category-card__heading">
+      <app-icon class="ap-category-card__icon" [name]="iconName()" />
+      <span class="ap-category-card__label">{{ category().label }}</span>
+
+      <!--
+        Le libellé « Urgence » est du texte, pas une pastille colorée : la
+        couleur seule ne transmet rien à qui ne la perçoit pas.
+      -->
+      @if (category().isEmergency) {
+        <span class="ap-category-card__badge">Urgence</span>
+      }
+    </h3>
+
+    <p class="ap-category-card__description">{{ category().description }}</p>
+
+    <span card-actions class="ap-category-card__cta">
+      Voir les mécaniciens
+      <app-icon name="fleche-droite" size="sm" />
+    </span>
+  </app-card>
+</a>

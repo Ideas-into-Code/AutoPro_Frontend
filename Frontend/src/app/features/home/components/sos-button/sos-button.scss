@@ -1,0 +1,81 @@
+@use 'index' as ds;
+
+:host {
+  display: block;
+}
+
+.ap-sos-button__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-4);
+  padding: var(--ap-space-5);
+  background-color: var(--ap-color-danger-surface);
+  border: var(--ap-border-width-thin) solid var(--ap-color-danger);
+  border-radius: var(--ap-radius-lg);
+
+  @include ds.from(md) {
+    flex-direction: row;
+    align-items: center;
+    padding: var(--ap-space-6);
+  }
+}
+
+.ap-sos-button__halo {
+  display: inline-flex;
+  flex: none;
+  align-self: flex-start;
+  padding: var(--ap-space-3);
+  color: var(--ap-color-danger);
+  background-color: var(--ap-surface-raised);
+  border-radius: var(--ap-radius-full);
+  animation: ap-sos-pulse 2s var(--ap-easing-standard) infinite;
+
+  @include ds.from(md) {
+    align-self: center;
+  }
+
+  // Une pulsation permanente est pénible, voire déclenchante, pour une partie
+  // des utilisateurs : elle disparaît dès que le système la refuse.
+  @include ds.respect-reduced-motion {
+    animation: none;
+  }
+}
+
+.ap-sos-button__text {
+  flex: 1;
+}
+
+.ap-sos-button__title {
+  margin: 0 0 var(--ap-space-1);
+  font-size: var(--ap-font-size-xl);
+  line-height: var(--ap-line-height-tight);
+}
+
+.ap-sos-button__hint {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+  line-height: var(--ap-line-height-base);
+}
+
+.ap-sos-button__action {
+  flex: none;
+  // Pleine largeur sur mobile — le pouce vise mal —, largeur naturelle dès
+  // qu'un écran plus large laisse le panneau passer en ligne.
+  width: 100%;
+
+  @include ds.from(md) {
+    width: auto;
+  }
+}
+
+@keyframes ap-sos-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--ap-color-danger-surface);
+  }
+
+  50% {
+    box-shadow: 0 0 0 0.6rem transparent;
+  }
+}
