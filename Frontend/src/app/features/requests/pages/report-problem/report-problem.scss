@@ -1,0 +1,188 @@
+@use 'index' as ds;
+
+.ap-report {
+  @include ds.container;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-6);
+  // Un formulaire trop large fatigue la lecture ; il reste centré sur grand écran.
+  max-width: 44rem;
+  padding-block: var(--ap-space-6) var(--ap-space-12);
+}
+
+.ap-report__intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
+  align-items: flex-start;
+}
+
+.ap-report__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ap-space-2);
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+  text-decoration: none;
+  border-radius: var(--ap-radius-sm);
+
+  @include ds.focus-ring;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.ap-report__back-icon {
+  transform: rotate(180deg);
+}
+
+.ap-report__title {
+  margin: 0;
+  font-size: var(--ap-font-size-2xl);
+  line-height: var(--ap-line-height-tight);
+}
+
+.ap-report__emergency {
+  display: flex;
+  gap: var(--ap-space-2);
+  align-items: center;
+  margin: 0;
+  padding: var(--ap-space-3) var(--ap-space-4);
+  color: var(--ap-color-danger);
+  font-size: var(--ap-font-size-sm);
+  background-color: var(--ap-color-danger-surface);
+  border-radius: var(--ap-radius-md);
+}
+
+.ap-report__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-6);
+}
+
+.ap-report__fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
+  margin: 0;
+  padding: var(--ap-space-4);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-lg);
+
+  @include ds.from(md) {
+    padding: var(--ap-space-5);
+  }
+}
+
+.ap-report__legend {
+  padding-inline: var(--ap-space-2);
+  font-weight: var(--ap-font-weight-semibold);
+  font-size: var(--ap-font-size-lg);
+}
+
+.ap-report__field-label {
+  font-weight: var(--ap-font-weight-medium);
+  font-size: var(--ap-font-size-sm);
+}
+
+.ap-report__select,
+.ap-report__textarea {
+  width: 100%;
+  padding: var(--ap-space-3);
+  color: var(--ap-text-primary);
+  font-family: inherit;
+  // 16 px minimum : en deçà, Safari iOS zoome à la mise au point.
+  font-size: var(--ap-font-size-base);
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-strong);
+  border-radius: var(--ap-radius-md);
+
+  @include ds.focus-ring;
+
+  &:focus-visible {
+    border-color: var(--ap-color-primary);
+  }
+}
+
+.ap-report__textarea {
+  // Redimensionnement vertical seulement : l'horizontal casserait la mise en page.
+  resize: vertical;
+  line-height: var(--ap-line-height-base);
+}
+
+.ap-report__counter {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-xs);
+  text-align: right;
+}
+
+.ap-report__error {
+  margin: 0;
+  color: var(--ap-color-danger);
+  font-size: var(--ap-font-size-sm);
+}
+
+.ap-report__error--envoi {
+  padding: var(--ap-space-4);
+  background-color: var(--ap-color-danger-surface);
+  border-radius: var(--ap-radius-md);
+}
+
+.ap-report__submit {
+  align-self: stretch;
+
+  @include ds.from(md) {
+    align-self: flex-start;
+  }
+}
+
+// --- Accusé de réception -----------------------------------------------------
+
+.ap-report__done {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-4);
+  align-items: flex-start;
+  padding: var(--ap-space-6);
+  background-color: var(--ap-color-success-surface);
+  border-radius: var(--ap-radius-lg);
+}
+
+.ap-report__done-title {
+  margin: 0;
+  color: var(--ap-color-success);
+  font-size: var(--ap-font-size-2xl);
+  line-height: var(--ap-line-height-tight);
+}
+
+.ap-report__done-lead {
+  margin: 0;
+  line-height: var(--ap-line-height-relaxed);
+}
+
+.ap-report__summary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--ap-space-2) var(--ap-space-4);
+  margin: 0;
+  font-size: var(--ap-font-size-sm);
+
+  dt {
+    color: var(--ap-text-secondary);
+  }
+
+  dd {
+    margin: 0;
+    font-weight: var(--ap-font-weight-medium);
+  }
+}
+
+.ap-report__done-note {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-xs);
+  line-height: var(--ap-line-height-base);
+}
