@@ -3,12 +3,15 @@
   « région Besoin d'aide immédiate » au lieu d'une région anonyme.
 -->
 <section class="ap-sos-button__panel" aria-labelledby="ap-sos-titre">
-  <span class="ap-sos-button__halo" aria-hidden="true">
-    <app-icon name="sos" size="lg" />
-  </span>
+  <!--
+    Le sigle est écrit en toutes lettres, pas seulement suggéré par un
+    pictogramme : c'est le repère que l'utilisateur cherche des yeux, et
+    « SOS » se reconnaît plus vite qu'un triangle d'avertissement.
+  -->
+  <span class="ap-sos-button__halo" aria-hidden="true">SOS</span>
 
   <div class="ap-sos-button__text">
-    <h2 class="ap-sos-button__title" id="ap-sos-titre">Besoin d'aide immédiate ?</h2>
+    <h2 class="ap-sos-button__title" id="ap-sos-titre">SOS — Besoin d'aide immédiate ?</h2>
     <p class="ap-sos-button__hint">
       Véhicule immobilisé, panne sur la route ou accident : décrivez le problème, un mécanicien
       proche est alerté.
@@ -28,6 +31,6 @@
     [routerLink]="link()"
     [queryParams]="linkParams()"
   >
-    Demander un dépannage
+    SOS — Demander un dépannage
   </a>
 </section>

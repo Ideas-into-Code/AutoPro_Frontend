@@ -1,19 +1,41 @@
 @use 'index' as ds;
 
 .ap-mechanic-list {
+  display: flex;
+  flex-direction: column;
+}
+
+// Bande d'en-tête : le fond va d'un bord à l'autre, le contenu reste borné.
+.ap-mechanic-list__banner {
+  background-color: var(--ap-surface-sunken);
+  border-bottom: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+}
+
+.ap-mechanic-list__intro {
   @include ds.container;
 
   display: flex;
   flex-direction: column;
-  gap: var(--ap-space-5);
-  padding-block: var(--ap-space-6) var(--ap-space-12);
-}
-
-.ap-mechanic-list__intro {
-  display: flex;
-  flex-direction: column;
   gap: var(--ap-space-3);
   align-items: flex-start;
+  padding-block: var(--ap-space-6);
+
+  @include ds.from(lg) {
+    padding-block: var(--ap-space-8);
+  }
+}
+
+.ap-mechanic-list__body {
+  @include ds.container;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-4);
+  padding-block: var(--ap-space-6) var(--ap-space-12);
+
+  @include ds.from(lg) {
+    padding-block: var(--ap-space-8) var(--ap-space-16);
+  }
 }
 
 .ap-mechanic-list__back {
@@ -57,7 +79,9 @@
 
 .ap-mechanic-list__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  // Vignettes assez étroites pour qu'un grand écran en aligne trois ou quatre
+  // au lieu de deux : c'est ce qui remplit la largeur disponible.
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
   gap: var(--ap-space-4);
   margin: 0;
   padding: 0;

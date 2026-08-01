@@ -1,0 +1,102 @@
+@use 'index' as ds;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-2);
+}
+
+.ap-photo-upload__label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-1);
+  font-weight: var(--ap-font-weight-medium);
+  font-size: var(--ap-font-size-sm);
+}
+
+.ap-photo-upload__hint {
+  color: var(--ap-text-secondary);
+  font-weight: var(--ap-font-weight-regular);
+  font-size: var(--ap-font-size-xs);
+  line-height: var(--ap-line-height-base);
+}
+
+.ap-photo-upload__input {
+  padding: var(--ap-space-3);
+  font-family: inherit;
+  font-size: var(--ap-font-size-sm);
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) dashed var(--ap-border-strong);
+  border-radius: var(--ap-radius-md);
+
+  @include ds.focus-ring;
+
+  &:disabled {
+    color: var(--ap-text-muted);
+    background-color: var(--ap-surface-sunken);
+    cursor: not-allowed;
+  }
+}
+
+.ap-photo-upload__full {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-xs);
+}
+
+.ap-photo-upload__errors {
+  margin: 0;
+  padding: var(--ap-space-3) var(--ap-space-3) var(--ap-space-3) var(--ap-space-6);
+  color: var(--ap-color-danger);
+  font-size: var(--ap-font-size-xs);
+  background-color: var(--ap-color-danger-surface);
+  border-radius: var(--ap-radius-md);
+}
+
+.ap-photo-upload__previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ap-photo-upload__preview {
+  position: relative;
+}
+
+.ap-photo-upload__thumb {
+  display: block;
+  width: 5.5rem;
+  height: 5.5rem;
+  // `cover` plutôt que `contain` : les vignettes gardent la même taille quelles
+  // que soient les proportions de la photo, la grille reste régulière.
+  object-fit: cover;
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-md);
+}
+
+.ap-photo-upload__remove {
+  position: absolute;
+  // Débordement volontaire sur le coin de la vignette : la croix reste visible
+  // quelle que soit la photo, y compris sur un fond clair.
+  top: calc(var(--ap-space-2) * -1);
+  right: calc(var(--ap-space-2) * -1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--ap-text-on-primary);
+  background-color: var(--ap-color-neutral-800);
+  border: 0;
+  border-radius: var(--ap-radius-full);
+  cursor: pointer;
+
+  @include ds.focus-ring;
+
+  &:hover {
+    background-color: var(--ap-color-danger);
+  }
+}

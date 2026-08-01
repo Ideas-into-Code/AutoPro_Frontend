@@ -1,17 +1,7 @@
 export type ProblemType =
-  | 'batterie'
-  | 'pneu'
-  | 'panne_moteur'
-  | 'freinage'
-  | 'remorquage'
-  | 'autre';
+  'batterie' | 'pneu' | 'panne_moteur' | 'freinage' | 'remorquage' | 'autre';
 
-export type RequestStatus =
-  | 'en_attente'
-  | 'acceptee'
-  | 'en_cours'
-  | 'terminee'
-  | 'annulee';
+export type RequestStatus = 'en_attente' | 'acceptee' | 'en_cours' | 'terminee' | 'annulee';
 
 export interface InterventionRequest {
   id: string;

@@ -1,34 +1,51 @@
-<app-page-shell>
-  <app-header header brand="AutoPro">
-    <a nav routerLink="/mecaniciens">Mécaniciens</a>
-    <a nav routerLink="/carte">Carte</a>
-    <a nav routerLink="/demandes">Mes demandes</a>
-  </app-header>
+<div class="ap-home">
+  <!--
+    Bande d'accroche pleine largeur : sur un grand écran, une colonne centrée
+    laissait deux larges bandes vides de part et d'autre. Le fond s'étend
+    jusqu'aux bords, seul le contenu reste borné pour rester lisible.
+  -->
+  <section class="ap-home__hero" aria-labelledby="ap-home-titre">
+    <div class="ap-home__hero-inner">
+      <div class="ap-home__hero-text">
+        <h1 class="ap-home__title" id="ap-home-titre">Un mécanicien de confiance, près de vous</h1>
 
-  <div class="ap-home">
-    <header class="ap-home__intro">
-      <h1 class="ap-home__title">Un mécanicien de confiance, près de vous</h1>
-      <p class="ap-home__subtitle">
-        Décrivez votre panne ou choisissez une catégorie : nous vous mettons en relation avec un
-        professionnel vérifié.
-      </p>
+        <p class="ap-home__subtitle">
+          Décrivez votre panne ou choisissez une catégorie : nous vous mettons en relation avec un
+          professionnel vérifié, où que vous soyez à Dakar.
+        </p>
 
-      <app-search-bar
-        class="ap-home__search"
-        label="Rechercher un mécanicien, une panne ou un quartier"
-        placeholder="Batterie, embrayage, Keur Massar…"
-        (searchSubmit)="rechercher($event)"
+        <app-search-bar
+          class="ap-home__search"
+          label="Rechercher un mécanicien, une panne ou un quartier"
+          placeholder="Batterie, embrayage, Keur Massar…"
+          (searchSubmit)="rechercher($event)"
+        />
+      </div>
+
+      <!--
+        À partir de la tablette, le bloc d'urgence occupe la colonne de droite
+        au lieu de s'empiler sous l'accroche : l'espace horizontal est utilisé
+        et le SOS reste visible sans défilement.
+      -->
+      <app-sos-button
+        class="ap-home__sos"
+        [link]="ecranSignalement"
+        [linkParams]="{ urgence: 'true' }"
       />
-    </header>
+    </div>
+  </section>
 
-    <app-sos-button
-      class="ap-home__sos"
-      [link]="ecranSignalement"
-      [linkParams]="{ urgence: 'true' }"
-    />
-
-    <section class="ap-home__categories" aria-labelledby="ap-home-categories-titre">
-      <h2 class="ap-home__section-title" id="ap-home-categories-titre">Par type d'intervention</h2>
+  <section class="ap-home__categories" aria-labelledby="ap-home-categories-titre">
+    <div class="ap-home__categories-inner">
+      <header class="ap-home__section-header">
+        <h2 class="ap-home__section-title" id="ap-home-categories-titre">
+          Par type d'intervention
+        </h2>
+        <p class="ap-home__section-lead">
+          Choisissez la famille qui correspond à votre panne pour ne voir que les mécaniciens
+          compétents.
+        </p>
+      </header>
 
       @if (categoriesResource.isLoading()) {
         <p class="ap-home__state">
@@ -61,8 +78,6 @@
           }
         </ul>
       }
-    </section>
-  </div>
-
-  <app-footer footer />
-</app-page-shell>
+    </div>
+  </section>
+</div>

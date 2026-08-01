@@ -23,7 +23,8 @@ export const MOCK_MECHANICS: Mechanic[] = [
         id: 'rev-1',
         authorName: 'Mohamed El Fadel Badji',
         rating: 5,
-        comment: 'Intervention super rapide pour une panne de batterie aux Almadies. Travail propre !',
+        comment:
+          'Intervention super rapide pour une panne de batterie aux Almadies. Travail propre !',
         createdAt: '2026-07-25T14:00:00Z',
       },
       {

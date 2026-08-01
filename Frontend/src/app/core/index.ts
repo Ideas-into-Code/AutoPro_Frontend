@@ -26,4 +26,11 @@ export { DEFAULT_PAGE_SIZE, FIRST_PAGE, emptyPage } from './models/pagination';
 export type { Page, PageRequest } from './models/pagination';
 export type { ServiceCategory } from './models/service-category';
 
+export {
+  BrowserPositionProvider,
+  PositionError,
+  PositionProvider,
+} from './services/position.provider';
+export type { Position, PositionErrorKind } from './services/position.provider';
+
 export { provideCore } from './core.providers';
