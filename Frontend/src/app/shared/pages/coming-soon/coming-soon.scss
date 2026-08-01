@@ -1,0 +1,44 @@
+@use 'index' as ds;
+
+:host {
+  display: block;
+}
+
+.ap-coming-soon__panel {
+  @include ds.container;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-4);
+  align-items: center;
+  max-width: 40rem;
+  padding-block: var(--ap-space-16);
+  text-align: center;
+}
+
+.ap-coming-soon__badge {
+  display: inline-flex;
+  padding: var(--ap-space-5);
+  color: var(--ap-color-primary);
+  background-color: var(--ap-color-primary-50);
+  border-radius: var(--ap-radius-full);
+}
+
+.ap-coming-soon__title {
+  margin: 0;
+  font-size: var(--ap-font-size-2xl);
+  line-height: var(--ap-line-height-tight);
+}
+
+.ap-coming-soon__message {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  line-height: var(--ap-line-height-relaxed);
+}
+
+.ap-coming-soon__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-3);
+  justify-content: center;
+}

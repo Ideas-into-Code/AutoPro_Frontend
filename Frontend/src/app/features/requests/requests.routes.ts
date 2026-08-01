@@ -49,8 +49,13 @@ export const requestsRoutes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'signaler',
-        pathMatch: 'full',
+        // La liste des demandes reste à écrire. Rediriger vers « signaler »
+        // serait trompeur : le menu annonce « Mes demandes », l'utilisateur
+        // s'attend à voir les siennes, pas à en créer une nouvelle.
+        loadComponent: () =>
+          import('@shared/pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
+        data: { fonctionnalite: 'Le suivi de vos demandes' },
+        title: 'Mes demandes — AutoPro',
       },
     ],
   },
