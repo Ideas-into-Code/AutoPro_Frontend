@@ -4,6 +4,16 @@ import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 
+/**
+ * Écran d'arrivée après une connexion réussie.
+ *
+ * Menait auparavant à la sélection de rôle, qui enchaîne sur l'inscription :
+ * l'utilisateur qui venait de se connecter était renvoyé au début du tunnel
+ * d'inscription, sans issue. L'accueil client (ticket #6) est la première
+ * destination réelle disponible.
+ */
+const ECRAN_APRES_CONNEXION = '/accueil';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -31,10 +41,7 @@ export class LoginComponent {
   protected readonly emailForm = this.fb.group({
     email: [
       '',
-      [
-        (c: AbstractControl) => Validators.required(c),
-        (c: AbstractControl) => Validators.email(c),
-      ],
+      [(c: AbstractControl) => Validators.required(c), (c: AbstractControl) => Validators.email(c)],
     ],
     password: [
       '',
@@ -93,7 +100,7 @@ export class LoginComponent {
     this.authService.login(identifier, password).subscribe({
       next: () => {
         this.isLoading.set(false);
-        void this.router.navigate(['/compte/selection-role']);
+        void this.router.navigate([ECRAN_APRES_CONNEXION]);
       },
       error: (err: { message?: string }) => {
         this.isLoading.set(false);
@@ -107,7 +114,7 @@ export class LoginComponent {
     this.authService.login('moussa@example.sn', 'social-auth').subscribe({
       next: () => {
         this.isLoading.set(false);
-        void this.router.navigate(['/compte/selection-role']);
+        void this.router.navigate([ECRAN_APRES_CONNEXION]);
       },
     });
   }
@@ -116,4 +123,3 @@ export class LoginComponent {
     alert('Un lien de réinitialisation sera envoyé à votre adresse e-mail.');
   }
 }
-

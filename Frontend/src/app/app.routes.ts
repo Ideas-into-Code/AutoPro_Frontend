@@ -35,6 +35,10 @@ export const routes: Routes = [
 
   // --- Espace client --------------------------------------------------------
   {
+    path: 'accueil',
+    loadChildren: () => import('@features/home/home.routes').then((m) => m.homeRoutes),
+  },
+  {
     path: 'mecaniciens',
     loadChildren: () =>
       import('@features/mechanics/mechanics.routes').then((m) => m.mechanicsRoutes),
