@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { ServiceCategory, ServiceCategoryRepository, emptyPage } from '@core';
-import { Footer, Header, PageShell } from '@shared/layout';
 import { Button, SearchBar, Spinner } from '@shared/ui';
 import { CategoryCard } from '../../components/category-card/category-card';
 import { SosButton } from '../../components/sos-button/sos-button';
@@ -29,17 +28,7 @@ const ECRAN_SIGNALEMENT = '/demandes/signaler';
  */
 @Component({
   selector: 'app-home',
-  imports: [
-    RouterLink,
-    PageShell,
-    Header,
-    Footer,
-    Button,
-    SearchBar,
-    Spinner,
-    CategoryCard,
-    SosButton,
-  ],
+  imports: [Button, SearchBar, Spinner, CategoryCard, SosButton],
   templateUrl: './home.html',
   styleUrl: './home.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

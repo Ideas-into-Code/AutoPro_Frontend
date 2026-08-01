@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { Params, RouterLink } from '@angular/router';
 
-import { Button, Icon } from '@shared/ui';
+import { Button } from '@shared/ui';
 
 /**
  * Appel à l'aide en urgence, mis en avant sur l'accueil.
@@ -18,7 +18,7 @@ import { Button, Icon } from '@shared/ui';
  */
 @Component({
   selector: 'app-sos-button',
-  imports: [RouterLink, Button, Icon],
+  imports: [RouterLink, Button],
   templateUrl: './sos-button.html',
   styleUrl: './sos-button.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -3,12 +3,19 @@
 .ap-report {
   @include ds.container;
 
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: var(--ap-space-6);
-  // Un formulaire trop large fatigue la lecture ; il reste centré sur grand écran.
-  max-width: 44rem;
   padding-block: var(--ap-space-6) var(--ap-space-12);
+
+  // Le formulaire reste étroit pour rester lisible, mais la largeur restante
+  // n'est plus perdue : une colonne d'appui l'occupe à partir du grand écran.
+  @include ds.from(lg) {
+    grid-template-columns: minmax(0, 34rem) minmax(0, 22rem);
+    gap: var(--ap-space-10);
+    justify-content: center;
+    align-items: start;
+    padding-block: var(--ap-space-10) var(--ap-space-16);
+  }
 }
 
 .ap-report__intro {
@@ -16,6 +23,24 @@
   flex-direction: column;
   gap: var(--ap-space-3);
   align-items: flex-start;
+
+  // L'en-tête de page couvre les deux colonnes.
+  @include ds.from(lg) {
+    grid-column: 1 / -1;
+  }
+}
+
+.ap-report__aside {
+  // Masquée en dessous du grand écran : sur mobile, elle repousserait le
+  // formulaire — donc l'action attendue — hors du premier écran. Le placement
+  // relève de la page ; l'apparence du panneau appartient au composant.
+  display: none;
+
+  @include ds.from(lg) {
+    display: flex;
+    position: sticky;
+    top: var(--ap-space-6);
+  }
 }
 
 .ap-report__back {
@@ -38,22 +63,34 @@
   transform: rotate(180deg);
 }
 
-.ap-report__title {
+// Les deux titres de page — formulaire et accusé de réception — partagent leur
+// mise en forme ; seule la couleur les distingue.
+.ap-report__title,
+.ap-report__done-title {
   margin: 0;
   font-size: var(--ap-font-size-2xl);
   line-height: var(--ap-line-height-tight);
 }
 
-.ap-report__emergency {
-  display: flex;
-  gap: var(--ap-space-2);
-  align-items: center;
+.ap-report__done-title {
+  color: var(--ap-color-success);
+}
+
+// Bandeau d'urgence et échec d'envoi : même traitement visuel, deux rôles.
+.ap-report__emergency,
+.ap-report__error--envoi {
   margin: 0;
   padding: var(--ap-space-3) var(--ap-space-4);
   color: var(--ap-color-danger);
   font-size: var(--ap-font-size-sm);
   background-color: var(--ap-color-danger-surface);
   border-radius: var(--ap-radius-md);
+}
+
+.ap-report__emergency {
+  display: flex;
+  gap: var(--ap-space-2);
+  align-items: center;
 }
 
 .ap-report__form {
@@ -77,6 +114,7 @@
 }
 
 .ap-report__legend {
+  margin: 0;
   padding-inline: var(--ap-space-2);
   font-weight: var(--ap-font-weight-semibold);
   font-size: var(--ap-font-size-lg);
@@ -112,10 +150,16 @@
   line-height: var(--ap-line-height-base);
 }
 
-.ap-report__counter {
+// Mentions discrètes : compteur de caractères et notes de bas de bloc.
+.ap-report__counter,
+.ap-report__done-note {
   margin: 0;
   color: var(--ap-text-secondary);
   font-size: var(--ap-font-size-xs);
+  line-height: var(--ap-line-height-base);
+}
+
+.ap-report__counter {
   text-align: right;
 }
 
@@ -123,12 +167,6 @@
   margin: 0;
   color: var(--ap-color-danger);
   font-size: var(--ap-font-size-sm);
-}
-
-.ap-report__error--envoi {
-  padding: var(--ap-space-4);
-  background-color: var(--ap-color-danger-surface);
-  border-radius: var(--ap-radius-md);
 }
 
 .ap-report__submit {
@@ -149,13 +187,13 @@
   padding: var(--ap-space-6);
   background-color: var(--ap-color-success-surface);
   border-radius: var(--ap-radius-lg);
-}
 
-.ap-report__done-title {
-  margin: 0;
-  color: var(--ap-color-success);
-  font-size: var(--ap-font-size-2xl);
-  line-height: var(--ap-line-height-tight);
+  // L'accusé de réception occupe toute la largeur : il n'y a plus de
+  // formulaire à côté duquel s'aligner.
+  @include ds.from(lg) {
+    grid-column: 1 / -1;
+    max-width: 44rem;
+  }
 }
 
 .ap-report__done-lead {
@@ -178,11 +216,4 @@
     margin: 0;
     font-weight: var(--ap-font-weight-medium);
   }
-}
-
-.ap-report__done-note {
-  margin: 0;
-  color: var(--ap-text-secondary);
-  font-size: var(--ap-font-size-xs);
-  line-height: var(--ap-line-height-base);
 }

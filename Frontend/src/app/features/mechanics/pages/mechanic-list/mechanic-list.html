@@ -1,11 +1,7 @@
-<app-page-shell>
-  <app-header header brand="AutoPro">
-    <a nav routerLink="/accueil">Accueil</a>
-    <a nav routerLink="/carte">Carte</a>
-    <a nav routerLink="/demandes">Mes demandes</a>
-  </app-header>
-
-  <div class="ap-mechanic-list">
+<div class="ap-mechanic-list">
+  <!-- Bande d'en-tête pleine largeur, comme sur l'accueil : la page garde la
+       même assise visuelle d'un écran à l'autre. -->
+  <div class="ap-mechanic-list__banner">
     <header class="ap-mechanic-list__intro">
       <a class="ap-mechanic-list__back" routerLink="/accueil">
         <app-icon name="fleche-droite" size="sm" class="ap-mechanic-list__back-icon" />
@@ -22,7 +18,9 @@
         (searchSubmit)="rechercher($event)"
       />
     </header>
+  </div>
 
+  <div class="ap-mechanic-list__body">
     @if (mecaniciensResource.isLoading()) {
       <p class="ap-mechanic-list__state">
         <app-spinner label="Recherche des mécaniciens" />
@@ -99,6 +97,4 @@
       </ul>
     }
   </div>
-
-  <app-footer footer />
-</app-page-shell>
+</div>
