@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
 
 import { Page, PageRequest, ServiceCategory, ServiceCategoryRepository, emptyPage } from '@core';
@@ -172,6 +172,50 @@ describe('MechanicListPage', () => {
     await rendre({}, () => throwError(() => new Error('réseau indisponible')));
 
     expect(hote().querySelector('[role="alert"]')?.textContent).toContain('Réessayer');
+  });
+
+  it('relance la recherche sur cet écran, et non à la racine du site', async () => {
+    await rendre({});
+
+    const router = TestBed.inject(Router);
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    const champ = hote().querySelector('app-search-bar input') as HTMLInputElement;
+    champ.value = 'freinage';
+    champ.dispatchEvent(new Event('input'));
+    await fixture.whenStable();
+
+    (hote().querySelector('app-search-bar form') as HTMLFormElement).dispatchEvent(
+      new Event('submit'),
+    );
+    await fixture.whenStable();
+
+    // Régression : un `navigate([])` sans `relativeTo` se résout depuis la
+    // racine. La recherche renvoyait donc à `/`, c'est-à-dire à l'onboarding.
+    expect(navigate).toHaveBeenCalledWith(['/mecaniciens'], {
+      queryParams: { categorie: null, recherche: 'freinage' },
+    });
+  });
+
+  it('conserve la catégorie filtrée quand on affine par mot-clé', async () => {
+    await rendre({ categorie: 'freinage' });
+
+    const router = TestBed.inject(Router);
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    const champ = hote().querySelector('app-search-bar input') as HTMLInputElement;
+    champ.value = 'dakar';
+    champ.dispatchEvent(new Event('input'));
+    await fixture.whenStable();
+
+    (hote().querySelector('app-search-bar form') as HTMLFormElement).dispatchEvent(
+      new Event('submit'),
+    );
+    await fixture.whenStable();
+
+    expect(navigate).toHaveBeenCalledWith(['/mecaniciens'], {
+      queryParams: { categorie: 'freinage', recherche: 'dakar' },
+    });
   });
 
   it('renvoie vers le profil détaillé de chaque mécanicien', async () => {

@@ -8,6 +8,9 @@ import { Button, Card, Icon, SearchBar, Spinner } from '@shared/ui';
 import { Mechanic } from '../../models/mechanic.model';
 import { MechanicRepository } from '../../data/mechanic.repository';
 
+/** Adresse de cet écran, utilisée pour se rappeler soi-même avec de nouveaux filtres. */
+const ECRAN_MECANICIENS = '/mecaniciens';
+
 /**
  * Ramène un paramètre d'URL absent à la chaîne vide.
  *
@@ -95,9 +98,16 @@ export class MechanicListPage {
       : `Résultats pour « ${this.recherche()} »`;
   });
 
-  /** Conserve la catégorie en cours : rechercher n'annule pas le filtre. */
+  /**
+   * Relance la recherche en conservant la catégorie en cours : affiner par
+   * mot-clé n'annule pas le filtre déjà posé depuis l'accueil.
+   *
+   * La destination est écrite en toutes lettres. Un `navigate([])` se résout
+   * depuis la **racine** faute de `relativeTo`, et non depuis la page courante :
+   * chercher depuis cet écran renvoyait à `/`, donc à l'onboarding.
+   */
   protected rechercher(terme: string): void {
-    void this.router.navigate([], {
+    void this.router.navigate([ECRAN_MECANICIENS], {
       queryParams: {
         categorie: this.categorie() === '' ? null : this.categorie(),
         recherche: terme === '' ? null : terme,
