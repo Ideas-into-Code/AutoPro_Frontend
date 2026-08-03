@@ -1,49 +1,226 @@
 @use 'index' as ds;
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   HOST — barre collante avec glassmorphism
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 :host {
   display: block;
   position: sticky;
   top: 0;
   z-index: var(--ap-z-sticky);
-  background-color: var(--ap-surface-raised);
-  border-bottom: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid rgba(195, 198, 216, 0.4);
+  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(255,255,255,0.5) inset;
 }
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BARRE PRINCIPALE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .ap-header__bar {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: var(--ap-space-4);
-  min-height: 3.5rem;
+  min-height: 4rem;
 
   @include ds.container;
+
+  @include ds.from(md) {
+    grid-template-columns: auto auto 1fr;
+  }
 }
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BRAND / LOGO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .ap-header__brand {
-  font-size: var(--ap-font-size-lg);
-  font-weight: var(--ap-font-weight-bold);
-  color: var(--ap-color-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ap-space-2);
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  @include ds.focus-ring;
 }
 
+.ap-header__brand-icon {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: linear-gradient(135deg, var(--ap-color-primary) 0%, #0040b3 100%);
+  border-radius: var(--ap-radius-lg);
+  box-shadow: 0 2px 8px rgba(0, 76, 205, 0.35);
+  flex-shrink: 0;
+
+  .material-symbols-outlined {
+    font-size: 1.2rem;
+    color: #fff;
+    font-variation-settings: 'FILL' 1;
+  }
+}
+
+.ap-header__brand-name {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--ap-color-primary);
+  letter-spacing: -0.03em;
+  line-height: 1;
+
+  /* Petit dégradé sur le texte */
+  background: linear-gradient(135deg, var(--ap-color-primary) 0%, #0040b3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   NAVIGATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ap-header__nav {
+  display: none;
+  flex-direction: column;
+  gap: var(--ap-space-1);
+  padding-block: var(--ap-space-3);
+  border-top: 1px solid rgba(195, 198, 216, 0.4);
+
+  /* Mobile ouvert */
+  &--open {
+    display: flex;
+  }
+
+  @include ds.from(md) {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--ap-space-1);
+    padding-block: 0;
+    border-top: none;
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+/* Liens projetés via ng-content [nav] */
+:host ::ng-deep [nav] {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--ap-space-2) var(--ap-space-3);
+  border-radius: var(--ap-radius-lg);
+  font-size: var(--ap-font-size-sm);
+  font-weight: var(--ap-font-weight-medium);
+  color: var(--ap-text-secondary);
+  text-decoration: none;
+  transition: color 0.18s ease, background-color 0.18s ease;
+  white-space: nowrap;
+
+  /* Indicateur actif animé en bas */
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0.3rem;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: calc(100% - var(--ap-space-6));
+    height: 2px;
+    background: linear-gradient(90deg, var(--ap-color-primary) 0%, #0040b3 100%);
+    border-radius: 2px;
+    transition: transform 0.22s ease;
+  }
+
+  &:hover {
+    color: var(--ap-text-primary);
+    background-color: rgba(0, 76, 205, 0.06);
+    text-decoration: none;
+  }
+}
+
+/* Lien actif (classe posée par routerLinkActive) */
+:host ::ng-deep .ap-client-shell__link--active {
+  color: var(--ap-color-primary) !important;
+  font-weight: var(--ap-font-weight-semibold) !important;
+  background-color: rgba(0, 76, 205, 0.08);
+  text-decoration: none !important;
+
+  &::after {
+    transform: translateX(-50%) scaleX(1);
+  }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ACTIONS (droite)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .ap-header__actions {
   display: flex;
   align-items: center;
   gap: var(--ap-space-2);
-  margin-inline-start: auto;
+  justify-self: end;
+
+  @include ds.from(md) {
+    grid-column: 3;
+  }
 }
 
-// --- Déclencheur du menu mobile ----------------------------------------------
+/* Override du bouton "Se connecter" projeté via [actions] */
+:host ::ng-deep [actions] {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ap-space-2);
+  padding: var(--ap-space-2) var(--ap-space-4);
+  background: linear-gradient(135deg, var(--ap-color-primary) 0%, #0040b3 100%);
+  color: #fff !important;
+  border-radius: var(--ap-radius-lg);
+  font-size: var(--ap-font-size-sm);
+  font-weight: var(--ap-font-weight-semibold);
+  text-decoration: none;
+  box-shadow: 0 2px 10px rgba(0, 76, 205, 0.35);
+  transition: all 0.18s ease;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+
+  &:hover {
+    background: linear-gradient(135deg, #1a60d0 0%, #003699 100%);
+    box-shadow: 0 4px 16px rgba(0, 76, 205, 0.45);
+    transform: translateY(-1px);
+    text-decoration: none;
+    color: #fff !important;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   HAMBURGER MOBILE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .ap-header__toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: var(--ap-radius-md);
-  color: var(--ap-text-primary);
+  background: none;
+  border: 1.5px solid var(--ap-border-subtle);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background-color: rgba(0, 76, 205, 0.06);
+    border-color: rgba(0, 76, 205, 0.3);
+  }
 
   @include ds.focus-ring;
 
-  // Au-delà de la tablette la navigation est toujours visible.
   @include ds.from(md) {
     display: none;
   }
@@ -53,71 +230,76 @@
   @include ds.visually-hidden;
 }
 
-.ap-header__toggle-icon {
-  position: relative;
-  width: 1.25rem;
-  height: var(--ap-border-width-thick);
-  background-color: currentcolor;
-
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: currentcolor;
-  }
-
-  &::before {
-    top: -0.375rem;
-  }
-
-  &::after {
-    top: 0.375rem;
-  }
-}
-
-// --- Navigation ---------------------------------------------------------------
-// Mobile-first : repliée par défaut, dépliée par la classe --open,
-// puis toujours visible en ligne à partir de la tablette.
-.ap-header__nav {
-  display: none;
+/* Hamburger 3 barres → croix X */
+.ap-header__hamburger {
+  display: flex;
   flex-direction: column;
-  gap: var(--ap-space-1);
-  padding-block: var(--ap-space-2);
-  border-top: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  gap: 0.3rem;
+  width: 1.1rem;
 
-  @include ds.container;
-
-  &--open {
-    display: flex;
+  span {
+    display: block;
+    width: 100%;
+    height: 1.5px;
+    background-color: var(--ap-text-primary);
+    border-radius: 2px;
+    transition: transform 0.22s ease, opacity 0.22s ease, width 0.22s ease;
+    transform-origin: center;
   }
 
-  @include ds.from(md) {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: var(--ap-space-4);
-    padding-block: 0;
-    border-top: none;
+  /* Croix quand ouvert */
+  &--open {
+    span:nth-child(1) {
+      transform: translateY(calc(0.3rem + 1.5px)) rotate(45deg);
+    }
+
+    span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+
+    span:nth-child(3) {
+      transform: translateY(calc(-0.3rem - 1.5px)) rotate(-45deg);
+    }
   }
 }
 
-// Mise en forme des liens projetés par l'appelant. `::ng-deep` est nécessaire
-// pour atteindre du contenu projeté ; l'alternative serait d'imposer une classe
-// à chaque lien, ce qui rendrait le composant plus pénible à utiliser.
-:host ::ng-deep [nav] {
-  display: block;
-  padding: var(--ap-space-2) var(--ap-space-3);
-  border-radius: var(--ap-radius-sm);
-  font-size: var(--ap-font-size-sm);
-  font-weight: var(--ap-font-weight-medium);
-  color: var(--ap-text-secondary);
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   NAVIGATION MOBILE — positionnement complet
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (max-width: 47.999em) {
+  .ap-header__bar {
+    grid-template-columns: auto 1fr auto;
+    flex-wrap: wrap;
+  }
 
-  &:hover {
-    background-color: var(--ap-surface-sunken);
-    color: var(--ap-text-primary);
-    text-decoration: none;
+  .ap-header__nav {
+    grid-column: 1 / -1;
+    order: 10;
+  }
+
+  :host ::ng-deep [nav] {
+    padding: var(--ap-space-3) var(--ap-space-3);
+    border-radius: var(--ap-radius-lg);
+    font-size: var(--ap-font-size-base);
+
+    &::after {
+      display: none;
+    }
+  }
+
+  :host ::ng-deep .ap-client-shell__link--active {
+    background-color: rgba(0, 76, 205, 0.08);
+  }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   REDUCED MOTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@include ds.respect-reduced-motion {
+  :host ::ng-deep [nav]::after,
+  .ap-header__hamburger span,
+  :host ::ng-deep [actions] {
+    transition: none;
   }
 }

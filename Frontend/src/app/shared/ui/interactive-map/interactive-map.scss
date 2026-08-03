@@ -1,0 +1,88 @@
+@use 'index' as ds;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 32rem;
+}
+
+.ap-interactive-map {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  overflow: hidden;
+  background: #edf3ff;
+}
+
+.ap-interactive-map__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  min-height: inherit;
+  background: transparent;
+}
+
+.ap-interactive-map__controls {
+  position: absolute;
+  right: var(--ap-map-controls-right, var(--ap-space-4));
+  bottom: var(--ap-map-controls-bottom, calc(5rem + var(--ap-space-4)));
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
+}
+
+.ap-interactive-map__zoom-controls {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid rgb(195 198 216 / 70%);
+  border-radius: var(--ap-radius-lg);
+  box-shadow: var(--ap-shadow-md);
+}
+
+.ap-interactive-map__control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  color: var(--ap-color-primary);
+  font-weight: var(--ap-font-weight-bold);
+  font-size: var(--ap-font-size-xl);
+  background-color: var(--ap-surface-raised);
+  border: 0;
+  cursor: pointer;
+  transition:
+    background-color var(--ap-duration-fast) var(--ap-easing-standard),
+    transform var(--ap-duration-fast) var(--ap-easing-standard);
+
+  @include ds.focus-ring;
+
+  &:hover {
+    background-color: var(--ap-surface-sunken);
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  .ap-interactive-map__zoom-controls &:not(:last-child) {
+    border-bottom: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  }
+}
+
+.ap-interactive-map__controls > .ap-interactive-map__control {
+  border: var(--ap-border-width-thin) solid rgb(195 198 216 / 70%);
+  border-radius: var(--ap-radius-lg);
+  box-shadow: var(--ap-shadow-md);
+}
+
+@include ds.respect-reduced-motion {
+  .ap-interactive-map__control {
+    transition: none;
+  }
+}
