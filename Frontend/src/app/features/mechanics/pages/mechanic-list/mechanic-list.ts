@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { of } from 'rxjs';
 
 import { ServiceCategoryRepository, emptyPage } from '@core';
-import { Button, Card, Icon, SearchBar, Spinner } from '@shared/ui';
+import { Button, Icon, SearchBar, Spinner } from '@shared/ui';
 import { Mechanic } from '../../models/mechanic.model';
 import { MechanicRepository } from '../../data/mechanic.repository';
 
@@ -40,7 +40,7 @@ function versChaine(valeur: string | undefined): string {
  */
 @Component({
   selector: 'app-mechanic-list',
-  imports: [RouterLink, Button, Card, Icon, SearchBar, Spinner],
+  imports: [RouterLink, Button, Icon, SearchBar, Spinner],
   templateUrl: './mechanic-list.html',
   styleUrl: './mechanic-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

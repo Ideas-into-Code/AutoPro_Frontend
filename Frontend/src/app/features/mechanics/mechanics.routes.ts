@@ -43,14 +43,9 @@ export const mechanicsRoutes: Routes = [
         title: 'Mécaniciens — AutoPro',
       },
       {
-        // Profil détaillé, à écrire. Déclaré dès maintenant pour que la liste
-        // n'envoie pas sur la page 404 : l'adresse est correcte, c'est l'écran
-        // qui manque. Annoncer « page introuvable » ferait croire à une erreur
-        // de l'utilisateur alors que le tort est de notre côté.
         path: ':id',
         loadComponent: () =>
-          import('@shared/pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
-        data: { fonctionnalite: 'Le profil détaillé du mécanicien' },
+          import('./pages/mechanic-profile/mechanic-profile').then((m) => m.MechanicProfilePage),
         title: 'Profil du mécanicien — AutoPro',
       },
     ],
