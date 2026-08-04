@@ -1,19 +1,37 @@
 <div class="ap-home">
-  <!--
-    Bande d'accroche pleine largeur : sur un grand écran, une colonne centrée
-    laissait deux larges bandes vides de part et d'autre. Le fond s'étend
-    jusqu'aux bords, seul le contenu reste borné pour rester lisible.
-  -->
+
+  <!-- ═══════════════════════════════════════
+       HERO — Salutation + SOS
+  ════════════════════════════════════════ -->
   <section class="ap-home__hero" aria-labelledby="ap-home-titre">
+    <!-- Blobs déco -->
+    <span class="ap-home__hero-blob ap-home__hero-blob--1" aria-hidden="true"></span>
+    <span class="ap-home__hero-blob ap-home__hero-blob--2" aria-hidden="true"></span>
+    <span class="ap-home__hero-blob ap-home__hero-blob--3" aria-hidden="true"></span>
+
     <div class="ap-home__hero-inner">
-      <div class="ap-home__hero-text">
-        <h1 class="ap-home__title" id="ap-home-titre">Un mécanicien de confiance, près de vous</h1>
+      <p class="ap-home__greeting-label">Bonjour 👋</p>
 
-        <p class="ap-home__subtitle">
-          Décrivez votre panne ou choisissez une catégorie : nous vous mettons en relation avec un
-          professionnel vérifié, où que vous soyez à Dakar.
-        </p>
+      <h1 class="ap-home__title" id="ap-home-titre">Trouvez un mécanicien<br/>de confiance</h1>
+      <p class="ap-home__subtitle">Professionnel vérifié, disponible près de vous à Dakar.</p>
 
+      <!-- SOS imposant sous le subtitle -->
+      <a
+        class="ap-home__sos-btn"
+        [routerLink]="ecranSignalement"
+        [queryParams]="{ urgence: 'true' }"
+        aria-label="Assistance d'urgence — Demander un dépannage immédiat"
+      >
+        <span class="ap-home__sos-pulse" aria-hidden="true"></span>
+        <span class="material-symbols-outlined ap-home__sos-icon" aria-hidden="true">emergency</span>
+        <span class="ap-home__sos-label">
+          <strong>SOS</strong> — Demander un dépannage
+        </span>
+        <span class="material-symbols-outlined ap-home__sos-arrow" aria-hidden="true">arrow_forward</span>
+      </a>
+
+      <!-- Barre de recherche -->
+      <div class="ap-home__search-wrap">
         <app-search-bar
           class="ap-home__search"
           label="Rechercher un mécanicien, une panne ou un quartier"
@@ -21,42 +39,28 @@
           (searchSubmit)="rechercher($event)"
         />
       </div>
+    </div>
 
-      <!--
-        À partir de la tablette, le bloc d'urgence occupe la colonne de droite
-        au lieu de s'empiler sous l'accroche : l'espace horizontal est utilisé
-        et le SOS reste visible sans défilement.
-      -->
-      <app-sos-button
-        class="ap-home__sos"
-        [link]="ecranSignalement"
-        [linkParams]="{ urgence: 'true' }"
-      />
+    <!-- Vague décorative bas du hero -->
+    <div class="ap-home__hero-wave" aria-hidden="true">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z" fill="var(--ap-surface-page,#faf8ff)"/>
+      </svg>
     </div>
   </section>
 
-  <section class="ap-home__categories" aria-labelledby="ap-home-categories-titre">
-    <div class="ap-home__categories-inner">
-      <header class="ap-home__section-header">
-        <h2 class="ap-home__section-title" id="ap-home-categories-titre">
-          Par type d'intervention
-        </h2>
-        <p class="ap-home__section-lead">
-          Choisissez la famille qui correspond à votre panne pour ne voir que les mécaniciens
-          compétents.
-        </p>
-      </header>
+  <!-- ═══════════════════════════════════════
+       SERVICES POPULAIRES
+  ════════════════════════════════════════ -->
+  <section class="ap-home__section" aria-labelledby="ap-home-services-titre">
+    <div class="ap-home__section-inner">
+      <h2 class="ap-home__section-title" id="ap-home-services-titre">Services populaires</h2>
 
       @if (categoriesResource.isLoading()) {
         <p class="ap-home__state">
           <app-spinner label="Chargement des catégories de service" />
         </p>
       } @else if (hasFailed()) {
-        <!--
-          Un échec de chargement n'est pas une impasse : on explique, et on
-          propose de réessayer. `role="alert"` fait annoncer le message
-          immédiatement, sans que l'utilisateur ait à le chercher.
-        -->
         <div class="ap-home__state ap-home__state--error" role="alert">
           <p>Les catégories n'ont pas pu être chargées. Vérifiez votre connexion.</p>
           <button appButton type="button" variant="secondary" size="sm" (click)="reessayer()">
@@ -64,20 +68,139 @@
           </button>
         </div>
       } @else {
-        <ul class="ap-home__grid">
+        <!-- Scroll horizontal de pills sur mobile, grille sur desktop -->
+        <ul class="ap-home__services-scroll" aria-label="Catégories de service">
           @for (categorie of categories(); track categorie.id) {
-            <li class="ap-home__grid-item">
-              <app-category-card
-                [category]="categorie"
-                [link]="ecranMecaniciens"
-                [linkParams]="{ categorie: categorie.slug }"
-              />
+            <li class="ap-home__service-item">
+              <a
+                class="ap-home__service-pill"
+                [routerLink]="ecranMecaniciens"
+                [queryParams]="{ categorie: categorie.slug }"
+                [class.ap-home__service-pill--emergency]="categorie.isEmergency"
+              >
+                <span class="ap-home__service-icon-wrap" aria-hidden="true">
+                  <app-icon [name]="categoryIcon(categorie.slug)" size="sm" />
+                </span>
+                <span class="ap-home__service-label">{{ categorie.label }}</span>
+              </a>
             </li>
           } @empty {
-            <li class="ap-home__state">Aucune catégorie n'est disponible pour le moment.</li>
+            <li class="ap-home__state">Aucune catégorie disponible.</li>
           }
         </ul>
       }
     </div>
   </section>
+
+  <!-- ═══════════════════════════════════════
+       MÉCANICIENS PROCHES — Scroll horizontal
+  ════════════════════════════════════════ -->
+  <section class="ap-home__section ap-home__section--alt" aria-labelledby="ap-home-mecaniciens-titre">
+    <div class="ap-home__section-inner">
+      <div class="ap-home__section-header">
+        <h2 class="ap-home__section-title" id="ap-home-mecaniciens-titre">Mécaniciens proches</h2>
+        <a class="ap-home__see-all" [routerLink]="ecranMecaniciens">
+          Voir tout
+          <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+        </a>
+      </div>
+
+      <div class="ap-home__mechanics-scroll" role="list" aria-label="Mécaniciens à proximité">
+        @for (mec of nearbyMechanics; track mec.id) {
+          <article class="ap-home__mechanic-card" role="listitem">
+            <a [routerLink]="['/mecaniciens', mec.id]" class="ap-home__mechanic-link" [attr.aria-label]="'Voir le profil de ' + mec.name">
+
+              <!-- Image -->
+              <div class="ap-home__mechanic-img-wrap">
+                <div class="ap-home__mechanic-img-placeholder" aria-hidden="true">
+                  {{ mec.name.slice(0, 1) }}
+                </div>
+                <!-- Rating badge -->
+                <div class="ap-home__mechanic-rating" aria-hidden="true">
+                  <span class="ap-home__mechanic-rating-star">★</span>
+                  <span>{{ mec.rating }}</span>
+                </div>
+              </div>
+
+              <!-- Infos -->
+              <div class="ap-home__mechanic-info">
+                <h3 class="ap-home__mechanic-name">{{ mec.name }}</h3>
+                <p class="ap-home__mechanic-meta">
+                  <span class="material-symbols-outlined" aria-hidden="true">location_on</span>
+                  {{ mec.distance }} · {{ mec.district }}
+                </p>
+                <div class="ap-home__mechanic-tags">
+                  @for (tag of mec.tags; track tag) {
+                    <span class="ap-home__mechanic-tag">{{ tag }}</span>
+                  }
+                </div>
+              </div>
+            </a>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       DEMANDES RÉCENTES + APERÇU CARTE
+  ════════════════════════════════════════ -->
+  <section class="ap-home__section" aria-label="Activité récente et carte">
+    <div class="ap-home__section-inner">
+      <div class="ap-home__bottom-grid">
+
+        <!-- Demandes récentes -->
+        <div>
+          <div class="ap-home__section-header">
+            <h2 class="ap-home__section-title">Mes demandes récentes</h2>
+            <a class="ap-home__see-all" routerLink="/demandes">
+              Voir tout
+              <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+            </a>
+          </div>
+
+          <ul class="ap-home__requests-list" aria-label="Demandes récentes">
+            @for (req of recentRequests; track req.id) {
+              <li>
+                <a class="ap-home__request-card" routerLink="/demandes" [attr.aria-label]="req.label + ', statut : ' + req.statusLabel">
+                  <span class="ap-home__request-icon-wrap" [attr.data-color]="req.color" aria-hidden="true">
+                    <span class="material-symbols-outlined">{{ req.icon }}</span>
+                  </span>
+                  <div class="ap-home__request-body">
+                    <strong class="ap-home__request-label">{{ req.label }}</strong>
+                    <span class="ap-home__request-date">{{ req.date }}</span>
+                  </div>
+                  <span
+                    class="ap-home__request-status"
+                    [class.ap-home__request-status--done]="req.status === 'done'"
+                    [class.ap-home__request-status--pending]="req.status === 'pending'"
+                  >
+                    {{ req.statusLabel }}
+                  </span>
+                </a>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <!-- Aperçu carte -->
+        <div>
+          <h2 class="ap-home__section-title" style="margin-bottom: var(--ap-space-4)">Services à proximité</h2>
+          <a class="ap-home__map-preview" routerLink="/carte" aria-label="Voir la carte des mécaniciens">
+            <div class="ap-home__map-bg" aria-hidden="true"></div>
+            <div class="ap-home__map-overlay" aria-hidden="true"></div>
+            <div class="ap-home__map-cta" aria-hidden="true">
+              <span class="material-symbols-outlined">near_me</span>
+            </div>
+            <div class="ap-home__map-caption">
+              <p class="ap-home__map-count">{{ nearbyMechanics.length }} mécaniciens à proximité</p>
+              <p class="ap-home__map-hint">Voir toutes les adresses sur la carte</p>
+            </div>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
 </div>
