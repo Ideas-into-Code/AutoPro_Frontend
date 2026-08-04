@@ -1,119 +1,682 @@
 @use 'index' as ds;
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ROOT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .ap-home {
   display: flex;
   flex-direction: column;
+  padding-block-end: var(--ap-space-20);
 }
 
-// --- Bande d'accroche --------------------------------------------------------
-
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   HERO — design clair premium
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .ap-home__hero {
-  // Le fond couvre toute la largeur de la fenêtre ; seul le contenu est borné.
-  background-color: var(--ap-color-primary-50);
-  border-bottom: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  position: relative;
+  overflow: hidden;
+  /* Fond blanc vers très léger bleu — net et aéré */
+  background: linear-gradient(160deg, #ffffff 0%, #f0f4ff 50%, #e8effe 100%);
+  border-bottom: 1px solid rgba(0, 76, 205, 0.08);
+}
+
+/* Blobs décoratifs légers */
+.ap-home__hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+
+  &--1 {
+    width: 32rem;
+    height: 32rem;
+    top: -12rem;
+    right: -8rem;
+    background: radial-gradient(circle, rgba(0, 76, 205, 0.07) 0%, transparent 70%);
+    filter: blur(40px);
+  }
+
+  &--2 {
+    width: 20rem;
+    height: 20rem;
+    bottom: -8rem;
+    left: -6rem;
+    background: radial-gradient(circle, rgba(0, 76, 205, 0.05) 0%, transparent 70%);
+    filter: blur(50px);
+  }
+
+  &--3 {
+    width: 10rem;
+    height: 10rem;
+    top: 2rem;
+    left: 40%;
+    background: radial-gradient(circle, rgba(99, 162, 255, 0.12) 0%, transparent 70%);
+    filter: blur(30px);
+  }
 }
 
 .ap-home__hero-inner {
   @include ds.container;
 
-  display: grid;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
   gap: var(--ap-space-6);
-  padding-block: var(--ap-space-8);
+  padding-block: var(--ap-space-12) var(--ap-space-16);
 
   @include ds.from(md) {
-    // Deux tiers pour l'accroche, un tiers pour l'urgence : l'œil va d'abord
-    // au titre, mais le SOS reste dans le premier écran.
-    grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
-    align-items: center;
-    padding-block: var(--ap-space-12);
-  }
-
-  @include ds.from(lg) {
-    gap: var(--ap-space-10);
-    padding-block: var(--ap-space-16);
+    padding-block: var(--ap-space-16) var(--ap-space-20);
   }
 }
 
-.ap-home__hero-text {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ap-space-4);
+.ap-home__greeting-label {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+  font-weight: var(--ap-font-weight-medium);
 }
 
 .ap-home__title {
   margin: 0;
-  font-size: var(--ap-font-size-2xl);
-  line-height: var(--ap-line-height-tight);
-
-  @include ds.from(md) {
-    font-size: var(--ap-font-size-3xl);
-  }
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  font-weight: 800;
+  /* Texte sombre avec accent bleu sur les mots clés via gradient clip */
+  background: linear-gradient(135deg, var(--ap-text-primary) 0%, #1a3a7a 60%, var(--ap-color-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
 }
 
 .ap-home__subtitle {
-  // Une ligne de texte au-delà de ~65 caractères devient pénible à suivre,
-  // même quand la place ne manque pas.
-  max-width: 52ch;
   margin: 0;
   color: var(--ap-text-secondary);
-  font-size: var(--ap-font-size-lg);
-  line-height: var(--ap-line-height-relaxed);
+  font-size: var(--ap-font-size-md);
+  max-width: 44ch;
 }
 
-.ap-home__search {
-  max-width: 42rem;
-  margin-top: var(--ap-space-2);
+/* ——— Bouton SOS imposant ——— */
+.ap-home__sos-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ap-space-3);
+  align-self: flex-start;
+  padding: var(--ap-space-4) var(--ap-space-6);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: #fff;
+  border-radius: var(--ap-radius-xl);
+  font-weight: var(--ap-font-weight-bold);
+  font-size: var(--ap-font-size-md);
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.5), 0 1px 0 rgba(255,255,255,0.1) inset;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+
+  /* Pleine largeur sur mobile */
+  width: 100%;
+  justify-content: center;
+
+  @include ds.from(sm) {
+    width: auto;
+    justify-content: flex-start;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(220, 38, 38, 0.6), 0 1px 0 rgba(255,255,255,0.1) inset;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @include ds.focus-ring;
 }
 
-// --- Catégories --------------------------------------------------------------
+/* Anneau pulsant */
+.ap-home__sos-pulse {
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 2px solid rgba(220, 38, 38, 0.5);
+  animation: sos-pulse 2s ease-out infinite;
+  pointer-events: none;
+}
 
-.ap-home__categories-inner {
-  @include ds.container;
+@keyframes sos-pulse {
+  0%   { transform: scale(1);   opacity: 0.8; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
 
-  padding-block: var(--ap-space-8) var(--ap-space-12);
+.ap-home__sos-icon {
+  font-size: 1.5rem;
+  font-variation-settings: 'FILL' 1;
+  flex-shrink: 0;
+}
 
-  @include ds.from(lg) {
-    padding-block: var(--ap-space-12) var(--ap-space-16);
+.ap-home__sos-label {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  text-align: left;
+
+  strong {
+    font-size: var(--ap-font-size-lg);
+    font-weight: 900;
+    letter-spacing: 0.02em;
+  }
+
+  span { /* sous-texte */
+    font-size: var(--ap-font-size-xs);
+    font-weight: var(--ap-font-weight-medium);
+    opacity: 0.85;
   }
 }
 
+.ap-home__sos-arrow {
+  margin-inline-start: auto;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+
+  .ap-home__sos-btn:hover & {
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 35.999em) {
+    display: none;
+  }
+}
+
+/* Vague bas du hero — non nécessaire sur fond clair, on garde juste une ombre douce */
+.ap-home__hero-wave {
+  display: none;
+}
+
+/* Search */
+.ap-home__search-wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 42rem;
+}
+
+.ap-home__search {
+  width: 100%;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SECTIONS COMMUNES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ap-home__section {
+  background: var(--ap-surface-page);
+  padding-block: var(--ap-space-8);
+
+  &--alt {
+    background: var(--ap-surface-sunken);
+  }
+}
+
+.ap-home__section-inner {
+  @include ds.container;
+}
+
 .ap-home__section-header {
-  margin-bottom: var(--ap-space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ap-space-5);
 }
 
 .ap-home__section-title {
-  margin: 0 0 var(--ap-space-2);
+  margin: 0;
   font-size: var(--ap-font-size-xl);
+  font-weight: 700;
+  color: var(--ap-text-primary);
+  letter-spacing: -0.01em;
 }
 
-.ap-home__section-lead {
-  max-width: 60ch;
+.ap-home__see-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1rem;
+  color: var(--ap-color-primary);
+  font-size: var(--ap-font-size-sm);
+  font-weight: var(--ap-font-weight-semibold);
+  text-decoration: none;
+  transition: gap 0.15s ease;
+
+  &:hover {
+    gap: var(--ap-space-1);
+    text-decoration: underline;
+  }
+
+  .material-symbols-outlined {
+    font-size: 1.1rem;
+  }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SERVICES POPULAIRES — Pills
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* Scroll horizontal sur mobile, wrapping sur desktop */
+.ap-home__services-scroll {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--ap-space-3);
+  overflow-x: auto;
+  padding-block-end: var(--ap-space-1);
+  margin-inline: calc(var(--ap-space-4) * -1);
+  padding-inline: var(--ap-space-4);
+  scrollbar-width: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &::-webkit-scrollbar { display: none; }
+
+  @include ds.from(md) {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}
+
+.ap-home__service-item {
+  flex: 0 0 auto;
+}
+
+.ap-home__service-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ap-space-2);
+  padding: var(--ap-space-2) var(--ap-space-4) var(--ap-space-2) var(--ap-space-3);
+  background: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-full);
+  text-decoration: none;
+  color: var(--ap-text-primary);
+  font-size: var(--ap-font-size-sm);
+  font-weight: var(--ap-font-weight-medium);
+  box-shadow: var(--ap-shadow-sm);
+  white-space: nowrap;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    border-color: var(--ap-color-primary);
+    background-color: var(--ap-color-primary-50);
+    box-shadow: var(--ap-shadow-md);
+    color: var(--ap-color-primary);
+  }
+
+  &--emergency {
+    border-color: rgba(220, 38, 38, 0.25);
+    background: #fff5f5;
+
+    .ap-home__service-icon-wrap {
+      color: #dc2626;
+      background: rgba(220, 38, 38, 0.08);
+    }
+
+    &:hover {
+      border-color: #dc2626;
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+  }
+
+  @include ds.focus-ring;
+}
+
+.ap-home__service-icon-wrap {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  background: var(--ap-color-primary-50);
+  border-radius: var(--ap-radius-lg);
+  color: var(--ap-color-primary);
+  flex-shrink: 0;
+  transition: background-color 0.15s ease;
+}
+
+.ap-home__service-label {
+  font-size: var(--ap-font-size-sm);
+  font-weight: var(--ap-font-weight-semibold);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   MÉCANICIENS PROCHES — scroll horizontal
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ap-home__mechanics-scroll {
+  display: flex;
+  gap: var(--ap-space-4);
+  overflow-x: auto;
+  padding-block-end: var(--ap-space-2);
+  margin-inline: calc(var(--ap-space-4) * -1);
+  padding-inline: var(--ap-space-4);
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+.ap-home__mechanic-card {
+  flex: 0 0 16rem;
+  background: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-xl);
+  box-shadow: var(--ap-shadow-sm);
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ap-shadow-md);
+    border-color: rgba(0, 76, 205, 0.25);
+  }
+}
+
+.ap-home__mechanic-link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+.ap-home__mechanic-img-wrap {
+  position: relative;
+  height: 8rem;
+  background: linear-gradient(135deg, var(--ap-color-primary-50) 0%, #dbeafe 100%);
+  overflow: hidden;
+}
+
+.ap-home__mechanic-img-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--ap-color-primary);
+  opacity: 0.4;
+}
+
+.ap-home__mechanic-rating {
+  position: absolute;
+  top: var(--ap-space-2);
+  right: var(--ap-space-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.2rem var(--ap-space-2);
+  background: rgba(255,255,255,0.93);
+  border-radius: var(--ap-radius-lg);
+  font-size: var(--ap-font-size-xs);
+  font-weight: 700;
+  backdrop-filter: blur(8px);
+  box-shadow: var(--ap-shadow-sm);
+}
+
+.ap-home__mechanic-rating-star {
+  color: #f59e0b;
+  font-size: 0.8rem;
+}
+
+.ap-home__mechanic-info {
+  padding: var(--ap-space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-1);
+  flex: 1;
+}
+
+.ap-home__mechanic-name {
+  margin: 0;
+  font-size: var(--ap-font-size-sm);
+  font-weight: 700;
+  color: var(--ap-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ap-home__mechanic-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
   margin: 0;
   color: var(--ap-text-secondary);
-  font-size: var(--ap-font-size-sm);
+  font-size: var(--ap-font-size-xs);
+
+  .material-symbols-outlined {
+    font-size: 0.85rem;
+    color: var(--ap-color-primary);
+    flex-shrink: 0;
+  }
 }
 
-.ap-home__grid {
+.ap-home__mechanic-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-1);
+  margin-top: var(--ap-space-1);
+}
+
+.ap-home__mechanic-tag {
+  padding: 0.1rem var(--ap-space-2);
+  background: var(--ap-color-primary-50);
+  color: var(--ap-color-primary);
+  border-radius: var(--ap-radius-full);
+  font-size: var(--ap-font-size-xs);
+  font-weight: var(--ap-font-weight-medium);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   GRILLE BASSE (demandes + carte)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ap-home__bottom-grid {
   display: grid;
-  // `auto-fill` plutôt qu'un nombre de colonnes par point de rupture : la
-  // grille se réorganise seule, y compris si une catégorie est ajoutée côté
-  // serveur, sans nouvelle media query. Les vignettes sont assez étroites
-  // pour qu'un grand écran en aligne quatre plutôt que trois.
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
-  gap: var(--ap-space-4);
+  gap: var(--ap-space-8);
+
+  @include ds.from(lg) {
+    grid-template-columns: 1.5fr 1fr;
+    align-items: start;
+    gap: var(--ap-space-10);
+  }
+}
+
+/* Demandes récentes */
+.ap-home__requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.ap-home__grid-item {
+.ap-home__request-card {
   display: flex;
+  align-items: center;
+  gap: var(--ap-space-3);
+  padding: var(--ap-space-4);
+  background: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-xl);
+  box-shadow: var(--ap-shadow-sm);
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    box-shadow: var(--ap-shadow-md);
+    border-color: rgba(0, 76, 205, 0.2);
+  }
 }
 
-app-category-card {
-  width: 100%;
+.ap-home__request-icon-wrap {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--ap-radius-lg);
+  background: var(--ap-color-primary-50);
+
+  &[data-color='warning'] {
+    background: #fef9c3;
+    color: #d97706;
+  }
+
+  .material-symbols-outlined {
+    font-size: 1.25rem;
+    color: var(--ap-color-primary);
+    font-variation-settings: 'FILL' 0;
+  }
 }
 
+.ap-home__request-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.ap-home__request-label {
+  font-size: var(--ap-font-size-sm);
+  font-weight: var(--ap-font-weight-semibold);
+  color: var(--ap-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ap-home__request-date {
+  font-size: var(--ap-font-size-xs);
+  color: var(--ap-text-secondary);
+}
+
+.ap-home__request-status {
+  flex-shrink: 0;
+  padding: var(--ap-space-1) var(--ap-space-3);
+  border-radius: var(--ap-radius-full);
+  font-size: var(--ap-font-size-xs);
+  font-weight: var(--ap-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--ap-surface-sunken);
+  color: var(--ap-text-muted);
+
+  &--pending {
+    background: var(--ap-color-primary-50);
+    color: var(--ap-color-primary);
+  }
+
+  &--done {
+    background: #dcfce7;
+    color: #15803d;
+  }
+}
+
+/* Aperçu carte */
+.ap-home__map-preview {
+  position: relative;
+  display: block;
+  height: 14rem;
+  border-radius: var(--ap-radius-xl);
+  overflow: hidden;
+  text-decoration: none;
+  box-shadow: var(--ap-shadow-md);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ap-shadow-lg);
+  }
+
+  @include ds.from(lg) {
+    height: 100%;
+    min-height: 14rem;
+  }
+}
+
+.ap-home__map-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, #e8f4f8 0%, #b3d9e8 30%, #7fc3d9 60%, #4da8c8 100%);
+
+  /* Grille façon carte routière */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px);
+    background-size: 2rem 2rem;
+    opacity: 0.5;
+  }
+}
+
+.ap-home__map-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 55%);
+}
+
+.ap-home__map-cta {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: var(--ap-color-primary);
+  color: #fff;
+  border-radius: var(--ap-radius-full);
+  box-shadow: 0 4px 16px rgba(0, 76, 205, 0.5);
+  transition: transform 0.2s ease;
+
+  .ap-home__map-preview:hover & {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  .material-symbols-outlined {
+    font-size: 1.5rem;
+  }
+}
+
+.ap-home__map-caption {
+  position: absolute;
+  bottom: var(--ap-space-4);
+  left: var(--ap-space-4);
+  color: #fff;
+}
+
+.ap-home__map-count {
+  margin: 0 0 0.2rem;
+  font-weight: 700;
+  font-size: var(--ap-font-size-md);
+}
+
+.ap-home__map-hint {
+  margin: 0;
+  font-size: var(--ap-font-size-xs);
+  opacity: 0.75;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ÉTATS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .ap-home__state {
   display: flex;
   flex-direction: column;
@@ -121,6 +684,8 @@ app-category-card {
   align-items: flex-start;
   margin: 0;
   color: var(--ap-text-secondary);
+
+  p { margin: 0; }
 }
 
 .ap-home__state--error {
@@ -128,4 +693,17 @@ app-category-card {
   color: var(--ap-color-danger);
   background-color: var(--ap-color-danger-surface);
   border-radius: var(--ap-radius-md);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   REDUCED MOTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@include ds.respect-reduced-motion {
+  .ap-home__sos-btn,
+  .ap-home__service-card,
+  .ap-home__mechanic-card,
+  .ap-home__map-preview,
+  .ap-home__request-card {
+    transition: none;
+  }
 }

@@ -1,34 +1,47 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { ServiceCategory, ServiceCategoryRepository, emptyPage } from '@core';
-import { Button, SearchBar, Spinner } from '@shared/ui';
-import { CategoryCard } from '../../components/category-card/category-card';
-import { SosButton } from '../../components/sos-button/sos-button';
+import { Button, Icon, IconName, SearchBar, Spinner } from '@shared/ui';
+import { MOCK_MECHANICS } from '@features/mechanics/data/mock-mechanics.data';
 
-/** Écran vers lequel mène une catégorie ou une recherche. */
 const ECRAN_MECANICIENS = '/mecaniciens';
-
-/** Écran de signalement d'un problème, ouvert par le bouton SOS. */
 const ECRAN_SIGNALEMENT = '/demandes/signaler';
 
-/**
- * Accueil de l'espace client : point d'entrée après la connexion.
- *
- * Trois portes d'entrée, par ordre d'urgence décroissante — le dépannage
- * immédiat, la recherche libre, puis le parcours par catégorie. C'est
- * l'inverse de l'ordre de lecture habituel, et c'est délibéré : un
- * automobiliste en panne sur la route de Rufisque n'a pas le loisir de
- * parcourir une grille.
- *
- * L'écran ne connaît que le contrat `ServiceCategoryRepository`. Il ignore si
- * les catégories viennent de données simulées ou du microservice, et n'aura
- * pas à changer le jour de la bascule.
- */
+/** Icônes Material Symbols pour chaque slug de catégorie. */
+const CATEGORY_ICONS: Record<string, string> = {
+  batterie: 'battery_charging_full',
+  pneu: 'tire_repair',
+  'panne-moteur': 'build',
+  freinage: 'emergency_brake',
+  remorquage: 'local_shipping',
+  climatisation: 'ac_unit',
+  electricite: 'electrical_services',
+};
+
+interface NearbyMechanic {
+  id: string;
+  name: string;
+  district: string;
+  distance: string;
+  rating: number;
+  tags: string[];
+}
+
+interface RecentRequest {
+  id: string;
+  label: string;
+  date: string;
+  icon: string;
+  color: 'primary' | 'warning';
+  status: 'pending' | 'done';
+  statusLabel: string;
+}
+
 @Component({
   selector: 'app-home',
-  imports: [Button, SearchBar, Spinner, CategoryCard, SosButton],
+  imports: [RouterLink, Button, Icon, SearchBar, Spinner],
   templateUrl: './home.html',
   styleUrl: './home.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,26 +53,59 @@ export class HomePage {
   protected readonly ecranMecaniciens = ECRAN_MECANICIENS;
   protected readonly ecranSignalement = ECRAN_SIGNALEMENT;
 
-  /**
-   * `rxResource` porte à lui seul les trois états d'un chargement — en cours,
-   * abouti, en échec — là où un `toSignal` obligerait à les reconstituer à la
-   * main. Il expose aussi `reload()`, ce qui permet de proposer une nouvelle
-   * tentative plutôt que de laisser l'utilisateur devant un écran mort.
-   */
   protected readonly categoriesResource = rxResource({
     stream: () => this.repository.findAll(),
     defaultValue: emptyPage<ServiceCategory>(),
   });
 
   protected readonly categories = computed(() => this.categoriesResource.value().items);
-
   protected readonly hasFailed = computed(() => this.categoriesResource.error() !== undefined);
 
-  /**
-   * La recherche n'interroge pas de dépôt ici : elle délègue à l'écran des
-   * mécaniciens, qui sait filtrer et afficher des résultats. L'accueil n'aurait
-   * rien à faire d'une liste de résultats qu'il ne sait pas présenter.
-   */
+  /** 3 premiers mécaniciens du mock comme "proches" */
+  protected readonly nearbyMechanics: NearbyMechanic[] = MOCK_MECHANICS.slice(0, 3).map((m) => ({
+    id: m.id,
+    name: m.fullName,
+    district: m.address.split(',')[0],
+    distance: `${((m.location.latitude - 14.6937) ** 2 + (m.location.longitude + 17.4441) ** 2) ** 0.5 < 0.05 ? '0.8' : '2.4'} km`,
+    rating: m.rating,
+    tags: m.specialties.slice(0, 2),
+  }));
+
+  /** Demandes fictives récentes */
+  protected readonly recentRequests: RecentRequest[] = [
+    {
+      id: 'req-1',
+      label: 'Inspection complète',
+      date: 'Prévu le 24 oct. à 10h00',
+      icon: 'build',
+      color: 'primary',
+      status: 'pending',
+      statusLabel: 'Confirmé',
+    },
+    {
+      id: 'req-2',
+      label: 'Vidange moteur',
+      date: 'Terminé le 12 oct.',
+      icon: 'oil_barrel',
+      color: 'warning',
+      status: 'done',
+      statusLabel: 'Terminé',
+    },
+  ];
+
+  protected categoryIcon(slug: string): IconName {
+    const map: Record<string, IconName> = {
+      batterie: 'batterie',
+      pneu: 'pneu',
+      'panne-moteur': 'cle',
+      freinage: 'freinage',
+      remorquage: 'remorquage',
+      climatisation: 'climatisation',
+      electricite: 'electricite',
+    };
+    return map[slug] ?? 'cle';
+  }
+
   protected rechercher(terme: string): void {
     void this.router.navigate([ECRAN_MECANICIENS], {
       queryParams: terme === '' ? {} : { recherche: terme },

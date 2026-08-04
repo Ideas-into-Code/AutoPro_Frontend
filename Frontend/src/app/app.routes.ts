@@ -29,7 +29,7 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'accueil',
+    redirectTo: 'bienvenue',
   },
 
   // --- Parcours d'entrée, hors coquille -------------------------------------
