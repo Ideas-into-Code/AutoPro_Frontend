@@ -1,0 +1,46 @@
+@use 'index' as ds;
+
+:host {
+  display: block;
+  margin-top: auto;
+  background-color: var(--ap-surface-raised);
+  border-top: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+}
+
+.ap-footer__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
+  padding-block: var(--ap-space-6);
+
+  @include ds.container;
+
+  @include ds.from(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.ap-footer__copyright {
+  color: var(--ap-text-muted);
+}
+
+.ap-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-4);
+
+  &:empty {
+    display: none;
+  }
+}
+
+:host ::ng-deep [link] {
+  font-size: var(--ap-font-size-sm);
+  color: var(--ap-text-secondary);
+
+  &:hover {
+    color: var(--ap-color-primary);
+  }
+}

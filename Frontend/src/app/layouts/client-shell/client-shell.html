@@ -1,0 +1,50 @@
+<app-page-shell>
+  <app-header header brand="AutoPro">
+    <!--
+      `routerLinkActive` marque la page courante. `ariaCurrentWhenActive` pose
+      `aria-current="page"` : sans lui, un lecteur d'écran ne distinguerait pas
+      le lien actif des autres, la couleur seule ne lui parvenant pas.
+    -->
+    <a
+      nav
+      routerLink="/accueil"
+      routerLinkActive="ap-client-shell__link--active"
+      ariaCurrentWhenActive="page"
+    >
+      Accueil
+    </a>
+    <a
+      nav
+      routerLink="/mecaniciens"
+      routerLinkActive="ap-client-shell__link--active"
+      ariaCurrentWhenActive="page"
+    >
+      Mécaniciens
+    </a>
+    <a
+      nav
+      routerLink="/carte"
+      routerLinkActive="ap-client-shell__link--active"
+      ariaCurrentWhenActive="page"
+    >
+      Carte
+    </a>
+    <a
+      nav
+      routerLink="/demandes"
+      routerLinkActive="ap-client-shell__link--active"
+      ariaCurrentWhenActive="page"
+    >
+      Mes demandes
+    </a>
+
+    <a actions appButton variant="ghost" size="sm" routerLink="/compte/connexion">Se connecter</a>
+  </app-header>
+
+  <router-outlet />
+
+  <app-footer footer>
+    <a link routerLink="/accueil">Accueil</a>
+    <a link routerLink="/demandes/signaler">Signaler un problème</a>
+  </app-footer>
+</app-page-shell>

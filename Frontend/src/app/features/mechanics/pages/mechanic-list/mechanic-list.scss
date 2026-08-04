@@ -1,0 +1,317 @@
+@use 'index' as ds;
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ROOT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ap-ml {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BANNER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ap-ml__banner {
+  background-color: var(--ap-surface-sunken);
+  border-bottom: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+}
+
+.ap-ml__intro {
+  @include ds.container;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-4);
+  align-items: flex-start;
+  padding-block: var(--ap-space-8);
+
+  @include ds.from(lg) {
+    padding-block: var(--ap-space-10);
+  }
+}
+
+.ap-ml__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ap-space-2);
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+  text-decoration: none;
+  border-radius: var(--ap-radius-sm);
+  transition: color 0.15s ease;
+
+  @include ds.focus-ring;
+
+  &:hover {
+    color: var(--ap-color-primary);
+    text-decoration: none;
+  }
+}
+
+.ap-ml__back-icon {
+  transform: rotate(180deg);
+}
+
+.ap-ml__title {
+  margin: 0;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 800;
+  line-height: var(--ap-line-height-tight);
+  letter-spacing: -0.02em;
+  color: var(--ap-text-primary);
+}
+
+.ap-ml__search {
+  width: 100%;
+  max-width: 34rem;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   CORPS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ap-ml__body {
+  @include ds.container;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-5);
+  padding-block: var(--ap-space-7) var(--ap-space-16);
+}
+
+.ap-ml__count {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+
+  strong {
+    color: var(--ap-color-primary);
+  }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   GRILLE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ap-ml__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: var(--ap-space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ap-ml__item {
+  display: flex;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   CARTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ap-ml__card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-xl);
+  box-shadow: var(--ap-shadow-sm);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--ap-shadow-lg);
+    border-color: var(--ap-color-primary);
+  }
+}
+
+/* En-tête carte */
+.ap-ml__card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ap-space-3);
+  padding: var(--ap-space-4) var(--ap-space-4) 0;
+}
+
+/* Avatar */
+.ap-ml__avatar {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: linear-gradient(135deg, var(--ap-color-primary-50), var(--ap-color-primary-100, #dbeafe));
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-lg);
+  color: var(--ap-color-primary);
+  font-weight: 800;
+  font-size: 1.3rem;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+/* Méta (vérifié + statut) */
+.ap-ml__card-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--ap-space-1);
+}
+
+.ap-ml__verified {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ap-space-1);
+  padding: var(--ap-space-1) var(--ap-space-2);
+  color: var(--ap-color-success, #059669);
+  font-weight: var(--ap-font-weight-bold);
+  font-size: var(--ap-font-size-xs);
+  background-color: var(--ap-color-success-surface, #d1fae5);
+  border-radius: var(--ap-radius-full);
+}
+
+.ap-ml__status {
+  padding: var(--ap-space-1) var(--ap-space-2);
+  border-radius: var(--ap-radius-full);
+  font-size: var(--ap-font-size-xs);
+  font-weight: var(--ap-font-weight-medium);
+  color: var(--ap-text-muted);
+  background-color: var(--ap-surface-sunken);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+
+  &--open {
+    color: var(--ap-color-primary);
+    background-color: var(--ap-color-primary-50);
+    border-color: transparent;
+  }
+}
+
+/* Corps carte */
+.ap-ml__card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-2);
+  flex: 1;
+  padding: var(--ap-space-4);
+}
+
+.ap-ml__name {
+  margin: 0;
+  font-size: var(--ap-font-size-lg);
+  font-weight: 700;
+  color: var(--ap-text-primary);
+  line-height: var(--ap-line-height-tight);
+}
+
+.ap-ml__workshop,
+.ap-ml__address {
+  display: flex;
+  align-items: center;
+  gap: var(--ap-space-2);
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+
+  app-icon {
+    color: var(--ap-color-primary);
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+}
+
+.ap-ml__workshop {
+  font-weight: var(--ap-font-weight-medium);
+}
+
+/* Rating */
+.ap-ml__rating {
+  display: flex;
+  align-items: center;
+  gap: var(--ap-space-1);
+  margin: 0;
+  font-size: var(--ap-font-size-sm);
+}
+
+.ap-ml__stars {
+  display: inline-flex;
+  gap: 0.05rem;
+  color: var(--ap-color-warning);
+}
+
+.ap-ml__star--muted {
+  color: var(--ap-border-strong);
+  opacity: 0.35;
+}
+
+.ap-ml__review-count {
+  color: var(--ap-text-muted);
+  font-size: var(--ap-font-size-xs);
+}
+
+/* Spécialités */
+.ap-ml__specialties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-1);
+  margin: var(--ap-space-1) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ap-ml__chip {
+  padding: var(--ap-space-1) var(--ap-space-3);
+  background-color: var(--ap-color-primary-50);
+  border-radius: var(--ap-radius-full);
+  font-size: var(--ap-font-size-xs);
+  font-weight: var(--ap-font-weight-medium);
+  color: var(--ap-color-primary);
+
+  &--more {
+    background-color: var(--ap-surface-sunken);
+    color: var(--ap-text-muted);
+  }
+}
+
+/* Pied de carte */
+.ap-ml__card-footer {
+  padding: 0 var(--ap-space-4) var(--ap-space-4);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ÉTATS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ap-ml__state {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
+  align-items: flex-start;
+  margin: 0;
+  color: var(--ap-text-secondary);
+
+  p {
+    margin: 0;
+  }
+}
+
+.ap-ml__state--error {
+  padding: var(--ap-space-4);
+  color: var(--ap-color-danger);
+  background-color: var(--ap-color-danger-surface);
+  border-radius: var(--ap-radius-md);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   REDUCED MOTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@include ds.respect-reduced-motion {
+  .ap-ml__card {
+    transition: none;
+  }
+}

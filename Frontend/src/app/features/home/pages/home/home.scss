@@ -1,0 +1,131 @@
+@use 'index' as ds;
+
+.ap-home {
+  display: flex;
+  flex-direction: column;
+}
+
+// --- Bande d'accroche --------------------------------------------------------
+
+.ap-home__hero {
+  // Le fond couvre toute la largeur de la fenêtre ; seul le contenu est borné.
+  background-color: var(--ap-color-primary-50);
+  border-bottom: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+}
+
+.ap-home__hero-inner {
+  @include ds.container;
+
+  display: grid;
+  gap: var(--ap-space-6);
+  padding-block: var(--ap-space-8);
+
+  @include ds.from(md) {
+    // Deux tiers pour l'accroche, un tiers pour l'urgence : l'œil va d'abord
+    // au titre, mais le SOS reste dans le premier écran.
+    grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
+    align-items: center;
+    padding-block: var(--ap-space-12);
+  }
+
+  @include ds.from(lg) {
+    gap: var(--ap-space-10);
+    padding-block: var(--ap-space-16);
+  }
+}
+
+.ap-home__hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-4);
+}
+
+.ap-home__title {
+  margin: 0;
+  font-size: var(--ap-font-size-2xl);
+  line-height: var(--ap-line-height-tight);
+
+  @include ds.from(md) {
+    font-size: var(--ap-font-size-3xl);
+  }
+}
+
+.ap-home__subtitle {
+  // Une ligne de texte au-delà de ~65 caractères devient pénible à suivre,
+  // même quand la place ne manque pas.
+  max-width: 52ch;
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-lg);
+  line-height: var(--ap-line-height-relaxed);
+}
+
+.ap-home__search {
+  max-width: 42rem;
+  margin-top: var(--ap-space-2);
+}
+
+// --- Catégories --------------------------------------------------------------
+
+.ap-home__categories-inner {
+  @include ds.container;
+
+  padding-block: var(--ap-space-8) var(--ap-space-12);
+
+  @include ds.from(lg) {
+    padding-block: var(--ap-space-12) var(--ap-space-16);
+  }
+}
+
+.ap-home__section-header {
+  margin-bottom: var(--ap-space-6);
+}
+
+.ap-home__section-title {
+  margin: 0 0 var(--ap-space-2);
+  font-size: var(--ap-font-size-xl);
+}
+
+.ap-home__section-lead {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+}
+
+.ap-home__grid {
+  display: grid;
+  // `auto-fill` plutôt qu'un nombre de colonnes par point de rupture : la
+  // grille se réorganise seule, y compris si une catégorie est ajoutée côté
+  // serveur, sans nouvelle media query. Les vignettes sont assez étroites
+  // pour qu'un grand écran en aligne quatre plutôt que trois.
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: var(--ap-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ap-home__grid-item {
+  display: flex;
+}
+
+app-category-card {
+  width: 100%;
+}
+
+.ap-home__state {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
+  align-items: flex-start;
+  margin: 0;
+  color: var(--ap-text-secondary);
+}
+
+.ap-home__state--error {
+  padding: var(--ap-space-4);
+  color: var(--ap-color-danger);
+  background-color: var(--ap-color-danger-surface);
+  border-radius: var(--ap-radius-md);
+}

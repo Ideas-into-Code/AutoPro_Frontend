@@ -1,0 +1,57 @@
+<app-form-field
+  label="Où se trouve le véhicule ?"
+  type="text"
+  autocomplete="street-address"
+  placeholder="Quartier, rue, point de repère…"
+  hint="Un point de repère (station, carrefour, boutique) aide plus qu'un numéro de rue."
+  [control]="addressControl()"
+  required
+/>
+
+<div class="ap-location-picker__gps">
+  <button
+    appButton
+    type="button"
+    variant="secondary"
+    size="sm"
+    [loading]="enCours()"
+    (click)="localiser()"
+  >
+    <app-icon name="position" size="sm" />
+    {{ position() === null ? 'Utiliser ma position actuelle' : 'Actualiser ma position' }}
+  </button>
+
+  @if (enCours()) {
+    <app-spinner size="sm" label="Relevé de votre position en cours" />
+  }
+</div>
+
+@if (position(); as relevee) {
+  <p class="ap-location-picker__found">
+    <app-icon name="position" size="sm" />
+    <span>
+      Position enregistrée : {{ formater(relevee.latitude) }},
+      {{ formater(relevee.longitude) }}
+      <span class="ap-location-picker__accuracy">
+        (précision d'environ {{ arrondir(relevee.accuracyMeters) }} m)
+      </span>
+    </span>
+    <button type="button" class="ap-location-picker__forget" (click)="oublier()">Retirer</button>
+  </p>
+}
+
+<!--
+  Le refus du GPS n'est pas une erreur bloquante : le message explique et
+  renvoie vers la saisie manuelle, il n'interdit pas d'envoyer la demande.
+-->
+@if (erreur(); as message) {
+  <p class="ap-location-picker__error" role="status">{{ message }}</p>
+}
+
+<!--
+  Emplacement laissé libre pour la carte interactive (#7). Tant qu'elle
+  n'existe pas, rien ne s'affiche ici et le formulaire fonctionne sans elle.
+-->
+<div class="ap-location-picker__map">
+  <ng-content select="[map]" />
+</div>

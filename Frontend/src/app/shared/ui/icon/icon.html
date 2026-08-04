@@ -1,0 +1,99 @@
+<!--
+  Un seul <svg> enveloppe tous les tracés : la grille (24×24), l'épaisseur de
+  trait et les jointures sont donc décrites une fois, et chaque cas ne contient
+  que la géométrie propre au pictogramme.
+
+  `stroke="currentColor"` fait hériter la couleur du texte environnant : une
+  icône posée dans un bouton primaire se colore seule, sans variante de style.
+-->
+<svg
+  class="ap-icon__glyph"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.8"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  [attr.role]="isDecorative() ? null : 'img'"
+  [attr.aria-hidden]="isDecorative() ? 'true' : null"
+  [attr.aria-label]="isDecorative() ? null : label()"
+>
+  @switch (name()) {
+    @case ('recherche') {
+      <circle cx="11" cy="11" r="7" />
+      <line x1="16.3" y1="16.3" x2="21" y2="21" />
+    }
+
+    @case ('sos') {
+      <path d="M12 3.8 21.2 19.4H2.8Z" />
+      <line x1="12" y1="9.8" x2="12" y2="14" />
+      <line x1="12" y1="16.8" x2="12" y2="16.9" />
+    }
+
+    @case ('batterie') {
+      <rect x="2.8" y="7.6" width="16.4" height="9.8" rx="2" />
+      <line x1="21.2" y1="10.8" x2="21.2" y2="14.2" />
+      <line x1="7.2" y1="12.5" x2="10.8" y2="12.5" />
+      <line x1="9" y1="10.7" x2="9" y2="14.3" />
+      <line x1="13.6" y1="12.5" x2="17.2" y2="12.5" />
+    }
+
+    @case ('pneu') {
+      <circle cx="12" cy="12" r="8.8" />
+      <circle cx="12" cy="12" r="3.4" />
+      <line x1="12" y1="3.2" x2="12" y2="8.6" />
+      <line x1="12" y1="15.4" x2="12" y2="20.8" />
+      <line x1="3.2" y1="12" x2="8.6" y2="12" />
+      <line x1="15.4" y1="12" x2="20.8" y2="12" />
+    }
+
+    @case ('freinage') {
+      <circle cx="12" cy="12" r="8.8" />
+      <circle cx="12" cy="12" r="2.6" />
+      <circle cx="12" cy="6.4" r="0.1" />
+      <circle cx="16.8" cy="14.4" r="0.1" />
+      <circle cx="7.2" cy="14.4" r="0.1" />
+    }
+
+    @case ('remorquage') {
+      <path d="M2.8 16.4V7.2h8.6v9.2" />
+      <path d="M11.4 10.8h3.8l3.4 3.4v2.2" />
+      <circle cx="7" cy="17.6" r="1.9" />
+      <circle cx="16.6" cy="17.6" r="1.9" />
+      <line x1="15.4" y1="7.2" x2="21.2" y2="4.4" />
+    }
+
+    @case ('climatisation') {
+      <line x1="12" y1="3.2" x2="12" y2="20.8" />
+      <line x1="4.4" y1="7.6" x2="19.6" y2="16.4" />
+      <line x1="4.4" y1="16.4" x2="19.6" y2="7.6" />
+      <path d="M9.6 5.6 12 8l2.4-2.4" />
+      <path d="M9.6 18.4 12 16l2.4 2.4" />
+    }
+
+    @case ('electricite') {
+      <path d="M13.4 2.8 5.6 13.2h5.2l-1 8 8.6-10.8h-5.4Z" />
+    }
+
+    @case ('cle') {
+      <path
+        d="M15.2 6.2a4.2 4.2 0 0 0-5.7 5.7L3.6 17.8v2.6h2.6l5.9-5.9a4.2 4.2 0 0 0 5.7-5.7l-2.6 2.6-2.6-2.6Z"
+      />
+    }
+
+    @case ('position') {
+      <path d="M12 21.2s7.2-6.5 7.2-11.4a7.2 7.2 0 1 0-14.4 0C4.8 14.7 12 21.2 12 21.2Z" />
+      <circle cx="12" cy="9.8" r="2.6" />
+    }
+
+    @case ('fleche-droite') {
+      <line x1="3.6" y1="12" x2="19.4" y2="12" />
+      <polyline points="13.4 6 19.4 12 13.4 18" />
+    }
+
+    @case ('croix') {
+      <line x1="6" y1="6" x2="18" y2="18" />
+      <line x1="18" y1="6" x2="6" y2="18" />
+    }
+  }
+</svg>

@@ -1,0 +1,107 @@
+<div class="ap-splash">
+  <!-- Halo lumineux d'ambiance en arrière-plan -->
+  <div class="ap-splash__blob ap-splash__blob--top" aria-hidden="true"></div>
+  <div class="ap-splash__blob ap-splash__blob--bottom" aria-hidden="true"></div>
+
+  <main class="ap-splash__container">
+    <!-- Header / Logo & Accroche -->
+    <header class="ap-splash__header">
+      <div class="ap-splash__brand">
+        <div class="ap-splash__brand-icon-box">
+          <span class="material-symbols-outlined ap-splash__brand-icon" aria-hidden="true">
+            directions_car
+          </span>
+        </div>
+        <h1 class="ap-splash__brand-name">
+          Auto<span class="ap-splash__brand-accent">Pro</span>
+        </h1>
+      </div>
+      <p class="ap-splash__tagline">L'entretien automobile réinventé</p>
+    </header>
+
+    <!-- Section Visuelle / Illustration Bento avec Badges Flottants -->
+    <section class="ap-splash__visual-section">
+      <div class="ap-splash__bento-frame">
+        <!-- Overlay effet de verre -->
+        <div class="ap-splash__glass-backdrop" aria-hidden="true"></div>
+
+        <!-- Illustration principale avec animation flottante -->
+        <div class="ap-splash__illustration-card ap-float">
+          <div
+            class="ap-splash__image"
+            style="background-image: url('images/splash_visual.png');"
+            role="img"
+            aria-label="Illustration technicien qualifié AutoPro"
+          ></div>
+        </div>
+
+        <!-- Badge Flottant 1 (Haut Droite) — Service Rapide -->
+        <div class="ap-splash__badge ap-splash__badge--top-right">
+          <div class="ap-splash__badge-icon-box ap-splash__badge-icon-box--tertiary">
+            <span class="material-symbols-outlined" aria-hidden="true">bolt</span>
+          </div>
+          <div class="ap-splash__badge-text-box">
+            <span class="ap-splash__badge-title">Service Rapide</span>
+            <span class="ap-splash__badge-sub">Suivi en temps réel</span>
+          </div>
+        </div>
+
+        <!-- Badge Flottant 2 (Bas Gauche) — Pros de Confiance -->
+        <div class="ap-splash__badge ap-splash__badge--bottom-left">
+          <div class="ap-splash__badge-icon-box ap-splash__badge-icon-box--secondary">
+            <span class="material-symbols-outlined" aria-hidden="true">verified_user</span>
+          </div>
+          <div class="ap-splash__badge-text-box">
+            <span class="ap-splash__badge-title">Pros de Confiance</span>
+            <span class="ap-splash__badge-sub">Mécaniciens certifiés</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer / Progression & Action -->
+    <footer class="ap-splash__footer">
+      <div class="ap-splash__footer-content">
+        @if (!isComplete()) {
+          <!-- Barre de chargement d'initialisation -->
+          <div
+            class="ap-splash__loading-box"
+            (click)="onContinue()"
+            role="button"
+            tabindex="0"
+            aria-label="Passer l'initialisation"
+          >
+            <div class="ap-splash__loading-header">
+              <span class="ap-splash__loading-label">Initialisation</span>
+              <span class="ap-splash__loading-percent">{{ progress() }}%</span>
+            </div>
+            <div class="ap-splash__loading-track">
+              <div
+                class="ap-splash__loading-fill"
+                [style.width.%]="progress()"
+              ></div>
+            </div>
+          </div>
+        } @else {
+          <!-- Bouton Continuer -->
+          <button
+            type="button"
+            class="ap-splash__continue-btn ap-fade-in"
+            (click)="onContinue()"
+          >
+            <span>Continuer</span>
+            <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+          </button>
+        }
+      </div>
+
+      <!-- Localisation -->
+      <div class="ap-splash__location">
+        <span class="material-symbols-outlined ap-splash__location-icon" aria-hidden="true">
+          location_on
+        </span>
+        <span class="ap-splash__location-text">Dakar, Sénégal</span>
+      </div>
+    </footer>
+  </main>
+</div>

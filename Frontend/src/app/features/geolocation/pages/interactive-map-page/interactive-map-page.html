@@ -1,0 +1,210 @@
+<section class="ap-map-page" aria-label="Carte des mécaniciens à Dakar">
+
+  <!-- ─── Carte plein écran ─── -->
+  <app-interactive-map
+    [markers]="mapMarkers()"
+    [userLocation]="userLocation()"
+    [selectedMarkerId]="selectedMechanicId()"
+    (markerSelect)="onMarkerSelect($event)"
+  />
+
+  <!-- ─── Top Bar flottante ─── -->
+  <div class="ap-map-page__topbar">
+
+    <!-- Barre de recherche -->
+    <form class="ap-map-page__search-bar" role="search" (submit)="$event.preventDefault()">
+      <div class="ap-map-page__search-icon-wrap" aria-hidden="true">
+        <span class="material-symbols-outlined">search</span>
+      </div>
+      <input
+        class="ap-map-page__search-input"
+        id="map-search"
+        aria-label="Rechercher un mécanicien"
+        placeholder="Mécanicien, spécialité, quartier…"
+        type="search"
+        autocomplete="off"
+        [value]="searchQuery()"
+        (input)="onSearch($event)"
+      />
+      <button
+        type="button"
+        class="ap-map-page__filter-btn"
+        aria-label="Ouvrir les filtres et la liste"
+        (click)="toggleBottomSheet()"
+      >
+        <span class="material-symbols-outlined">tune</span>
+        <span>Filtres</span>
+      </button>
+    </form>
+
+    <!-- Chips de filtres -->
+    <div class="ap-map-page__chips-row" role="group" aria-label="Filtres rapides">
+      @for (chip of filterChips; track chip.id) {
+        <button
+          type="button"
+          class="ap-map-page__chip"
+          [class.ap-map-page__chip--active]="activeFilter() === chip.id"
+          (click)="toggleFilter(chip.id)"
+        >
+          <span class="material-symbols-outlined ap-map-page__chip-icon">{{ chip.icon }}</span>
+          {{ chip.label }}
+          @if (activeFilter() === chip.id) {
+            <span class="material-symbols-outlined ap-map-page__chip-close">close</span>
+          }
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- ─── Bouton GPS flottant ─── -->
+  <button
+    type="button"
+    class="ap-map-page__gps-btn"
+    aria-label="Centrer sur ma position"
+    (click)="refreshLocation()"
+    [class.ap-map-page__gps-btn--loading]="locationStatus() === 'loading'"
+  >
+    <span class="material-symbols-outlined">my_location</span>
+  </button>
+
+  <!-- ─── Bottom Sheet ─── -->
+  <aside
+    class="ap-map-page__sheet"
+    [class.ap-map-page__sheet--open]="isBottomSheetOpen()"
+    aria-label="Liste des mécaniciens"
+  >
+    <!-- Handle -->
+    <button
+      type="button"
+      class="ap-map-page__handle"
+      [attr.aria-expanded]="isBottomSheetOpen()"
+      (click)="toggleBottomSheet()"
+    >
+      <span class="ap-map-page__handle-grip" aria-hidden="true"></span>
+      <span class="ap-map-page__handle-label">
+        {{ isBottomSheetOpen() ? 'Masquer la liste' : 'Afficher la liste' }}
+      </span>
+    </button>
+
+    <!-- Contenu scrollable -->
+    <div class="ap-map-page__sheet-body">
+
+      <!-- En-tête sheet -->
+      <header class="ap-map-page__sheet-header">
+        <div class="ap-map-page__sheet-title-block">
+          <h1 class="ap-map-page__sheet-title">Mécaniciens à Dakar</h1>
+          <p class="ap-map-page__sheet-count" aria-live="polite">
+            <span class="ap-map-page__sheet-count-num">{{ filteredMechanics().length }}</span>
+            résultat{{ filteredMechanics().length > 1 ? 's' : '' }}
+          </p>
+        </div>
+
+        <div
+          class="ap-map-page__location-badge"
+          [class.ap-map-page__location-badge--active]="locationStatus() === 'ready'"
+        >
+          <span class="material-symbols-outlined">location_on</span>
+          @switch (locationStatus()) {
+            @case ('ready') { Position active }
+            @case ('loading') { Recherche GPS… }
+            @case ('failed') { Dakar par défaut }
+            @default { Dakar }
+          }
+        </div>
+      </header>
+
+      <!-- Liste des cartes -->
+      <div class="ap-map-page__list" role="list">
+        @for (mec of filteredMechanics(); track mec.id) {
+          <article
+            class="ap-map-page__card"
+            [class.ap-map-page__card--selected]="selectedMechanicId() === mec.id"
+            role="listitem"
+          >
+            <!-- Thumbnail / Avatar -->
+            <button
+              type="button"
+              class="ap-map-page__card-thumb"
+              (click)="onMechanicSelect(mec)"
+              [attr.aria-label]="'Sélectionner ' + (mec.workshopName || mec.fullName)"
+            >
+              @if (mec.avatarUrl) {
+                <img [src]="mec.avatarUrl" [alt]="mec.workshopName || mec.fullName" />
+              } @else {
+                <span class="ap-map-page__card-thumb-initial" aria-hidden="true">
+                  {{ (mec.workshopName || mec.fullName).slice(0, 1) }}
+                </span>
+              }
+
+              <!-- Indicateur disponible -->
+              <span
+                class="ap-map-page__avail-dot"
+                [class.ap-map-page__avail-dot--on]="mec.isAvailable"
+                [attr.aria-label]="mec.isAvailable ? 'Disponible' : 'Indisponible'"
+              ></span>
+            </button>
+
+            <!-- Corps de la carte -->
+            <div class="ap-map-page__card-body">
+              <!-- Ligne titre + badge -->
+              <div class="ap-map-page__card-topline">
+                <a
+                  class="ap-map-page__card-name"
+                  [routerLink]="['/mecaniciens', mec.profileId]"
+                >{{ mec.workshopName || mec.fullName }}</a>
+                @if (mec.badgeLabel) {
+                  <span class="ap-map-page__badge">{{ mec.badgeLabel }}</span>
+                }
+              </div>
+
+              <!-- Rating + spécialités -->
+              <button
+                type="button"
+                class="ap-map-page__card-info"
+                (click)="onMechanicSelect(mec)"
+                tabindex="-1"
+                aria-hidden="true"
+              >
+                <span class="ap-map-page__rating">
+                  <span class="ap-map-page__rating-star" aria-hidden="true">★</span>
+                  <strong>{{ mec.rating }}</strong>
+                  <span class="ap-map-page__rating-count">({{ mec.reviewCount }})</span>
+                </span>
+                <span class="ap-map-page__dot-sep" aria-hidden="true">·</span>
+                <span class="ap-map-page__specialties">{{ mec.specialties.join(' · ') }}</span>
+              </button>
+
+              <!-- Distance + horaire -->
+              <div class="ap-map-page__card-meta">
+                <span class="ap-map-page__meta-item">
+                  <span class="material-symbols-outlined">near_me</span>
+                  {{ mec.distanceKm }} km
+                </span>
+                <span class="ap-map-page__meta-sep" aria-hidden="true">·</span>
+                <span class="ap-map-page__meta-item ap-map-page__meta-hours">
+                  <span class="material-symbols-outlined">schedule</span>
+                  {{ mec.opensAt }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Flèche accès profil -->
+            <a
+              class="ap-map-page__card-arrow"
+              [routerLink]="['/mecaniciens', mec.profileId]"
+              [attr.aria-label]="'Voir le profil de ' + (mec.workshopName || mec.fullName)"
+            >
+              <span class="material-symbols-outlined">chevron_right</span>
+            </a>
+          </article>
+        } @empty {
+          <div class="ap-map-page__empty">
+            <span class="material-symbols-outlined">search_off</span>
+            <p>Aucun mécanicien ne correspond à cette recherche.</p>
+          </div>
+        }
+      </div>
+    </div>
+  </aside>
+
+</section>

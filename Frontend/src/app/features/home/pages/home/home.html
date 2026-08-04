@@ -1,0 +1,83 @@
+<div class="ap-home">
+  <!--
+    Bande d'accroche pleine largeur : sur un grand écran, une colonne centrée
+    laissait deux larges bandes vides de part et d'autre. Le fond s'étend
+    jusqu'aux bords, seul le contenu reste borné pour rester lisible.
+  -->
+  <section class="ap-home__hero" aria-labelledby="ap-home-titre">
+    <div class="ap-home__hero-inner">
+      <div class="ap-home__hero-text">
+        <h1 class="ap-home__title" id="ap-home-titre">Un mécanicien de confiance, près de vous</h1>
+
+        <p class="ap-home__subtitle">
+          Décrivez votre panne ou choisissez une catégorie : nous vous mettons en relation avec un
+          professionnel vérifié, où que vous soyez à Dakar.
+        </p>
+
+        <app-search-bar
+          class="ap-home__search"
+          label="Rechercher un mécanicien, une panne ou un quartier"
+          placeholder="Batterie, embrayage, Keur Massar…"
+          (searchSubmit)="rechercher($event)"
+        />
+      </div>
+
+      <!--
+        À partir de la tablette, le bloc d'urgence occupe la colonne de droite
+        au lieu de s'empiler sous l'accroche : l'espace horizontal est utilisé
+        et le SOS reste visible sans défilement.
+      -->
+      <app-sos-button
+        class="ap-home__sos"
+        [link]="ecranSignalement"
+        [linkParams]="{ urgence: 'true' }"
+      />
+    </div>
+  </section>
+
+  <section class="ap-home__categories" aria-labelledby="ap-home-categories-titre">
+    <div class="ap-home__categories-inner">
+      <header class="ap-home__section-header">
+        <h2 class="ap-home__section-title" id="ap-home-categories-titre">
+          Par type d'intervention
+        </h2>
+        <p class="ap-home__section-lead">
+          Choisissez la famille qui correspond à votre panne pour ne voir que les mécaniciens
+          compétents.
+        </p>
+      </header>
+
+      @if (categoriesResource.isLoading()) {
+        <p class="ap-home__state">
+          <app-spinner label="Chargement des catégories de service" />
+        </p>
+      } @else if (hasFailed()) {
+        <!--
+          Un échec de chargement n'est pas une impasse : on explique, et on
+          propose de réessayer. `role="alert"` fait annoncer le message
+          immédiatement, sans que l'utilisateur ait à le chercher.
+        -->
+        <div class="ap-home__state ap-home__state--error" role="alert">
+          <p>Les catégories n'ont pas pu être chargées. Vérifiez votre connexion.</p>
+          <button appButton type="button" variant="secondary" size="sm" (click)="reessayer()">
+            Réessayer
+          </button>
+        </div>
+      } @else {
+        <ul class="ap-home__grid">
+          @for (categorie of categories(); track categorie.id) {
+            <li class="ap-home__grid-item">
+              <app-category-card
+                [category]="categorie"
+                [link]="ecranMecaniciens"
+                [linkParams]="{ categorie: categorie.slug }"
+              />
+            </li>
+          } @empty {
+            <li class="ap-home__state">Aucune catégorie n'est disponible pour le moment.</li>
+          }
+        </ul>
+      }
+    </div>
+  </section>
+</div>

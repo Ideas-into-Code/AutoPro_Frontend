@@ -1,0 +1,14 @@
+@use 'index' as ds;
+
+:host {
+  display: block;
+}
+
+// Le lien de la page courante. Le soulignement double la couleur : un écart de
+// teinte seul serait invisible pour une partie des daltoniens.
+.ap-client-shell__link--active {
+  color: var(--ap-color-primary);
+  font-weight: var(--ap-font-weight-semibold);
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+}
