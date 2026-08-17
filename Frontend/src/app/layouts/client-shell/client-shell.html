@@ -1,9 +1,8 @@
 <app-page-shell>
   <app-header header brand="AutoPro">
     <!--
-      `routerLinkActive` marque la page courante. `ariaCurrentWhenActive` pose
-      `aria-current="page"` : sans lui, un lecteur d'écran ne distinguerait pas
-      le lien actif des autres, la couleur seule ne lui parvenant pas.
+      Liens de navigation desktop uniquement.
+      Sur mobile, la navigation est assurée par la bottom nav bar ci-dessous.
     -->
     <a
       nav
@@ -37,14 +36,82 @@
     >
       Mes demandes
     </a>
+    <a
+      nav
+      routerLink="/messages"
+      routerLinkActive="ap-client-shell__link--active"
+      ariaCurrentWhenActive="page"
+    >
+      Messages
+    </a>
 
     <a actions appButton variant="ghost" size="sm" routerLink="/compte/connexion">Se connecter</a>
   </app-header>
 
   <router-outlet />
 
-  <app-footer footer>
+  <!-- Footer desktop uniquement -->
+  <app-footer footer class="ap-client-shell__footer-desktop">
     <a link routerLink="/accueil">Accueil</a>
     <a link routerLink="/demandes/signaler">Signaler un problème</a>
+    <a link routerLink="/messages">Messages</a>
   </app-footer>
 </app-page-shell>
+
+<!-- ── Bottom Navigation Bar — mobile uniquement ── -->
+<nav class="ap-bottom-nav" aria-label="Navigation principale">
+  <a
+    class="ap-bottom-nav__item"
+    routerLink="/accueil"
+    routerLinkActive="ap-bottom-nav__item--active"
+    ariaCurrentWhenActive="page"
+    aria-label="Accueil"
+  >
+    <span class="material-symbols-outlined" aria-hidden="true">home</span>
+    <span>Accueil</span>
+  </a>
+
+  <a
+    class="ap-bottom-nav__item"
+    routerLink="/mecaniciens"
+    routerLinkActive="ap-bottom-nav__item--active"
+    ariaCurrentWhenActive="page"
+    aria-label="Mécaniciens"
+  >
+    <span class="material-symbols-outlined" aria-hidden="true">build</span>
+    <span>Mécanos</span>
+  </a>
+
+  <a
+    class="ap-bottom-nav__item"
+    routerLink="/carte"
+    routerLinkActive="ap-bottom-nav__item--active"
+    ariaCurrentWhenActive="page"
+    aria-label="Carte"
+  >
+    <span class="material-symbols-outlined" aria-hidden="true">map</span>
+    <span>Carte</span>
+  </a>
+
+  <a
+    class="ap-bottom-nav__item"
+    routerLink="/demandes"
+    routerLinkActive="ap-bottom-nav__item--active"
+    ariaCurrentWhenActive="page"
+    aria-label="Demandes"
+  >
+    <span class="material-symbols-outlined" aria-hidden="true">assignment</span>
+    <span>Demandes</span>
+  </a>
+
+  <a
+    class="ap-bottom-nav__item"
+    routerLink="/messages"
+    routerLinkActive="ap-bottom-nav__item--active"
+    ariaCurrentWhenActive="page"
+    aria-label="Messages"
+  >
+    <span class="material-symbols-outlined" aria-hidden="true">chat</span>
+    <span>Messages</span>
+  </a>
+</nav>

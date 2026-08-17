@@ -281,6 +281,8 @@
 
 /* Pied de carte */
 .ap-ml__card-footer {
+  display: grid;
+  gap: var(--ap-space-2);
   padding: 0 var(--ap-space-4) var(--ap-space-4);
 }
 

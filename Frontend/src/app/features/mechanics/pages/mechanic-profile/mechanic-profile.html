@@ -189,7 +189,11 @@
               <span class="material-symbols-outlined">phone</span>
               Appeler
             </a>
-            <a class="ap-mpr__action-btn ap-mpr__action-btn--outline" [href]="'mailto:' + mec.email">
+            <a
+              class="ap-mpr__action-btn ap-mpr__action-btn--outline"
+              routerLink="/messages"
+              [queryParams]="{ mecanicien: mec.id }"
+            >
               <span class="material-symbols-outlined">chat</span>
               Message
             </a>
