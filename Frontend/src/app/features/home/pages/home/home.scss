@@ -81,7 +81,12 @@
   font-size: clamp(2rem, 6vw, 3.2rem);
   font-weight: 800;
   /* Texte sombre avec accent bleu sur les mots clés via gradient clip */
-  background: linear-gradient(135deg, var(--ap-text-primary) 0%, #1a3a7a 60%, var(--ap-color-primary) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--ap-text-primary) 0%,
+    #1a3a7a 60%,
+    var(--ap-color-primary) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -112,8 +117,12 @@
   text-decoration: none;
   white-space: nowrap;
   border: 1.5px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.5), 0 1px 0 rgba(255,255,255,0.1) inset;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow:
+    0 4px 20px rgba(220, 38, 38, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.1) inset;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   overflow: hidden;
 
   /* Pleine largeur sur mobile */
@@ -127,7 +136,9 @@
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(220, 38, 38, 0.6), 0 1px 0 rgba(255,255,255,0.1) inset;
+    box-shadow:
+      0 8px 28px rgba(220, 38, 38, 0.6),
+      0 1px 0 rgba(255, 255, 255, 0.1) inset;
   }
 
   &:active {
@@ -148,8 +159,14 @@
 }
 
 @keyframes sos-pulse {
-  0%   { transform: scale(1);   opacity: 0.8; }
-  100% { transform: scale(1.2); opacity: 0; }
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
 }
 
 .ap-home__sos-icon {
@@ -170,7 +187,8 @@
     letter-spacing: 0.02em;
   }
 
-  span { /* sous-texte */
+  span {
+    /* sous-texte */
     font-size: var(--ap-font-size-xs);
     font-weight: var(--ap-font-weight-medium);
     opacity: 0.85;
@@ -276,7 +294,9 @@
   padding: 0;
   list-style: none;
 
-  &::-webkit-scrollbar { display: none; }
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   @include ds.from(md) {
     flex-wrap: wrap;
@@ -304,7 +324,10 @@
   font-weight: var(--ap-font-weight-medium);
   box-shadow: var(--ap-shadow-sm);
   white-space: nowrap;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
 
   &:hover {
     border-color: var(--ap-color-primary);
@@ -352,129 +375,6 @@
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    MÉCANICIENS PROCHES — scroll horizontal
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.ap-home__mechanics-scroll {
-  display: flex;
-  gap: var(--ap-space-4);
-  overflow-x: auto;
-  padding-block-end: var(--ap-space-2);
-  margin-inline: calc(var(--ap-space-4) * -1);
-  padding-inline: var(--ap-space-4);
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar { display: none; }
-}
-
-.ap-home__mechanic-card {
-  flex: 0 0 16rem;
-  background: var(--ap-surface-raised);
-  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
-  border-radius: var(--ap-radius-xl);
-  box-shadow: var(--ap-shadow-sm);
-  overflow: hidden;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--ap-shadow-md);
-    border-color: rgba(0, 76, 205, 0.25);
-  }
-}
-
-.ap-home__mechanic-link {
-  display: flex;
-  flex-direction: column;
-  text-decoration: none;
-  color: inherit;
-  height: 100%;
-}
-
-.ap-home__mechanic-img-wrap {
-  position: relative;
-  height: 8rem;
-  background: linear-gradient(135deg, var(--ap-color-primary-50) 0%, #dbeafe 100%);
-  overflow: hidden;
-}
-
-.ap-home__mechanic-img-placeholder {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: 3rem;
-  font-weight: 800;
-  color: var(--ap-color-primary);
-  opacity: 0.4;
-}
-
-.ap-home__mechanic-rating {
-  position: absolute;
-  top: var(--ap-space-2);
-  right: var(--ap-space-2);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
-  padding: 0.2rem var(--ap-space-2);
-  background: rgba(255,255,255,0.93);
-  border-radius: var(--ap-radius-lg);
-  font-size: var(--ap-font-size-xs);
-  font-weight: 700;
-  backdrop-filter: blur(8px);
-  box-shadow: var(--ap-shadow-sm);
-}
-
-.ap-home__mechanic-rating-star {
-  color: #f59e0b;
-  font-size: 0.8rem;
-}
-
-.ap-home__mechanic-info {
-  padding: var(--ap-space-3);
-  display: flex;
-  flex-direction: column;
-  gap: var(--ap-space-1);
-  flex: 1;
-}
-
-.ap-home__mechanic-name {
-  margin: 0;
-  font-size: var(--ap-font-size-sm);
-  font-weight: 700;
-  color: var(--ap-text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.ap-home__mechanic-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  margin: 0;
-  color: var(--ap-text-secondary);
-  font-size: var(--ap-font-size-xs);
-
-  .material-symbols-outlined {
-    font-size: 0.85rem;
-    color: var(--ap-color-primary);
-    flex-shrink: 0;
-  }
-}
-
-.ap-home__mechanic-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--ap-space-1);
-  margin-top: var(--ap-space-1);
-}
-
-.ap-home__mechanic-tag {
-  padding: 0.1rem var(--ap-space-2);
-  background: var(--ap-color-primary-50);
-  color: var(--ap-color-primary);
-  border-radius: var(--ap-radius-full);
-  font-size: var(--ap-font-size-xs);
-  font-weight: var(--ap-font-weight-medium);
-}
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    GRILLE BASSE (demandes + carte)
@@ -491,188 +391,8 @@
 }
 
 /* Demandes récentes */
-.ap-home__requests-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ap-space-3);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.ap-home__request-card {
-  display: flex;
-  align-items: center;
-  gap: var(--ap-space-3);
-  padding: var(--ap-space-4);
-  background: var(--ap-surface-raised);
-  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
-  border-radius: var(--ap-radius-xl);
-  box-shadow: var(--ap-shadow-sm);
-  text-decoration: none;
-  color: inherit;
-  transition: box-shadow 0.15s ease, border-color 0.15s ease;
-
-  &:hover {
-    box-shadow: var(--ap-shadow-md);
-    border-color: rgba(0, 76, 205, 0.2);
-  }
-}
-
-.ap-home__request-icon-wrap {
-  display: grid;
-  flex-shrink: 0;
-  place-items: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: var(--ap-radius-lg);
-  background: var(--ap-color-primary-50);
-
-  &[data-color='warning'] {
-    background: #fef9c3;
-    color: #d97706;
-  }
-
-  .material-symbols-outlined {
-    font-size: 1.25rem;
-    color: var(--ap-color-primary);
-    font-variation-settings: 'FILL' 0;
-  }
-}
-
-.ap-home__request-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  min-width: 0;
-}
-
-.ap-home__request-label {
-  font-size: var(--ap-font-size-sm);
-  font-weight: var(--ap-font-weight-semibold);
-  color: var(--ap-text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.ap-home__request-date {
-  font-size: var(--ap-font-size-xs);
-  color: var(--ap-text-secondary);
-}
-
-.ap-home__request-status {
-  flex-shrink: 0;
-  padding: var(--ap-space-1) var(--ap-space-3);
-  border-radius: var(--ap-radius-full);
-  font-size: var(--ap-font-size-xs);
-  font-weight: var(--ap-font-weight-bold);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  background: var(--ap-surface-sunken);
-  color: var(--ap-text-muted);
-
-  &--pending {
-    background: var(--ap-color-primary-50);
-    color: var(--ap-color-primary);
-  }
-
-  &--done {
-    background: #dcfce7;
-    color: #15803d;
-  }
-}
 
 /* Aperçu carte */
-.ap-home__map-preview {
-  position: relative;
-  display: block;
-  height: 14rem;
-  border-radius: var(--ap-radius-xl);
-  overflow: hidden;
-  text-decoration: none;
-  box-shadow: var(--ap-shadow-md);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--ap-shadow-lg);
-  }
-
-  @include ds.from(lg) {
-    height: 100%;
-    min-height: 14rem;
-  }
-}
-
-.ap-home__map-bg {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(135deg, #e8f4f8 0%, #b3d9e8 30%, #7fc3d9 60%, #4da8c8 100%);
-
-  /* Grille façon carte routière */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px);
-    background-size: 2rem 2rem;
-    opacity: 0.5;
-  }
-}
-
-.ap-home__map-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 55%);
-}
-
-.ap-home__map-cta {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: grid;
-  place-items: center;
-  width: 3.5rem;
-  height: 3.5rem;
-  background: var(--ap-color-primary);
-  color: #fff;
-  border-radius: var(--ap-radius-full);
-  box-shadow: 0 4px 16px rgba(0, 76, 205, 0.5);
-  transition: transform 0.2s ease;
-
-  .ap-home__map-preview:hover & {
-    transform: translate(-50%, -50%) scale(1.1);
-  }
-
-  .material-symbols-outlined {
-    font-size: 1.5rem;
-  }
-}
-
-.ap-home__map-caption {
-  position: absolute;
-  bottom: var(--ap-space-4);
-  left: var(--ap-space-4);
-  color: #fff;
-}
-
-.ap-home__map-count {
-  margin: 0 0 0.2rem;
-  font-weight: 700;
-  font-size: var(--ap-font-size-md);
-}
-
-.ap-home__map-hint {
-  margin: 0;
-  font-size: var(--ap-font-size-xs);
-  opacity: 0.75;
-}
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    ÉTATS
@@ -685,7 +405,9 @@
   margin: 0;
   color: var(--ap-text-secondary);
 
-  p { margin: 0; }
+  p {
+    margin: 0;
+  }
 }
 
 .ap-home__state--error {
@@ -706,4 +428,10 @@
   .ap-home__request-card {
     transition: none;
   }
+}
+
+// Espacement du titre au-dessus de l'aperçu de carte. Remplace un `style=`
+// en ligne : une déclaration dans le gabarit échappe au thème et au budget.
+.ap-home__section-title--spaced {
+  margin-bottom: var(--ap-space-4);
 }

@@ -1,0 +1,124 @@
+@use 'index' as ds;
+
+.ap-home__mechanics-scroll {
+  display: flex;
+  gap: var(--ap-space-4);
+  overflow-x: auto;
+  padding-block-end: var(--ap-space-2);
+  margin-inline: calc(var(--ap-space-4) * -1);
+  padding-inline: var(--ap-space-4);
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+.ap-home__mechanic-card {
+  flex: 0 0 16rem;
+  background: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-xl);
+  box-shadow: var(--ap-shadow-sm);
+  overflow: hidden;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ap-shadow-md);
+    border-color: rgba(0, 76, 205, 0.25);
+  }
+}
+.ap-home__mechanic-link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+.ap-home__mechanic-img-wrap {
+  position: relative;
+  height: 8rem;
+  background: linear-gradient(135deg, var(--ap-color-primary-50) 0%, #dbeafe 100%);
+  overflow: hidden;
+}
+.ap-home__mechanic-img-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--ap-color-primary);
+  opacity: 0.4;
+}
+.ap-home__mechanic-rating {
+  position: absolute;
+  top: var(--ap-space-2);
+  right: var(--ap-space-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.2rem var(--ap-space-2);
+  background: rgba(255, 255, 255, 0.93);
+  border-radius: var(--ap-radius-lg);
+  font-size: var(--ap-font-size-xs);
+  font-weight: 700;
+  backdrop-filter: blur(8px);
+  box-shadow: var(--ap-shadow-sm);
+}
+.ap-home__mechanic-rating-star {
+  color: #f59e0b;
+  font-size: 0.8rem;
+}
+.ap-home__mechanic-info {
+  padding: var(--ap-space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-1);
+  flex: 1;
+}
+.ap-home__mechanic-name {
+  margin: 0;
+  font-size: var(--ap-font-size-sm);
+  font-weight: 700;
+  color: var(--ap-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ap-home__mechanic-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-xs);
+
+  .material-symbols-outlined {
+    font-size: 0.85rem;
+    color: var(--ap-color-primary);
+    flex-shrink: 0;
+  }
+}
+.ap-home__mechanic-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-1);
+  margin-top: var(--ap-space-1);
+}
+.ap-home__mechanic-tag {
+  padding: 0.1rem var(--ap-space-2);
+  background: var(--ap-color-primary-50);
+  color: var(--ap-color-primary);
+  border-radius: var(--ap-radius-full);
+  font-size: var(--ap-font-size-xs);
+  font-weight: var(--ap-font-weight-medium);
+}
+
+// Doublure textuelle de la note, lue par les lecteurs d'écran mais non
+// affichée : l'étoile et le chiffre seuls n'annoncent pas « sur 5 ».
+.ap-home__mechanic-rating-text {
+  @include ds.visually-hidden;
+}

@@ -4,7 +4,6 @@ import { RouterLink } from '@angular/router';
 import { defer } from 'rxjs';
 
 import { Button, Icon, IconName, Spinner } from '@shared/ui';
-import { Mechanic } from '../../models/mechanic.model';
 import { MechanicRepository } from '../../data/mechanic.repository';
 
 interface ProfileDetails {

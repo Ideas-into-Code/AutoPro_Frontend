@@ -1,0 +1,29 @@
+<ul class="ap-home__requests-list" aria-label="Demandes récentes">
+  @for (req of requests(); track req.id) {
+    <li>
+      <a
+        class="ap-home__request-card"
+        routerLink="/demandes"
+        [attr.aria-label]="req.label + ', statut : ' + req.statusLabel"
+      >
+        <span class="ap-home__request-icon-wrap" [attr.data-color]="req.color" aria-hidden="true">
+        </span>
+
+        <div class="ap-home__request-body">
+          <strong class="ap-home__request-label">{{ req.label }}</strong>
+          <span class="ap-home__request-date">{{ req.date }}</span>
+        </div>
+
+        <span
+          class="ap-home__request-status"
+          [class.ap-home__request-status--done]="req.status === 'done'"
+          [class.ap-home__request-status--pending]="req.status === 'pending'"
+        >
+          {{ req.statusLabel }}
+        </span>
+      </a>
+    </li>
+  } @empty {
+    <li class="ap-home__request-empty">Vous n'avez pas encore de demande.</li>
+  }
+</ul>
