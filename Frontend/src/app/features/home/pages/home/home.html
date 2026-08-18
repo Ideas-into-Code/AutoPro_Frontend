@@ -1,5 +1,4 @@
 <div class="ap-home">
-
   <!-- ═══════════════════════════════════════
        HERO — Salutation + SOS
   ════════════════════════════════════════ -->
@@ -12,7 +11,7 @@
     <div class="ap-home__hero-inner">
       <p class="ap-home__greeting-label">Bonjour 👋</p>
 
-      <h1 class="ap-home__title" id="ap-home-titre">Trouvez un mécanicien<br/>de confiance</h1>
+      <h1 class="ap-home__title" id="ap-home-titre">Trouvez un mécanicien<br />de confiance</h1>
       <p class="ap-home__subtitle">Professionnel vérifié, disponible près de vous à Dakar.</p>
 
       <!-- SOS imposant sous le subtitle -->
@@ -23,11 +22,13 @@
         aria-label="Assistance d'urgence — Demander un dépannage immédiat"
       >
         <span class="ap-home__sos-pulse" aria-hidden="true"></span>
-        <span class="material-symbols-outlined ap-home__sos-icon" aria-hidden="true">emergency</span>
-        <span class="ap-home__sos-label">
-          <strong>SOS</strong> — Demander un dépannage
-        </span>
-        <span class="material-symbols-outlined ap-home__sos-arrow" aria-hidden="true">arrow_forward</span>
+        <span class="material-symbols-outlined ap-home__sos-icon" aria-hidden="true"
+          >emergency</span
+        >
+        <span class="ap-home__sos-label"> <strong>SOS</strong> — Demander un dépannage </span>
+        <span class="material-symbols-outlined ap-home__sos-arrow" aria-hidden="true"
+          >arrow_forward</span
+        >
       </a>
 
       <!-- Barre de recherche -->
@@ -44,7 +45,10 @@
     <!-- Vague décorative bas du hero -->
     <div class="ap-home__hero-wave" aria-hidden="true">
       <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z" fill="var(--ap-surface-page,#faf8ff)"/>
+        <path
+          d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z"
+          fill="var(--ap-surface-page,#faf8ff)"
+        />
       </svg>
     </div>
   </section>
@@ -95,7 +99,10 @@
   <!-- ═══════════════════════════════════════
        MÉCANICIENS PROCHES — Scroll horizontal
   ════════════════════════════════════════ -->
-  <section class="ap-home__section ap-home__section--alt" aria-labelledby="ap-home-mecaniciens-titre">
+  <section
+    class="ap-home__section ap-home__section--alt"
+    aria-labelledby="ap-home-mecaniciens-titre"
+  >
     <div class="ap-home__section-inner">
       <div class="ap-home__section-header">
         <h2 class="ap-home__section-title" id="ap-home-mecaniciens-titre">Mécaniciens proches</h2>
@@ -105,40 +112,7 @@
         </a>
       </div>
 
-      <div class="ap-home__mechanics-scroll" role="list" aria-label="Mécaniciens à proximité">
-        @for (mec of nearbyMechanics; track mec.id) {
-          <article class="ap-home__mechanic-card" role="listitem">
-            <a [routerLink]="['/mecaniciens', mec.id]" class="ap-home__mechanic-link" [attr.aria-label]="'Voir le profil de ' + mec.name">
-
-              <!-- Image -->
-              <div class="ap-home__mechanic-img-wrap">
-                <div class="ap-home__mechanic-img-placeholder" aria-hidden="true">
-                  {{ mec.name.slice(0, 1) }}
-                </div>
-                <!-- Rating badge -->
-                <div class="ap-home__mechanic-rating" aria-hidden="true">
-                  <span class="ap-home__mechanic-rating-star">★</span>
-                  <span>{{ mec.rating }}</span>
-                </div>
-              </div>
-
-              <!-- Infos -->
-              <div class="ap-home__mechanic-info">
-                <h3 class="ap-home__mechanic-name">{{ mec.name }}</h3>
-                <p class="ap-home__mechanic-meta">
-                  <span class="material-symbols-outlined" aria-hidden="true">location_on</span>
-                  {{ mec.distance }} · {{ mec.district }}
-                </p>
-                <div class="ap-home__mechanic-tags">
-                  @for (tag of mec.tags; track tag) {
-                    <span class="ap-home__mechanic-tag">{{ tag }}</span>
-                  }
-                </div>
-              </div>
-            </a>
-          </article>
-        }
-      </div>
+      <app-nearby-mechanics [mechanics]="nearbyMechanics" />
     </div>
   </section>
 
@@ -148,7 +122,6 @@
   <section class="ap-home__section" aria-label="Activité récente et carte">
     <div class="ap-home__section-inner">
       <div class="ap-home__bottom-grid">
-
         <!-- Demandes récentes -->
         <div>
           <div class="ap-home__section-header">
@@ -159,48 +132,17 @@
             </a>
           </div>
 
-          <ul class="ap-home__requests-list" aria-label="Demandes récentes">
-            @for (req of recentRequests; track req.id) {
-              <li>
-                <a class="ap-home__request-card" routerLink="/demandes" [attr.aria-label]="req.label + ', statut : ' + req.statusLabel">
-                  <span class="ap-home__request-icon-wrap" [attr.data-color]="req.color" aria-hidden="true">
-                    <span class="material-symbols-outlined">{{ req.icon }}</span>
-                  </span>
-                  <div class="ap-home__request-body">
-                    <strong class="ap-home__request-label">{{ req.label }}</strong>
-                    <span class="ap-home__request-date">{{ req.date }}</span>
-                  </div>
-                  <span
-                    class="ap-home__request-status"
-                    [class.ap-home__request-status--done]="req.status === 'done'"
-                    [class.ap-home__request-status--pending]="req.status === 'pending'"
-                  >
-                    {{ req.statusLabel }}
-                  </span>
-                </a>
-              </li>
-            }
-          </ul>
+          <app-recent-requests [requests]="recentRequests" />
         </div>
 
         <!-- Aperçu carte -->
         <div>
-          <h2 class="ap-home__section-title" style="margin-bottom: var(--ap-space-4)">Services à proximité</h2>
-          <a class="ap-home__map-preview" routerLink="/carte" aria-label="Voir la carte des mécaniciens">
-            <div class="ap-home__map-bg" aria-hidden="true"></div>
-            <div class="ap-home__map-overlay" aria-hidden="true"></div>
-            <div class="ap-home__map-cta" aria-hidden="true">
-              <span class="material-symbols-outlined">near_me</span>
-            </div>
-            <div class="ap-home__map-caption">
-              <p class="ap-home__map-count">{{ nearbyMechanics.length }} mécaniciens à proximité</p>
-              <p class="ap-home__map-hint">Voir toutes les adresses sur la carte</p>
-            </div>
-          </a>
+          <h2 class="ap-home__section-title ap-home__section-title--spaced">
+            Services à proximité
+          </h2>
+          <app-map-preview [mechanicCount]="nearbyMechanics.length" />
         </div>
-
       </div>
     </div>
   </section>
-
 </div>

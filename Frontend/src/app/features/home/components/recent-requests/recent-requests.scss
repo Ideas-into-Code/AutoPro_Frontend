@@ -1,0 +1,97 @@
+@use 'index' as ds;
+
+.ap-home__requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ap-home__request-card {
+  display: flex;
+  align-items: center;
+  gap: var(--ap-space-3);
+  padding: var(--ap-space-4);
+  background: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-xl);
+  box-shadow: var(--ap-shadow-sm);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover {
+    box-shadow: var(--ap-shadow-md);
+    border-color: rgba(0, 76, 205, 0.2);
+  }
+}
+.ap-home__request-icon-wrap {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--ap-radius-lg);
+  background: var(--ap-color-primary-50);
+
+  &[data-color='warning'] {
+    background: #fef9c3;
+    color: #d97706;
+  }
+
+  .material-symbols-outlined {
+    font-size: 1.25rem;
+    color: var(--ap-color-primary);
+    font-variation-settings: 'FILL' 0;
+  }
+}
+.ap-home__request-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.ap-home__request-label {
+  font-size: var(--ap-font-size-sm);
+  font-weight: var(--ap-font-weight-semibold);
+  color: var(--ap-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ap-home__request-date {
+  font-size: var(--ap-font-size-xs);
+  color: var(--ap-text-secondary);
+}
+.ap-home__request-status {
+  flex-shrink: 0;
+  padding: var(--ap-space-1) var(--ap-space-3);
+  border-radius: var(--ap-radius-full);
+  font-size: var(--ap-font-size-xs);
+  font-weight: var(--ap-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--ap-surface-sunken);
+  color: var(--ap-text-muted);
+
+  &--pending {
+    background: var(--ap-color-primary-50);
+    color: var(--ap-color-primary);
+  }
+
+  &--done {
+    background: #dcfce7;
+    color: #15803d;
+  }
+}
+
+// État vide : une liste sans message laisserait croire à un chargement figé.
+.ap-home__request-empty {
+  padding: var(--ap-space-4);
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+}
