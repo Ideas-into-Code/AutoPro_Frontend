@@ -79,6 +79,13 @@ export const routes: Routes = [
 
       // --- Espace mécanicien ------------------------------------------------
       {
+        path: 'mecanicien',
+        loadChildren: () =>
+          import('@features/mechanic-dashboard/mechanic-dashboard.routes').then(
+            (m) => m.mechanicDashboardRoutes,
+          ),
+      },
+      {
         path: 'tarifs',
         loadChildren: () => import('@features/pricing/pricing.routes').then((m) => m.pricingRoutes),
       },
