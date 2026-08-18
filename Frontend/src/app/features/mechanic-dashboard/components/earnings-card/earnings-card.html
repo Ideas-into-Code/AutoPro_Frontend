@@ -27,13 +27,16 @@
 -->
 <ul class="ap-earnings__chart" aria-hidden="true">
   @for (barre of barres(); track barre.label) {
+    <!--
+      Pas de libellé sous les barres : à cette largeur ils seraient illisibles.
+      Les jours et les montants sont annoncés par le résumé textuel qui suit.
+    -->
     <li class="ap-earnings__bar-slot">
       <span
         class="ap-earnings__bar"
         [class.ap-earnings__bar--current]="barre.isLast"
         [style.height.%]="barre.heightPercent"
       ></span>
-      <span class="ap-earnings__bar-label">{{ barre.label }}</span>
     </li>
   }
 </ul>
