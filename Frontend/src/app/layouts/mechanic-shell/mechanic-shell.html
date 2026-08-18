@@ -35,8 +35,11 @@
       Mes tarifs
     </a>
 
-    <!-- Identifie qui est connecté, plutôt qu'une mention générique. -->
-    <span actions class="ap-mecano-shell__user">{{ nomAffiche() }}</span>
+    <!-- Identifie qui est connecté, sans encombrer la barre d'un nom entier. -->
+    <a actions class="ap-mecano-shell__account" routerLink="/mecanicien/profil">
+      <app-avatar [name]="nomAffiche()" size="sm" />
+      <span class="ap-mecano-shell__account-label">Mon profil</span>
+    </a>
   </app-header>
 
   <router-outlet />

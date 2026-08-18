@@ -1,3 +1,5 @@
+@use 'index' as ds;
+
 // La barre, le pied de page et les proportions viennent de `PageShell`,
 // `Header` et `Footer`, exactement comme dans la coquille client. Seuls les
 // repères propres à cet espace sont décrits ici.
@@ -31,8 +33,34 @@
   text-underline-offset: 0.35em;
 }
 
-.ap-mecano-shell__user {
+.ap-mecano-shell__account {
+  display: inline-flex;
+  gap: var(--ap-space-2);
+  align-items: center;
   color: var(--ap-text-secondary);
   font-weight: var(--ap-font-weight-medium);
   font-size: var(--ap-font-size-sm);
+  text-decoration: none;
+  border-radius: var(--ap-radius-full);
+
+  @include ds.focus-ring;
+
+  &:hover {
+    color: var(--ap-text-primary);
+  }
+}
+
+// Le libellé disparaît sur petit écran : la pastille suffit, et la barre reste
+// dégagée pour la marque et le menu.
+.ap-mecano-shell__account-label {
+  @include ds.visually-hidden;
+
+  @include ds.from(md) {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip-path: none;
+  }
 }

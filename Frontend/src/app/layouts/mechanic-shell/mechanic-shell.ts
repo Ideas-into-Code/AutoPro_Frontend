@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { AuthService } from '@core/services/auth.service';
 import { BottomNav, BottomNavItem, Footer, Header, PageShell } from '@shared/layout';
+import { Avatar } from '@shared/ui';
 
 /**
  * Coquille de l'espace mécanicien.
@@ -24,7 +25,16 @@ import { BottomNav, BottomNavItem, Footer, Header, PageShell } from '@shared/lay
  */
 @Component({
   selector: 'app-mechanic-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, PageShell, Header, Footer, BottomNav],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    PageShell,
+    Header,
+    Footer,
+    BottomNav,
+    Avatar,
+  ],
   templateUrl: './mechanic-shell.html',
   styleUrl: './mechanic-shell.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
