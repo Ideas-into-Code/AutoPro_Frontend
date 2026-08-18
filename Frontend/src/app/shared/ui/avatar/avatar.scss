@@ -1,0 +1,37 @@
+:host {
+  display: inline-flex;
+  flex: none;
+}
+
+.ap-avatar__initials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--ap-color-primary);
+  font-weight: var(--ap-font-weight-bold);
+  letter-spacing: 0.02em;
+  background-color: var(--ap-color-primary-100);
+  border: var(--ap-border-width-thin) solid var(--ap-color-primary-200);
+  border-radius: var(--ap-radius-full);
+}
+
+:host(.ap-avatar--sm) {
+  width: 2rem;
+  height: 2rem;
+  font-size: var(--ap-font-size-xs);
+}
+
+:host(.ap-avatar--md) {
+  // 2,5 rem : lisible sans peser dans une barre de navigation.
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: var(--ap-font-size-sm);
+}
+
+:host(.ap-avatar--lg) {
+  width: 3.5rem;
+  height: 3.5rem;
+  font-size: var(--ap-font-size-lg);
+}

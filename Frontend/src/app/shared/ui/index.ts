@@ -5,6 +5,9 @@
  *   import { Button, Card, FormField } from '@shared/ui';
  */
 
+export { Avatar } from './avatar/avatar';
+export type { AvatarSize } from './avatar/avatar';
+
 export { Button } from './button/button';
 export type { ButtonSize, ButtonVariant } from './button/button';
 

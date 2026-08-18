@@ -1,0 +1,7 @@
+<!--
+  `role="img"` avec le nom complet en libellé : les initiales sont masquées aux
+  lecteurs d'écran, qui épelleraient « B, S » sans rien apprendre.
+-->
+<span class="ap-avatar__initials" role="img" [attr.aria-label]="name()">
+  <span aria-hidden="true">{{ initiales() }}</span>
+</span>
