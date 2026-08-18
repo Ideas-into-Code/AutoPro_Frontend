@@ -1,0 +1,10 @@
+<!-- Permet d'atteindre le contenu sans parcourir toute la navigation au clavier. -->
+<a class="ap-page-shell__skip" href="#contenu-principal">Aller au contenu principal</a>
+
+<ng-content select="[header]" />
+
+<main id="contenu-principal" class="ap-page-shell__main" tabindex="-1">
+  <ng-content />
+</main>
+
+<ng-content select="[footer]" />

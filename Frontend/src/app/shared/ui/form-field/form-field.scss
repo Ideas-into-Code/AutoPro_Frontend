@@ -1,0 +1,60 @@
+@use 'index' as ds;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-1);
+}
+
+.ap-form-field__label {
+  font-size: var(--ap-font-size-sm);
+  font-weight: var(--ap-font-weight-medium);
+  color: var(--ap-text-primary);
+}
+
+.ap-form-field__required {
+  color: var(--ap-color-danger);
+}
+
+.ap-form-field__input {
+  width: 100%;
+  // 44 px de haut : cible tactile recommandée sur mobile.
+  min-height: 2.75rem;
+  padding: var(--ap-space-2) var(--ap-space-3);
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-strong);
+  border-radius: var(--ap-radius-md);
+  color: var(--ap-text-primary);
+  font-size: var(--ap-font-size-base);
+  transition: border-color var(--ap-duration-fast) var(--ap-easing-standard);
+
+  @include ds.focus-ring(0);
+
+  &::placeholder {
+    color: var(--ap-text-muted);
+  }
+
+  &:disabled {
+    background-color: var(--ap-surface-sunken);
+    color: var(--ap-text-muted);
+    cursor: not-allowed;
+  }
+
+  // La couleur seule ne suffit pas à signaler une erreur : le message texte
+  // sous le champ porte l'information pour les daltoniens.
+  &--invalid {
+    border-color: var(--ap-color-danger);
+    border-width: var(--ap-border-width-thick);
+  }
+}
+
+.ap-form-field__hint {
+  font-size: var(--ap-font-size-xs);
+  color: var(--ap-text-secondary);
+}
+
+.ap-form-field__error {
+  font-size: var(--ap-font-size-xs);
+  font-weight: var(--ap-font-weight-medium);
+  color: var(--ap-color-danger);
+}

@@ -1,0 +1,126 @@
+@use 'index' as ds;
+
+:host {
+  display: block;
+}
+
+.ap-search-bar__form {
+  display: flex;
+  align-items: center;
+  gap: var(--ap-space-2);
+  padding-inline: var(--ap-space-3);
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-strong);
+  border-radius: var(--ap-radius-full);
+  transition: border-color var(--ap-duration-fast) var(--ap-easing-standard);
+
+  // L'anneau de focus est porté par le conteneur, pas par le champ : le champ
+  // n'a pas de bordure propre, un contour posé sur lui flotterait au milieu.
+  &:focus-within {
+    border-color: var(--ap-color-primary);
+    outline: var(--ap-border-width-thick) solid var(--ap-focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+.ap-search-bar__label {
+  @include ds.visually-hidden;
+}
+
+.ap-search-bar__prefix {
+  color: var(--ap-text-muted);
+}
+
+.ap-search-bar__input {
+  flex: 1;
+  min-width: 0;
+  // 44 px de haut : cible tactile minimale exigée par les conventions.
+  padding-block: var(--ap-space-3);
+  color: var(--ap-text-primary);
+  font-family: inherit;
+  // 16 px minimum : en deçà, Safari iOS zoome automatiquement à la saisie.
+  font-size: var(--ap-font-size-base);
+  background: none;
+  border: 0;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::placeholder {
+    color: var(--ap-text-muted);
+  }
+
+  // Croix native de Chrome et Safari : on affiche la nôtre, qui est
+  // atteignable au clavier et correctement libellée.
+  &::-webkit-search-cancel-button {
+    appearance: none;
+  }
+}
+
+.ap-search-bar__clear,
+.ap-search-bar__submit {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: var(--ap-radius-full);
+  cursor: pointer;
+
+  @include ds.focus-ring;
+}
+
+.ap-search-bar__clear {
+  color: var(--ap-text-muted);
+  background: none;
+
+  &:hover {
+    color: var(--ap-text-primary);
+  }
+}
+
+.ap-search-bar__clear-label {
+  @include ds.visually-hidden;
+}
+
+.ap-search-bar__submit {
+  gap: var(--ap-space-2);
+  padding-inline: var(--ap-space-4);
+  color: var(--ap-text-on-primary);
+  font-weight: var(--ap-font-weight-semibold);
+  font-size: var(--ap-font-size-sm);
+  font-family: inherit;
+  background-color: var(--ap-color-primary);
+
+  &:hover {
+    background-color: var(--ap-color-primary-hover);
+  }
+
+  &:active {
+    background-color: var(--ap-color-primary-active);
+  }
+}
+
+// Sur mobile, le libellé du bouton céderait la place au champ de saisie :
+// seule la flèche reste. Le texte demeure lisible par les lecteurs d'écran.
+.ap-search-bar__submit-label {
+  @include ds.visually-hidden;
+
+  @include ds.from(sm) {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip-path: none;
+  }
+}
+
+.ap-search-bar__submit-icon {
+  @include ds.from(sm) {
+    display: none;
+  }
+}

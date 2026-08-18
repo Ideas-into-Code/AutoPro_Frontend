@@ -1,0 +1,85 @@
+@use 'index' as ds;
+
+.ap-home__map-preview {
+  position: relative;
+  display: block;
+  height: 14rem;
+  border-radius: var(--ap-radius-xl);
+  overflow: hidden;
+  text-decoration: none;
+  box-shadow: var(--ap-shadow-md);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ap-shadow-lg);
+  }
+
+  @include ds.from(lg) {
+    height: 100%;
+    min-height: 14rem;
+  }
+}
+.ap-home__map-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #e8f4f8 0%, #b3d9e8 30%, #7fc3d9 60%, #4da8c8 100%);
+
+  /* Grille façon carte routière */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+    background-size: 2rem 2rem;
+    opacity: 0.5;
+  }
+}
+.ap-home__map-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 55%);
+}
+.ap-home__map-cta {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: var(--ap-color-primary);
+  color: #fff;
+  border-radius: var(--ap-radius-full);
+  box-shadow: 0 4px 16px rgba(0, 76, 205, 0.5);
+  transition: transform 0.2s ease;
+
+  .ap-home__map-preview:hover & {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  .material-symbols-outlined {
+    font-size: 1.5rem;
+  }
+}
+.ap-home__map-caption {
+  position: absolute;
+  bottom: var(--ap-space-4);
+  left: var(--ap-space-4);
+  color: #fff;
+}
+.ap-home__map-count {
+  margin: 0 0 0.2rem;
+  font-weight: 700;
+  font-size: var(--ap-font-size-md);
+}
+.ap-home__map-hint {
+  margin: 0;
+  font-size: var(--ap-font-size-xs);
+  opacity: 0.75;
+}

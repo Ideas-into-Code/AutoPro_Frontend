@@ -1,0 +1,343 @@
+import { ChatConversation, ChatParticipant } from '../models/chat.model';
+
+export const CLIENT_PROFILE: ChatParticipant = {
+  id: 'client-current',
+  fullName: 'Awa Ndiaye',
+  role: 'client',
+  avatarInitials: 'AN',
+  subtitle: 'Cliente AutoPro',
+  isOnline: true,
+};
+
+export const MECHANIC_PROFILE: ChatParticipant = {
+  id: 'mec-001',
+  fullName: 'Boubacar Sidibe',
+  role: 'mechanic',
+  avatarInitials: 'BS',
+  subtitle: 'Garage Sidibe Auto • Dakar Plateau',
+  isOnline: true,
+};
+
+const CLIENTS: readonly ChatParticipant[] = [
+  CLIENT_PROFILE,
+  {
+    id: 'client-002',
+    fullName: 'Ibrahima Sarr',
+    role: 'client',
+    avatarInitials: 'IS',
+    subtitle: 'Client • Almadies',
+    isOnline: false,
+  },
+  {
+    id: 'client-003',
+    fullName: 'Fatou Diop',
+    role: 'client',
+    avatarInitials: 'FD',
+    subtitle: 'Cliente • Point E',
+    isOnline: true,
+  },
+];
+
+const MECHANICS: readonly ChatParticipant[] = [
+  MECHANIC_PROFILE,
+  {
+    id: 'mec-002',
+    fullName: 'Mame Goumba Amar',
+    role: 'mechanic',
+    avatarInitials: 'MA',
+    subtitle: 'Atelier Amar Dépannage • Rufisque',
+    isOnline: false,
+  },
+  {
+    id: 'mec-003',
+    fullName: 'Awa Ndiaye',
+    role: 'mechanic',
+    avatarInitials: 'AN',
+    subtitle: 'Quick Fix Dakar • Point E',
+    isOnline: true,
+  },
+  {
+    id: 'mec-004',
+    fullName: 'Ibrahima Fall',
+    role: 'mechanic',
+    avatarInitials: 'IF',
+    subtitle: 'Elite Auto Care • Almadies',
+    isOnline: true,
+  },
+  {
+    id: 'mec-005',
+    fullName: 'Algassiomou Ba',
+    role: 'mechanic',
+    avatarInitials: 'AB',
+    subtitle: 'Garage Ba Services • Médina',
+    isOnline: true,
+  },
+  {
+    id: 'mec-006',
+    fullName: 'Mouhammad Boye',
+    role: 'mechanic',
+    avatarInitials: 'MB',
+    subtitle: 'Boye Auto Diagnostic • Grand Yoff',
+    isOnline: false,
+  },
+  {
+    id: 'mec-007',
+    fullName: 'Aissatou Badji',
+    role: 'mechanic',
+    avatarInitials: 'AB',
+    subtitle: 'Badji Auto Express • VDN',
+    isOnline: true,
+  },
+];
+
+function unreadFor(clientCount: number, mechanicCount = 0): Readonly<Record<string, number>> {
+  return {
+    [CLIENT_PROFILE.id]: clientCount,
+    [MECHANIC_PROFILE.id]: mechanicCount,
+  };
+}
+
+export const MOCK_CONVERSATIONS: readonly ChatConversation[] = [
+  {
+    id: 'conv-mec-001',
+    requestId: 'req-2026-0817-001',
+    client: CLIENT_PROFILE,
+    mechanic: MECHANICS[0],
+    vehicleLabel: 'Toyota Corolla 2014',
+    requestLabel: 'Diagnostic moteur',
+    unreadByParticipant: unreadFor(2),
+    lastActivityAt: '2026-08-17T09:44:00Z',
+    messages: [
+      {
+        id: 'msg-001',
+        authorId: CLIENT_PROFILE.id,
+        body: 'Bonjour Boubacar, le voyant moteur reste allumé depuis ce matin.',
+        sentAt: '2026-08-17T09:20:00Z',
+        status: 'read',
+      },
+      {
+        id: 'msg-002',
+        authorId: MECHANICS[0].id,
+        body: 'Bonjour Awa. Envoyez-moi une photo du compartiment moteur si possible.',
+        sentAt: '2026-08-17T09:28:00Z',
+        status: 'read',
+      },
+      {
+        id: 'msg-003',
+        authorId: CLIENT_PROFILE.id,
+        body: 'Merci, je joins aussi la facture du dernier entretien pour référence.',
+        sentAt: '2026-08-17T09:44:00Z',
+        status: 'delivered',
+        attachments: [
+          {
+            id: 'att-001',
+            type: 'document',
+            name: 'Facture_entretien.pdf',
+            sizeLabel: '1.2 Mo • PDF',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'conv-mec-002',
+    requestId: 'req-2026-0816-004',
+    client: CLIENT_PROFILE,
+    mechanic: MECHANICS[1],
+    vehicleLabel: 'Peugeot 308',
+    requestLabel: 'Climatisation',
+    unreadByParticipant: unreadFor(0, 1),
+    lastActivityAt: '2026-08-16T17:15:00Z',
+    messages: [
+      {
+        id: 'msg-101',
+        authorId: MECHANICS[1].id,
+        body: 'Le compresseur est bon. Il faut surtout refaire la charge de gaz.',
+        sentAt: '2026-08-16T16:58:00Z',
+        status: 'read',
+      },
+      {
+        id: 'msg-102',
+        authorId: CLIENT_PROFILE.id,
+        body: 'Parfait, je confirme le rendez-vous demain matin.',
+        sentAt: '2026-08-16T17:15:00Z',
+        status: 'read',
+      },
+    ],
+  },
+  {
+    id: 'conv-mec-003',
+    requestId: 'req-2026-0817-003',
+    client: CLIENT_PROFILE,
+    mechanic: MECHANICS[2],
+    vehicleLabel: 'Nissan Qashqai',
+    requestLabel: 'Batterie',
+    unreadByParticipant: unreadFor(0),
+    lastActivityAt: '2026-08-17T08:36:00Z',
+    messages: [
+      {
+        id: 'msg-201',
+        authorId: CLIENT_PROFILE.id,
+        body: 'La voiture ne démarre plus après deux jours au parking.',
+        sentAt: '2026-08-17T08:10:00Z',
+        status: 'read',
+      },
+      {
+        id: 'msg-202',
+        authorId: MECHANICS[2].id,
+        body: 'Je peux passer avec un booster. Vous êtes toujours à Point E ?',
+        sentAt: '2026-08-17T08:36:00Z',
+        status: 'delivered',
+      },
+    ],
+  },
+  {
+    id: 'conv-mec-004',
+    requestId: 'req-2026-0816-011',
+    client: CLIENT_PROFILE,
+    mechanic: MECHANICS[3],
+    vehicleLabel: 'Kia Sportage',
+    requestLabel: 'Révision complète',
+    unreadByParticipant: unreadFor(0),
+    lastActivityAt: '2026-08-16T18:12:00Z',
+    messages: [
+      {
+        id: 'msg-301',
+        authorId: CLIENT_PROFILE.id,
+        body: 'Pouvez-vous me confirmer le prix de la révision avant demain ?',
+        sentAt: '2026-08-16T17:44:00Z',
+        status: 'read',
+      },
+      {
+        id: 'msg-302',
+        authorId: MECHANICS[3].id,
+        body: 'Oui, je prépare le détail pièces et main-d’œuvre ce soir.',
+        sentAt: '2026-08-16T18:12:00Z',
+        status: 'read',
+      },
+    ],
+  },
+  {
+    id: 'conv-mec-005',
+    requestId: 'req-2026-0815-005',
+    client: CLIENT_PROFILE,
+    mechanic: MECHANICS[4],
+    vehicleLabel: 'Renault Clio',
+    requestLabel: 'Vidange',
+    unreadByParticipant: unreadFor(1),
+    lastActivityAt: '2026-08-15T15:20:00Z',
+    messages: [
+      {
+        id: 'msg-401',
+        authorId: MECHANICS[4].id,
+        body: 'Je peux faire la vidange aujourd’hui à partir de 16h.',
+        sentAt: '2026-08-15T15:20:00Z',
+        status: 'delivered',
+      },
+    ],
+  },
+  {
+    id: 'conv-mec-006',
+    requestId: 'req-2026-0812-006',
+    client: CLIENT_PROFILE,
+    mechanic: MECHANICS[5],
+    vehicleLabel: 'Mercedes Classe C',
+    requestLabel: 'Injection',
+    unreadByParticipant: unreadFor(0),
+    lastActivityAt: '2026-08-12T11:30:00Z',
+    messages: [
+      {
+        id: 'msg-501',
+        authorId: MECHANICS[5].id,
+        body: 'Le devis est prêt. Je peux vous l’expliquer avant validation.',
+        sentAt: '2026-08-12T11:30:00Z',
+        status: 'read',
+      },
+    ],
+  },
+  {
+    id: 'conv-mec-007',
+    requestId: 'req-2026-0815-007',
+    client: CLIENT_PROFILE,
+    mechanic: MECHANICS[6],
+    vehicleLabel: 'Hyundai Tucson',
+    requestLabel: 'Bruit au freinage',
+    unreadByParticipant: unreadFor(1),
+    lastActivityAt: '2026-08-15T13:04:00Z',
+    messages: [
+      {
+        id: 'msg-601',
+        authorId: CLIENT_PROFILE.id,
+        body: 'J’entends un grincement quand je freine à basse vitesse.',
+        sentAt: '2026-08-15T12:50:00Z',
+        status: 'read',
+      },
+      {
+        id: 'msg-602',
+        authorId: MECHANICS[6].id,
+        body: 'Envoyez-moi une photo du disque avant droit si possible.',
+        sentAt: '2026-08-15T13:04:00Z',
+        status: 'delivered',
+      },
+    ],
+  },
+  {
+    id: 'conv-client-002',
+    requestId: 'req-2026-0817-009',
+    client: CLIENTS[1],
+    mechanic: MECHANIC_PROFILE,
+    vehicleLabel: 'Nissan Qashqai',
+    requestLabel: 'Batterie',
+    unreadByParticipant: unreadFor(0, 2),
+    lastActivityAt: '2026-08-17T08:36:00Z',
+    messages: [
+      {
+        id: 'msg-701',
+        authorId: CLIENTS[1].id,
+        body: 'Bonjour, la voiture ne démarre plus après deux jours au parking.',
+        sentAt: '2026-08-17T08:10:00Z',
+        status: 'delivered',
+      },
+      {
+        id: 'msg-702',
+        authorId: MECHANIC_PROFILE.id,
+        body: 'Je peux passer avec un booster. Vous êtes toujours aux Almadies ?',
+        sentAt: '2026-08-17T08:22:00Z',
+        status: 'delivered',
+      },
+      {
+        id: 'msg-703',
+        authorId: CLIENTS[1].id,
+        body: 'Oui, devant la pharmacie de la route du Méridien.',
+        sentAt: '2026-08-17T08:36:00Z',
+        status: 'delivered',
+      },
+    ],
+  },
+  {
+    id: 'conv-client-003',
+    requestId: 'req-2026-0816-012',
+    client: CLIENTS[2],
+    mechanic: MECHANIC_PROFILE,
+    vehicleLabel: 'Kia Sportage',
+    requestLabel: 'Révision complète',
+    unreadByParticipant: unreadFor(0, 0),
+    lastActivityAt: '2026-08-16T18:12:00Z',
+    messages: [
+      {
+        id: 'msg-801',
+        authorId: CLIENTS[2].id,
+        body: 'Pouvez-vous me confirmer le prix de la révision avant demain ?',
+        sentAt: '2026-08-16T17:44:00Z',
+        status: 'read',
+      },
+      {
+        id: 'msg-802',
+        authorId: MECHANIC_PROFILE.id,
+        body: 'Oui, je prépare le détail pièces et main-d’œuvre ce soir.',
+        sentAt: '2026-08-16T18:12:00Z',
+        status: 'read',
+      },
+    ],
+  },
+];

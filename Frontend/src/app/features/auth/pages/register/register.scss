@@ -1,0 +1,260 @@
+@use 'index' as ds;
+
+.ap-register-page {
+  position: relative;
+  min-height: 100dvh;
+  background: linear-gradient(135deg, #fbfbfe 0%, #f3f6fd 100%);
+  color: #191b24;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__header {
+    width: 100%;
+    max-width: 480px;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #0f62fe;
+    font-size: 1.5rem;
+    font-weight: 800;
+
+    &-icon {
+      font-size: 2rem;
+    }
+  }
+
+  &__main {
+    flex: 1;
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 1rem 2.5rem;
+  }
+}
+
+.ap-register-card {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(225, 228, 245, 0.85);
+  border-radius: 28px;
+  box-shadow: 0 16px 40px rgba(15, 76, 129, 0.08);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  @include ds.from(md) {
+    padding: 2.5rem 2rem;
+    border-radius: 32px;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    align-self: flex-start;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    background: rgba(15, 98, 254, 0.1);
+    color: #0f62fe;
+    font-size: 0.75rem;
+    font-weight: 700;
+
+    .material-symbols-outlined {
+      font-size: 1rem;
+    }
+  }
+
+  &__title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.2;
+
+    @include ds.from(md) {
+      font-size: 2rem;
+    }
+  }
+
+  &__subtitle {
+    font-size: 0.875rem;
+    color: #5e6572;
+    line-height: 1.45;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__submit-btn {
+    width: 100%;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    background: linear-gradient(135deg, #0f62fe 0%, #004ccd 100%);
+    color: #ffffff;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(15, 98, 254, 0.28);
+
+    &:hover:not(:disabled) {
+      box-shadow: 0 12px 32px rgba(15, 98, 254, 0.38);
+    }
+    &:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+    &:disabled {
+      opacity: 0.7;
+    }
+    &:focus-visible {
+      @include ds.focus-ring;
+    }
+  }
+
+  &__spinner {
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: apSpin 600ms linear infinite;
+  }
+
+  &__footer {
+    text-align: center;
+    padding-top: 0.25rem;
+
+    &-text {
+      font-size: 0.8125rem;
+      color: #5e6572;
+    }
+  }
+
+  &__login-link {
+    background: none;
+    border: none;
+    color: #0f62fe;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.ap-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+
+  &__label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  &__input-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid rgba(195, 198, 216, 0.7);
+    border-radius: 0.875rem;
+
+    &:focus-within {
+      border-color: #0f62fe;
+      box-shadow: 0 0 0 3px rgba(15, 98, 254, 0.12);
+    }
+  }
+
+  &__country-select {
+    display: flex;
+    align-items: center;
+    padding: 0 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-right: 1px solid rgba(195, 198, 216, 0.5);
+    background: #f8fafc;
+    height: 48px;
+    border-top-left-radius: 0.875rem;
+    border-bottom-left-radius: 0.875rem;
+  }
+
+  &__icon {
+    position: absolute;
+    left: 0.875rem;
+    font-size: 1.25rem;
+    color: #737687;
+    pointer-events: none;
+  }
+
+  &__input {
+    width: 100%;
+    height: 48px;
+    padding: 0 2.5rem;
+    border: none;
+    background: transparent;
+    font-size: 0.875rem;
+    outline: none;
+
+    &--error {
+      border-color: #ba1a1a;
+    }
+  }
+
+  &__toggle-btn {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    color: #737687;
+    cursor: pointer;
+
+    .material-symbols-outlined {
+      font-size: 1.25rem;
+    }
+  }
+
+  &__error {
+    font-size: 0.75rem;
+    color: #ba1a1a;
+    font-weight: 500;
+  }
+}
+
+.ap-fade-in {
+  animation: apFadeIn 450ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes apFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes apSpin {
+  to { transform: rotate(360deg); }
+}

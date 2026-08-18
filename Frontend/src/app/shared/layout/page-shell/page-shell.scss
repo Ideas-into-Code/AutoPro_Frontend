@@ -1,0 +1,48 @@
+@use 'index' as ds;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  // 100dvh tient compte de la barre d'adresse mobile qui se replie.
+  min-height: 100dvh;
+}
+
+.ap-page-shell__main {
+  flex: 1 1 auto;
+  padding-block: var(--ap-space-6);
+
+  @include ds.container;
+
+  @include ds.from(md) {
+    padding-block: var(--ap-space-10);
+  }
+
+  // Le conteneur reçoit tabindex="-1" pour le lien d'évitement : on masque
+  // l'anneau de focus qui n'apporte rien sur un bloc de contenu entier.
+  &:focus {
+    outline: none;
+  }
+}
+
+// Visible uniquement lorsqu'il reçoit le focus au clavier.
+.ap-page-shell__skip {
+  @include ds.visually-hidden;
+
+  &:focus {
+    position: fixed;
+    top: var(--ap-space-2);
+    left: var(--ap-space-2);
+    z-index: var(--ap-z-toast);
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: var(--ap-space-2) var(--ap-space-4);
+    clip-path: none;
+    background-color: var(--ap-surface-raised);
+    border: var(--ap-border-width-thick) solid var(--ap-color-primary);
+    border-radius: var(--ap-radius-md);
+    color: var(--ap-color-primary);
+    font-weight: var(--ap-font-weight-medium);
+  }
+}

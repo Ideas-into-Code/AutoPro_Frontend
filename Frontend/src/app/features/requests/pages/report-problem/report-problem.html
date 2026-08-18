@@ -1,0 +1,141 @@
+<div class="ap-report">
+  @if (demandeEnvoyee(); as demande) {
+    <!--
+      Accusé de réception plutôt qu'une redirection immédiate : l'utilisateur
+      doit repartir avec son numéro de demande et l'estimation, pas avec le
+      doute d'avoir cliqué dans le vide.
+    -->
+    <section class="ap-report__done" aria-labelledby="ap-report-done-titre">
+      <h1 class="ap-report__done-title" id="ap-report-done-titre">Votre demande est partie</h1>
+
+      <p class="ap-report__done-lead">
+        Un mécanicien proche va être alerté. Vous serez rappelé au
+        <strong>{{ demande.clientPhone }}</strong>
+        .
+      </p>
+
+      <dl class="ap-report__summary">
+        <dt>Numéro de demande</dt>
+        <dd>{{ demande.id }}</dd>
+
+        <dt>Lieu indiqué</dt>
+        <dd>{{ demande.locationAddress }}</dd>
+
+        <dt>Estimation indicative</dt>
+        <dd>{{ demande.estimatedPriceXOF }} FCFA</dd>
+      </dl>
+
+      <p class="ap-report__done-note">
+        L'estimation reste indicative : le tarif définitif est confirmé par le mécanicien après
+        diagnostic.
+      </p>
+
+      <button appButton type="button" variant="primary" (click)="retourAccueil()">
+        Retour à l'accueil
+      </button>
+    </section>
+  } @else {
+    <header class="ap-report__intro">
+      <a class="ap-report__back" routerLink="/accueil">
+        <app-icon name="fleche-droite" size="sm" class="ap-report__back-icon" />
+        Retour à l'accueil
+      </a>
+
+      <h1 class="ap-report__title">Signaler un problème</h1>
+
+      @if (urgence()) {
+        <p class="ap-report__emergency" role="status">
+          <app-icon name="sos" size="sm" />
+          Demande marquée comme urgente : elle sera traitée en priorité.
+        </p>
+      }
+    </header>
+
+    <form class="ap-report__form" [formGroup]="formulaire" (ngSubmit)="envoyer()">
+      <fieldset class="ap-report__fieldset">
+        <legend class="ap-report__legend">Nature du problème</legend>
+
+        <label class="ap-report__field-label" for="ap-report-type">Type de panne</label>
+        <select class="ap-report__select" id="ap-report-type" formControlName="problemType">
+          @for (type of typesDeProbleme; track type[0]) {
+            <option [value]="type[0]">{{ type[1] }}</option>
+          }
+        </select>
+
+        <label class="ap-report__field-label" for="ap-report-description">
+          Décrivez ce qui se passe
+        </label>
+        <textarea
+          class="ap-report__textarea"
+          id="ap-report-description"
+          rows="5"
+          formControlName="description"
+          placeholder="Depuis quand ? Quel bruit, quelle fumée, quel voyant ? Le véhicule roule-t-il encore ?"
+          [attr.aria-invalid]="
+            formulaire.controls.description.touched && formulaire.controls.description.invalid
+              ? 'true'
+              : null
+          "
+        ></textarea>
+
+        <p class="ap-report__counter" aria-live="polite">
+          {{ caracteresRestants() }} caractères restants
+        </p>
+
+        @if (formulaire.controls.description.touched && formulaire.controls.description.invalid) {
+          <p class="ap-report__error" role="alert">
+            Décrivez le problème en 20 caractères au moins : « ça ne démarre pas » n'aide pas le
+            mécanicien à prévoir la bonne pièce.
+          </p>
+        }
+      </fieldset>
+
+      <fieldset class="ap-report__fieldset">
+        <legend class="ap-report__legend">Où et comment vous joindre</legend>
+
+        <app-location-picker
+          [addressControl]="formulaire.controls.adresse"
+          (positionChange)="surPosition($event)"
+        />
+
+        <app-form-field
+          label="Numéro de téléphone"
+          type="tel"
+          autocomplete="tel"
+          placeholder="77 123 45 67"
+          hint="C'est à ce numéro que le mécanicien vous rappellera."
+          [control]="formulaire.controls.telephone"
+          required
+        />
+      </fieldset>
+
+      <fieldset class="ap-report__fieldset">
+        <legend class="ap-report__legend">Photos</legend>
+        <app-photo-upload (photosChange)="surPhotos($event)" />
+      </fieldset>
+
+      @if (erreurEnvoi(); as message) {
+        <p class="ap-report__error ap-report__error--envoi" role="alert">{{ message }}</p>
+      }
+
+      <button
+        appButton
+        type="submit"
+        variant="primary"
+        size="lg"
+        class="ap-report__submit"
+        [loading]="envoiEnCours()"
+      >
+        Envoyer ma demande
+      </button>
+    </form>
+
+    <!--
+      Colonne d'appui, affichée seulement à partir du grand écran. Elle occupe
+      la place laissée libre à droite du formulaire — qui, lui, reste étroit :
+      au-delà d'une soixantaine de caractères, une ligne de formulaire devient
+      pénible à parcourir.
+    -->
+    <app-next-steps class="ap-report__aside" />
+  }
+</div>

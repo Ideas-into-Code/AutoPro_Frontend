@@ -1,0 +1,26 @@
+<label class="ap-form-field__label" [for]="fieldId">
+  {{ label() }}
+  @if (required()) {
+    <span class="ap-form-field__required" aria-hidden="true">*</span>
+  }
+</label>
+
+<input
+  class="ap-form-field__input"
+  [id]="fieldId"
+  [type]="type()"
+  [formControl]="control()"
+  [placeholder]="placeholder()"
+  [class.ap-form-field__input--invalid]="errorMessage() !== null"
+  [attr.autocomplete]="autocomplete() === '' ? null : autocomplete()"
+  [attr.aria-invalid]="errorMessage() === null ? null : 'true'"
+  [attr.aria-describedby]="describedBy()"
+/>
+
+@if (hint() !== '' && errorMessage() === null) {
+  <p class="ap-form-field__hint" [id]="hintId">{{ hint() }}</p>
+}
+
+@if (errorMessage(); as message) {
+  <p class="ap-form-field__error" [id]="errorId" role="alert">{{ message }}</p>
+}

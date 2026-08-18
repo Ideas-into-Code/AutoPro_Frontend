@@ -1,0 +1,45 @@
+<div class="ap-header__bar">
+
+  <!-- Logo / Brand -->
+  <a class="ap-header__brand" routerLink="/accueil" aria-label="AutoPro - Accueil">
+    <span class="ap-header__brand-icon" aria-hidden="true">
+      <span class="material-symbols-outlined">directions_car</span>
+    </span>
+    <span class="ap-header__brand-name">{{ brand() }}</span>
+  </a>
+
+  <!-- Navigation desktop (au centre) -->
+  <nav
+    id="ap-header-nav"
+    class="ap-header__nav"
+    [class.ap-header__nav--open]="menuOpen()"
+    aria-label="Navigation principale"
+  >
+    <ng-content select="[nav]" />
+  </nav>
+
+  <!-- Zone actions (droite) -->
+  <div class="ap-header__actions">
+    <ng-content select="[actions]" />
+  </div>
+
+  <!-- Bouton hamburger mobile -->
+  @if (showNavToggle()) {
+    <button
+      type="button"
+      class="ap-header__toggle"
+      [attr.aria-expanded]="menuOpen()"
+      aria-controls="ap-header-nav"
+      (click)="toggleMenu()"
+    >
+      <span class="ap-header__toggle-label">
+        {{ menuOpen() ? 'Fermer le menu' : 'Ouvrir le menu' }}
+      </span>
+      <span class="ap-header__hamburger" [class.ap-header__hamburger--open]="menuOpen()" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+  }
+</div>

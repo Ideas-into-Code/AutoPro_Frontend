@@ -1,0 +1,45 @@
+@use 'index' as ds;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
+  padding: var(--ap-space-4);
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-lg);
+  box-shadow: var(--ap-shadow-sm);
+
+  @include ds.from(md) {
+    padding: var(--ap-space-6);
+  }
+}
+
+:host(.ap-card--flat) {
+  box-shadow: none;
+}
+
+:host(.ap-card--interactive) {
+  transition:
+    box-shadow var(--ap-duration-fast) var(--ap-easing-standard),
+    border-color var(--ap-duration-fast) var(--ap-easing-standard);
+
+  &:hover {
+    border-color: var(--ap-border-strong);
+    box-shadow: var(--ap-shadow-md);
+  }
+}
+
+// Les conteneurs d'emplacement disparaissent quand rien n'y est projeté :
+// `:empty` évite les espacements fantômes d'un en-tête ou d'actions absents.
+.ap-card__header:empty,
+.ap-card__actions:empty {
+  display: none;
+}
+
+.ap-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-2);
+  margin-top: auto;
+}

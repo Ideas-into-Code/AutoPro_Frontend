@@ -1,0 +1,145 @@
+<div class="ap-ml">
+
+  <!-- EN-TÊTE BANNER -->
+  <div class="ap-ml__banner">
+    <header class="ap-ml__intro">
+      <a class="ap-ml__back" routerLink="/accueil">
+        <app-icon name="fleche-droite" size="sm" class="ap-ml__back-icon" />
+        Retour à l'accueil
+      </a>
+
+      <h1 class="ap-ml__title">{{ titre() }}</h1>
+
+      <app-search-bar
+        class="ap-ml__search"
+        label="Affiner la recherche"
+        placeholder="Nom, atelier, spécialité ou quartier…"
+        [value]="recherche()"
+        (searchSubmit)="rechercher($event)"
+      />
+    </header>
+  </div>
+
+  <!-- CORPS -->
+  <div class="ap-ml__body">
+
+    @if (mecaniciensResource.isLoading()) {
+      <p class="ap-ml__state">
+        <app-spinner label="Recherche des mécaniciens" />
+      </p>
+
+    } @else if (hasFailed()) {
+      <div class="ap-ml__state ap-ml__state--error" role="alert">
+        <p>La liste n'a pas pu être chargée. Vérifiez votre connexion.</p>
+        <button appButton type="button" variant="secondary" size="sm" (click)="reessayer()">
+          Réessayer
+        </button>
+      </div>
+
+    } @else {
+      <p class="ap-ml__count" aria-live="polite">
+        <strong>{{ total() }}</strong>
+        mécanicien{{ total() > 1 ? 's' : '' }} disponible{{ total() > 1 ? 's' : '' }}
+      </p>
+
+      <ul class="ap-ml__grid" aria-label="Liste des mécaniciens">
+
+        @for (mec of mecaniciens(); track mec.id) {
+          <li class="ap-ml__item">
+            <article class="ap-ml__card">
+
+              <!-- EN-TÊTE CARTE -->
+              <div class="ap-ml__card-head">
+                <div class="ap-ml__avatar-wrap">
+                  <div class="ap-ml__avatar" aria-hidden="true">
+                    @if (mec.avatarUrl) {
+                      <img [src]="mec.avatarUrl" [alt]="mec.fullName" />
+                    } @else {
+                      {{ mec.fullName.slice(0, 1) }}
+                    }
+                  </div>
+                  <!-- Rating flottant sous l'avatar -->
+                  <div class="ap-ml__rating-badge" [attr.aria-label]="mec.rating + ' sur 5, ' + mec.reviewCount + ' avis'">
+                    <span class="ap-ml__rating-badge-star" aria-hidden="true">★</span>
+                    <strong>{{ mec.rating.toFixed(1) }}</strong>
+                    <span class="ap-ml__rating-badge-count">({{ mec.reviewCount }})</span>
+                  </div>
+                </div>
+
+                <div class="ap-ml__card-meta">
+                  @if (mec.isVerified) {
+                    <span class="ap-ml__verified">
+                      <span aria-hidden="true">✓</span> Vérifié
+                    </span>
+                  }
+                  <span
+                    class="ap-ml__status"
+                    [class.ap-ml__status--open]="mec.isAvailable"
+                  >
+                    {{ mec.isAvailable ? 'Disponible' : 'Indisponible' }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- CORPS CARTE -->
+              <div class="ap-ml__card-body">
+                <h2 class="ap-ml__name">{{ mec.fullName }}</h2>
+
+                <p class="ap-ml__workshop">
+                  <app-icon name="cle" size="sm" />
+                  {{ mec.workshopName }}
+                </p>
+
+                <p class="ap-ml__address">
+                  <app-icon name="position" size="sm" />
+                  {{ mec.address }}
+                </p>
+
+                <!-- Spécialités -->
+                <ul class="ap-ml__specialties">
+                  @for (spec of mec.specialties.slice(0, 3); track spec) {
+                    <li class="ap-ml__chip">{{ spec }}</li>
+                  }
+                  @if (mec.specialties.length > 3) {
+                    <li class="ap-ml__chip ap-ml__chip--more">+{{ mec.specialties.length - 3 }}</li>
+                  }
+                </ul>
+              </div>
+
+              <!-- CTA -->
+              <div class="ap-ml__card-footer">
+                <a
+                  appButton
+                  [routerLink]="['/mecaniciens', mec.id]"
+                  fullWidth
+                >
+                  Voir le profil
+                </a>
+                <a
+                  appButton
+                  variant="secondary"
+                  [routerLink]="['/messages']"
+                  [queryParams]="{ mecanicien: mec.id }"
+                  fullWidth
+                >
+                  Message
+                </a>
+              </div>
+
+            </article>
+          </li>
+
+        } @empty {
+          <li class="ap-ml__state">
+            <p>Aucun mécanicien ne correspond à cette recherche.</p>
+            @if (isFiltered()) {
+              <a appButton variant="secondary" size="sm" routerLink="/mecaniciens">
+                Voir tous les mécaniciens
+              </a>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</div>

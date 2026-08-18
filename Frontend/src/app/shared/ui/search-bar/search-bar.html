@@ -1,0 +1,37 @@
+<form class="ap-search-bar__form" role="search" (submit)="onSubmit()">
+  <label class="ap-search-bar__label" [for]="fieldId">{{ label() }}</label>
+
+  <app-icon class="ap-search-bar__prefix" name="recherche" size="sm" />
+
+  <!--
+    Une référence de template plutôt que `$any($event.target)` : la valeur reste
+    typée, sans échappatoire au vérificateur de types du compilateur Angular.
+  -->
+  <input
+    #champ
+    class="ap-search-bar__input"
+    type="search"
+    enterkeyhint="search"
+    autocomplete="off"
+    [id]="fieldId"
+    [value]="term()"
+    [placeholder]="placeholder()"
+    (input)="onInput(champ.value)"
+  />
+
+  <!--
+    Le bouton d'effacement n'apparaît qu'une fois le champ rempli : afficher
+    une croix inerte sur un champ vide ajoute une cible tactile sans effet.
+  -->
+  @if (term() !== '') {
+    <button type="button" class="ap-search-bar__clear" (click)="onClear()">
+      <span class="ap-search-bar__clear-label">Effacer la recherche</span>
+      <app-icon name="croix" size="sm" />
+    </button>
+  }
+
+  <button type="submit" class="ap-search-bar__submit">
+    <span class="ap-search-bar__submit-label">Rechercher</span>
+    <app-icon class="ap-search-bar__submit-icon" name="fleche-droite" size="sm" />
+  </button>
+</form>

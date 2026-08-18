@@ -1,0 +1,148 @@
+<div class="ap-home">
+  <!-- ═══════════════════════════════════════
+       HERO — Salutation + SOS
+  ════════════════════════════════════════ -->
+  <section class="ap-home__hero" aria-labelledby="ap-home-titre">
+    <!-- Blobs déco -->
+    <span class="ap-home__hero-blob ap-home__hero-blob--1" aria-hidden="true"></span>
+    <span class="ap-home__hero-blob ap-home__hero-blob--2" aria-hidden="true"></span>
+    <span class="ap-home__hero-blob ap-home__hero-blob--3" aria-hidden="true"></span>
+
+    <div class="ap-home__hero-inner">
+      <p class="ap-home__greeting-label">Bonjour 👋</p>
+
+      <h1 class="ap-home__title" id="ap-home-titre">Trouvez un mécanicien<br />de confiance</h1>
+      <p class="ap-home__subtitle">Professionnel vérifié, disponible près de vous à Dakar.</p>
+
+      <!-- SOS imposant sous le subtitle -->
+      <a
+        class="ap-home__sos-btn"
+        [routerLink]="ecranSignalement"
+        [queryParams]="{ urgence: 'true' }"
+        aria-label="Assistance d'urgence — Demander un dépannage immédiat"
+      >
+        <span class="ap-home__sos-pulse" aria-hidden="true"></span>
+        <span class="material-symbols-outlined ap-home__sos-icon" aria-hidden="true"
+          >emergency</span
+        >
+        <span class="ap-home__sos-label"> <strong>SOS</strong> — Demander un dépannage </span>
+        <span class="material-symbols-outlined ap-home__sos-arrow" aria-hidden="true"
+          >arrow_forward</span
+        >
+      </a>
+
+      <!-- Barre de recherche -->
+      <div class="ap-home__search-wrap">
+        <app-search-bar
+          class="ap-home__search"
+          label="Rechercher un mécanicien, une panne ou un quartier"
+          placeholder="Batterie, embrayage, Keur Massar…"
+          (searchSubmit)="rechercher($event)"
+        />
+      </div>
+    </div>
+
+    <!-- Vague décorative bas du hero -->
+    <div class="ap-home__hero-wave" aria-hidden="true">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z"
+          fill="var(--ap-surface-page,#faf8ff)"
+        />
+      </svg>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       SERVICES POPULAIRES
+  ════════════════════════════════════════ -->
+  <section class="ap-home__section" aria-labelledby="ap-home-services-titre">
+    <div class="ap-home__section-inner">
+      <h2 class="ap-home__section-title" id="ap-home-services-titre">Services populaires</h2>
+
+      @if (categoriesResource.isLoading()) {
+        <p class="ap-home__state">
+          <app-spinner label="Chargement des catégories de service" />
+        </p>
+      } @else if (hasFailed()) {
+        <div class="ap-home__state ap-home__state--error" role="alert">
+          <p>Les catégories n'ont pas pu être chargées. Vérifiez votre connexion.</p>
+          <button appButton type="button" variant="secondary" size="sm" (click)="reessayer()">
+            Réessayer
+          </button>
+        </div>
+      } @else {
+        <!-- Scroll horizontal de pills sur mobile, grille sur desktop -->
+        <ul class="ap-home__services-scroll" aria-label="Catégories de service">
+          @for (categorie of categories(); track categorie.id) {
+            <li class="ap-home__service-item">
+              <a
+                class="ap-home__service-pill"
+                [routerLink]="ecranMecaniciens"
+                [queryParams]="{ categorie: categorie.slug }"
+                [class.ap-home__service-pill--emergency]="categorie.isEmergency"
+              >
+                <span class="ap-home__service-icon-wrap" aria-hidden="true">
+                  <app-icon [name]="categoryIcon(categorie.slug)" size="sm" />
+                </span>
+                <span class="ap-home__service-label">{{ categorie.label }}</span>
+              </a>
+            </li>
+          } @empty {
+            <li class="ap-home__state">Aucune catégorie disponible.</li>
+          }
+        </ul>
+      }
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       MÉCANICIENS PROCHES — Scroll horizontal
+  ════════════════════════════════════════ -->
+  <section
+    class="ap-home__section ap-home__section--alt"
+    aria-labelledby="ap-home-mecaniciens-titre"
+  >
+    <div class="ap-home__section-inner">
+      <div class="ap-home__section-header">
+        <h2 class="ap-home__section-title" id="ap-home-mecaniciens-titre">Mécaniciens proches</h2>
+        <a class="ap-home__see-all" [routerLink]="ecranMecaniciens">
+          Voir tout
+          <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+        </a>
+      </div>
+
+      <app-nearby-mechanics [mechanics]="nearbyMechanics" />
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       DEMANDES RÉCENTES + APERÇU CARTE
+  ════════════════════════════════════════ -->
+  <section class="ap-home__section" aria-label="Activité récente et carte">
+    <div class="ap-home__section-inner">
+      <div class="ap-home__bottom-grid">
+        <!-- Demandes récentes -->
+        <div>
+          <div class="ap-home__section-header">
+            <h2 class="ap-home__section-title">Mes demandes récentes</h2>
+            <a class="ap-home__see-all" routerLink="/demandes">
+              Voir tout
+              <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+            </a>
+          </div>
+
+          <app-recent-requests [requests]="recentRequests" />
+        </div>
+
+        <!-- Aperçu carte -->
+        <div>
+          <h2 class="ap-home__section-title ap-home__section-title--spaced">
+            Services à proximité
+          </h2>
+          <app-map-preview [mechanicCount]="nearbyMechanics.length" />
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

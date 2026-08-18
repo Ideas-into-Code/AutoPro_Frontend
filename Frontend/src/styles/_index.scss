@@ -1,0 +1,23 @@
+// =============================================================================
+// AutoPro — Point d'entrée du design system pour les composants
+// =============================================================================
+// Un composant qui a besoin des tokens ou des mixins écrit une seule ligne :
+//
+//   @use 'index' as ds;
+//
+//   .carte {
+//     padding: var(--ap-space-4);
+//     border-radius: ds.$radius-md;
+//     @include ds.from(md) { padding: var(--ap-space-6); }
+//   }
+//
+// `stylePreprocessorOptions.includePaths` (angular.json) pointe sur `src/styles`,
+// ce qui évite les chemins relatifs fragiles du type `../../../styles/...`.
+//
+// Ne pas importer `theme`, `reset` ni `base` ici : ils émettent du CSS global
+// et sont chargés une seule fois par `src/styles.scss`. Les inclure dans un
+// composant dupliquerait ce CSS dans chaque feuille de style.
+// =============================================================================
+
+@forward 'tokens';
+@forward 'mixins';

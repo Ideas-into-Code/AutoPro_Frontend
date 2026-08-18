@@ -1,0 +1,437 @@
+@use 'index' as ds;
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ROOT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ap-home {
+  display: flex;
+  flex-direction: column;
+  padding-block-end: var(--ap-space-20);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   HERO — design clair premium
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ap-home__hero {
+  position: relative;
+  overflow: hidden;
+  /* Fond blanc vers très léger bleu — net et aéré */
+  background: linear-gradient(160deg, #ffffff 0%, #f0f4ff 50%, #e8effe 100%);
+  border-bottom: 1px solid rgba(0, 76, 205, 0.08);
+}
+
+/* Blobs décoratifs légers */
+.ap-home__hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+
+  &--1 {
+    width: 32rem;
+    height: 32rem;
+    top: -12rem;
+    right: -8rem;
+    background: radial-gradient(circle, rgba(0, 76, 205, 0.07) 0%, transparent 70%);
+    filter: blur(40px);
+  }
+
+  &--2 {
+    width: 20rem;
+    height: 20rem;
+    bottom: -8rem;
+    left: -6rem;
+    background: radial-gradient(circle, rgba(0, 76, 205, 0.05) 0%, transparent 70%);
+    filter: blur(50px);
+  }
+
+  &--3 {
+    width: 10rem;
+    height: 10rem;
+    top: 2rem;
+    left: 40%;
+    background: radial-gradient(circle, rgba(99, 162, 255, 0.12) 0%, transparent 70%);
+    filter: blur(30px);
+  }
+}
+
+.ap-home__hero-inner {
+  @include ds.container;
+
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-6);
+  padding-block: var(--ap-space-12) var(--ap-space-16);
+
+  @include ds.from(md) {
+    padding-block: var(--ap-space-16) var(--ap-space-20);
+  }
+}
+
+.ap-home__greeting-label {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+  font-weight: var(--ap-font-weight-medium);
+}
+
+.ap-home__title {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  font-weight: 800;
+  /* Texte sombre avec accent bleu sur les mots clés via gradient clip */
+  background: linear-gradient(
+    135deg,
+    var(--ap-text-primary) 0%,
+    #1a3a7a 60%,
+    var(--ap-color-primary) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+}
+
+.ap-home__subtitle {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-md);
+  max-width: 44ch;
+}
+
+/* ——— Bouton SOS imposant ——— */
+.ap-home__sos-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ap-space-3);
+  align-self: flex-start;
+  padding: var(--ap-space-4) var(--ap-space-6);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: #fff;
+  border-radius: var(--ap-radius-xl);
+  font-weight: var(--ap-font-weight-bold);
+  font-size: var(--ap-font-size-md);
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 4px 20px rgba(220, 38, 38, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.1) inset;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  overflow: hidden;
+
+  /* Pleine largeur sur mobile */
+  width: 100%;
+  justify-content: center;
+
+  @include ds.from(sm) {
+    width: auto;
+    justify-content: flex-start;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 8px 28px rgba(220, 38, 38, 0.6),
+      0 1px 0 rgba(255, 255, 255, 0.1) inset;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @include ds.focus-ring;
+}
+
+/* Anneau pulsant */
+.ap-home__sos-pulse {
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 2px solid rgba(220, 38, 38, 0.5);
+  animation: sos-pulse 2s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes sos-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+
+.ap-home__sos-icon {
+  font-size: 1.5rem;
+  font-variation-settings: 'FILL' 1;
+  flex-shrink: 0;
+}
+
+.ap-home__sos-label {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  text-align: left;
+
+  strong {
+    font-size: var(--ap-font-size-lg);
+    font-weight: 900;
+    letter-spacing: 0.02em;
+  }
+
+  span {
+    /* sous-texte */
+    font-size: var(--ap-font-size-xs);
+    font-weight: var(--ap-font-weight-medium);
+    opacity: 0.85;
+  }
+}
+
+.ap-home__sos-arrow {
+  margin-inline-start: auto;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+
+  .ap-home__sos-btn:hover & {
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 35.999em) {
+    display: none;
+  }
+}
+
+/* Vague bas du hero — non nécessaire sur fond clair, on garde juste une ombre douce */
+.ap-home__hero-wave {
+  display: none;
+}
+
+/* Search */
+.ap-home__search-wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 42rem;
+}
+
+.ap-home__search {
+  width: 100%;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SECTIONS COMMUNES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ap-home__section {
+  background: var(--ap-surface-page);
+  padding-block: var(--ap-space-8);
+
+  &--alt {
+    background: var(--ap-surface-sunken);
+  }
+}
+
+.ap-home__section-inner {
+  @include ds.container;
+}
+
+.ap-home__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ap-space-5);
+}
+
+.ap-home__section-title {
+  margin: 0;
+  font-size: var(--ap-font-size-xl);
+  font-weight: 700;
+  color: var(--ap-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.ap-home__see-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1rem;
+  color: var(--ap-color-primary);
+  font-size: var(--ap-font-size-sm);
+  font-weight: var(--ap-font-weight-semibold);
+  text-decoration: none;
+  transition: gap 0.15s ease;
+
+  &:hover {
+    gap: var(--ap-space-1);
+    text-decoration: underline;
+  }
+
+  .material-symbols-outlined {
+    font-size: 1.1rem;
+  }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SERVICES POPULAIRES — Pills
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* Scroll horizontal sur mobile, wrapping sur desktop */
+.ap-home__services-scroll {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--ap-space-3);
+  overflow-x: auto;
+  padding-block-end: var(--ap-space-1);
+  margin-inline: calc(var(--ap-space-4) * -1);
+  padding-inline: var(--ap-space-4);
+  scrollbar-width: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @include ds.from(md) {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}
+
+.ap-home__service-item {
+  flex: 0 0 auto;
+}
+
+.ap-home__service-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ap-space-2);
+  padding: var(--ap-space-2) var(--ap-space-4) var(--ap-space-2) var(--ap-space-3);
+  background: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-full);
+  text-decoration: none;
+  color: var(--ap-text-primary);
+  font-size: var(--ap-font-size-sm);
+  font-weight: var(--ap-font-weight-medium);
+  box-shadow: var(--ap-shadow-sm);
+  white-space: nowrap;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+
+  &:hover {
+    border-color: var(--ap-color-primary);
+    background-color: var(--ap-color-primary-50);
+    box-shadow: var(--ap-shadow-md);
+    color: var(--ap-color-primary);
+  }
+
+  &--emergency {
+    border-color: rgba(220, 38, 38, 0.25);
+    background: #fff5f5;
+
+    .ap-home__service-icon-wrap {
+      color: #dc2626;
+      background: rgba(220, 38, 38, 0.08);
+    }
+
+    &:hover {
+      border-color: #dc2626;
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+  }
+
+  @include ds.focus-ring;
+}
+
+.ap-home__service-icon-wrap {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  background: var(--ap-color-primary-50);
+  border-radius: var(--ap-radius-lg);
+  color: var(--ap-color-primary);
+  flex-shrink: 0;
+  transition: background-color 0.15s ease;
+}
+
+.ap-home__service-label {
+  font-size: var(--ap-font-size-sm);
+  font-weight: var(--ap-font-weight-semibold);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   MÉCANICIENS PROCHES — scroll horizontal
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   GRILLE BASSE (demandes + carte)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ap-home__bottom-grid {
+  display: grid;
+  gap: var(--ap-space-8);
+
+  @include ds.from(lg) {
+    grid-template-columns: 1.5fr 1fr;
+    align-items: start;
+    gap: var(--ap-space-10);
+  }
+}
+
+/* Demandes récentes */
+
+/* Aperçu carte */
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ÉTATS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.ap-home__state {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
+  align-items: flex-start;
+  margin: 0;
+  color: var(--ap-text-secondary);
+
+  p {
+    margin: 0;
+  }
+}
+
+.ap-home__state--error {
+  padding: var(--ap-space-4);
+  color: var(--ap-color-danger);
+  background-color: var(--ap-color-danger-surface);
+  border-radius: var(--ap-radius-md);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   REDUCED MOTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@include ds.respect-reduced-motion {
+  .ap-home__sos-btn,
+  .ap-home__service-card,
+  .ap-home__mechanic-card,
+  .ap-home__map-preview,
+  .ap-home__request-card {
+    transition: none;
+  }
+}
+
+// Espacement du titre au-dessus de l'aperçu de carte. Remplace un `style=`
+// en ligne : une déclaration dans le gabarit échappe au thème et au budget.
+.ap-home__section-title--spaced {
+  margin-bottom: var(--ap-space-4);
+}

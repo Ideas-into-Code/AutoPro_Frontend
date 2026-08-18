@@ -1,0 +1,84 @@
+@use 'index' as ds;
+
+:host {
+  display: block;
+}
+
+// Toujours en colonne : le panneau occupe désormais la colonne étroite de la
+// bande d'accroche, où une disposition horizontale serait à l'étroit.
+.ap-sos-button__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-4);
+  padding: var(--ap-space-5);
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thick) solid var(--ap-color-danger);
+  border-radius: var(--ap-radius-lg);
+  box-shadow: var(--ap-shadow-md);
+
+  @include ds.from(md) {
+    padding: var(--ap-space-6);
+  }
+}
+
+.ap-sos-button__halo {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  width: 4.5rem;
+  height: 4.5rem;
+  color: var(--ap-text-on-primary);
+  font-weight: var(--ap-font-weight-bold);
+  font-size: var(--ap-font-size-xl);
+  letter-spacing: 0.05em;
+  background-color: var(--ap-color-danger);
+  border-radius: var(--ap-radius-full);
+  animation: ap-sos-pulse 2s var(--ap-easing-standard) infinite;
+
+  @include ds.from(md) {
+    align-self: center;
+  }
+
+  // Une pulsation permanente est pénible, voire déclenchante, pour une partie
+  // des utilisateurs : elle disparaît dès que le système la refuse.
+  @include ds.respect-reduced-motion {
+    animation: none;
+  }
+}
+
+.ap-sos-button__text {
+  flex: 1;
+}
+
+.ap-sos-button__title {
+  margin: 0 0 var(--ap-space-1);
+  font-size: var(--ap-font-size-xl);
+  line-height: var(--ap-line-height-tight);
+}
+
+.ap-sos-button__hint {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+  line-height: var(--ap-line-height-base);
+}
+
+// Pleine largeur en toutes tailles : c'est l'action la plus urgente de
+// l'écran, et le pouce vise mal une cible étroite.
+.ap-sos-button__action {
+  flex: none;
+  width: 100%;
+}
+
+@keyframes ap-sos-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--ap-color-danger-surface);
+  }
+
+  50% {
+    box-shadow: 0 0 0 0.6rem transparent;
+  }
+}

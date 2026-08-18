@@ -1,0 +1,36 @@
+<!--
+  `aria-labelledby` rattache la région à son titre : un lecteur d'écran annonce
+  « région Besoin d'aide immédiate » au lieu d'une région anonyme.
+-->
+<section class="ap-sos-button__panel" aria-labelledby="ap-sos-titre">
+  <!--
+    Le sigle est écrit en toutes lettres, pas seulement suggéré par un
+    pictogramme : c'est le repère que l'utilisateur cherche des yeux, et
+    « SOS » se reconnaît plus vite qu'un triangle d'avertissement.
+  -->
+  <span class="ap-sos-button__halo" aria-hidden="true">SOS</span>
+
+  <div class="ap-sos-button__text">
+    <h2 class="ap-sos-button__title" id="ap-sos-titre">SOS — Besoin d'aide immédiate ?</h2>
+    <p class="ap-sos-button__hint">
+      Véhicule immobilisé, panne sur la route ou accident : décrivez le problème, un mécanicien
+      proche est alerté.
+    </p>
+  </div>
+
+  <!--
+    Pas d'attribut `fullWidth` ici : il applique `width: 100%` via `:host(...)`,
+    dont la spécificité l'emporterait sur le `width: auto` que cette feuille
+    rétablit en tablette. La largeur est donc pilotée d'un seul endroit.
+  -->
+  <a
+    appButton
+    variant="danger"
+    size="lg"
+    class="ap-sos-button__action"
+    [routerLink]="link()"
+    [queryParams]="linkParams()"
+  >
+    SOS — Demander un dépannage
+  </a>
+</section>
