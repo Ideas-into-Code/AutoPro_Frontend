@@ -36,7 +36,6 @@
   }
 
   .ap-bottom-nav__item {
-    position: relative;
     display: grid;
     min-width: 0;
     // 3,5 rem : au-delà des 44 px de cible tactile exigés par les conventions.
@@ -90,9 +89,10 @@
     white-space: nowrap;
   }
 
-  // L'entrée courante se distingue par la couleur, la pastille pleine **et**
-  // un point sous le libellé : trois repères, pour ne pas dépendre de la seule
-  // perception des couleurs.
+  // L'entrée courante se distingue par la pastille pleine et par le fond de
+  // l'entrée. L'inversion de la pastille est un contraste de forme, pas
+  // seulement de teinte : le repère tient donc sans dépendre de la perception
+  // des couleurs, et `aria-current` l'annonce aux lecteurs d'écran.
   .ap-bottom-nav__item--active {
     color: var(--ap-color-primary);
     background-color: var(--ap-color-primary-50);
@@ -100,18 +100,6 @@
     .ap-bottom-nav__icon {
       color: var(--ap-text-on-primary);
       background-color: var(--ap-color-primary);
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: var(--ap-space-1);
-      left: 50%;
-      width: 0.28rem;
-      height: 0.28rem;
-      background-color: currentcolor;
-      border-radius: var(--ap-radius-full);
-      transform: translateX(-50%);
     }
   }
 }
