@@ -85,9 +85,27 @@ export class MechanicDashboardPage {
   /** Demande écartée localement une fois la décision envoyée. */
   private readonly demandeTraitee = signal(false);
 
-  protected readonly incomingRequest = computed<NewRequest | null>(() =>
-    this.demandeTraitee() ? null : this.demandeResource.value(),
-  );
+  /**
+   * Demande proposée au mécanicien.
+   *
+   * Trois conditions, et non une seule :
+   *
+   *   - il doit être **en ligne**. C'est tout l'objet de la bascule : « cessez
+   *     de recevoir des demandes » n'aurait aucun sens si une popup s'ouvrait
+   *     malgré tout ;
+   *   - la demande ne doit pas déjà avoir été traitée ;
+   *   - il doit y en avoir une.
+   *
+   * Sans la première, la popup se rouvrait à chaque affichage de l'écran,
+   * quoi que le mécanicien ait choisi.
+   */
+  protected readonly incomingRequest = computed<NewRequest | null>(() => {
+    if (!this.isOnline() || this.demandeTraitee()) {
+      return null;
+    }
+
+    return this.demandeResource.value();
+  });
 
   protected readonly sendingDecision = signal(false);
 

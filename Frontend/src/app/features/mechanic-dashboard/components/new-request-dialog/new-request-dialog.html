@@ -5,53 +5,65 @@
   (close)="surFermetureNative()"
 >
   @if (request(); as demande) {
-    <div class="ap-new-request__header">
-      <span class="ap-new-request__badge">
-        <app-icon name="cle" size="sm" />
-        Nouvelle demande
-      </span>
+    <!--
+      Bandeau en tête, à la place de l'aperçu cartographique de la maquette :
+      charger une vraie carte dans une popup coûterait le poids de la
+      bibliothèque et une requête réseau, pour une vignette qu'on regarde une
+      seconde avant de décider.
+    -->
+    <div class="ap-new-request__banner">
+      <span class="ap-new-request__pulse" aria-hidden="true"></span>
+
+      <p class="ap-new-request__eyebrow">Nouvelle demande</p>
 
       <p class="ap-new-request__distance">
         <app-icon name="position" size="sm" />
-        {{ demande.distanceLabel }}
+        à {{ demande.distanceLabel }} de vous
       </p>
     </div>
 
-    <h2 class="ap-new-request__title" id="ap-new-request-titre">{{ demande.clientName }}</h2>
+    <div class="ap-new-request__body">
+      <h2 class="ap-new-request__title" id="ap-new-request-titre">{{ demande.clientName }}</h2>
 
-    <p class="ap-new-request__vehicle">{{ demande.vehicle }} · {{ demande.problemLabel }}</p>
+      <p class="ap-new-request__vehicle">
+        <app-icon name="voiture" size="sm" />
+        {{ demande.vehicle }}
+      </p>
 
-    <p class="ap-new-request__payout">
-      <span class="ap-new-request__payout-amount">{{ montantFormate() }} FCFA</span>
-      <span class="ap-new-request__payout-label">Rémunération estimée</span>
-    </p>
+      <p class="ap-new-request__problem">{{ demande.problemLabel }}</p>
 
-    <!--
-      « Accepter » est plus large et coloré : c'est l'action attendue. Refuser
-      reste atteignable, mais ne doit pas se cliquer par réflexe.
-    -->
-    <div class="ap-new-request__actions">
-      <button
-        appButton
-        type="button"
-        variant="secondary"
-        class="ap-new-request__decline"
-        [disabled]="pending()"
-        (click)="repondre('refusee')"
-      >
-        Refuser
-      </button>
+      <dl class="ap-new-request__payout">
+        <dt>Rémunération estimée</dt>
+        <dd>{{ montantFormate() }} FCFA</dd>
+      </dl>
 
-      <button
-        appButton
-        type="button"
-        variant="primary"
-        class="ap-new-request__accept"
-        [loading]="pending()"
-        (click)="repondre('acceptee')"
-      >
-        Accepter la demande
-      </button>
+      <!--
+        « Accepter » occupe deux tiers de la largeur : la hiérarchie des deux
+        gestes se lit avant même d'avoir déchiffré les libellés.
+      -->
+      <div class="ap-new-request__actions">
+        <button
+          appButton
+          type="button"
+          variant="ghost"
+          class="ap-new-request__decline"
+          [disabled]="pending()"
+          (click)="repondre('refusee')"
+        >
+          Refuser
+        </button>
+
+        <button
+          appButton
+          type="button"
+          variant="primary"
+          class="ap-new-request__accept"
+          [loading]="pending()"
+          (click)="repondre('acceptee')"
+        >
+          Accepter
+        </button>
+      </div>
     </div>
   }
 </dialog>
