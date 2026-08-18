@@ -1,138 +1,119 @@
 @use 'index' as ds;
 
+// Notification compacte, posée en haut de l'écran plutôt que centrée : une
+// boîte au milieu se lit comme une interruption, un bandeau haut comme une
+// alerte qu'on traite en passant.
 .ap-new-request {
-  width: min(100% - var(--ap-space-6), 24rem);
-  padding: 0;
-  overflow: hidden;
+  width: min(100% - var(--ap-space-6), 20rem);
+  margin-top: var(--ap-space-4);
+  margin-bottom: auto;
+  padding: var(--ap-space-4);
   color: var(--ap-text-primary);
   background-color: var(--ap-surface-raised);
-  border: 0;
-  border-radius: var(--ap-radius-xl);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-left: 3px solid var(--ap-color-primary);
+  border-radius: var(--ap-radius-lg);
   box-shadow: var(--ap-shadow-lg);
 
   &::backdrop {
-    background-color: rgb(25 27 36 / 55%);
-    backdrop-filter: blur(2px);
+    background-color: rgb(25 27 36 / 35%);
   }
 
-  // Apparition retenue : la popup s'ouvre sans qu'on l'ait demandée, une
-  // arrivée brutale ferait sursauter.
   animation: ap-new-request-in var(--ap-duration-base) var(--ap-easing-standard);
 
   @include ds.respect-reduced-motion {
     animation: none;
+  }
+
+  @include ds.from(md) {
+    // Sur grand écran, elle se range en haut à droite, là où l'œil cherche
+    // les notifications.
+    margin-right: var(--ap-space-6);
+    margin-left: auto;
   }
 }
 
 @keyframes ap-new-request-in {
   from {
     opacity: 0;
-    transform: translateY(0.75rem) scale(0.98);
+    transform: translateY(-0.5rem);
   }
-}
-
-// --- Bandeau -----------------------------------------------------------------
-
-.ap-new-request__banner {
-  position: relative;
-  padding: var(--ap-space-5) var(--ap-space-5) var(--ap-space-4);
-  overflow: hidden;
-  color: var(--ap-text-on-primary);
-  background-color: var(--ap-color-primary);
-}
-
-// Halo diffus, qui évoque un signal entrant sans dessiner de carte.
-.ap-new-request__pulse {
-  position: absolute;
-  top: -3.5rem;
-  right: -2.5rem;
-  width: 10rem;
-  height: 10rem;
-  background-color: rgb(255 255 255 / 12%);
-  border-radius: var(--ap-radius-full);
 }
 
 .ap-new-request__eyebrow {
-  position: relative;
-  margin: 0 0 var(--ap-space-1);
+  display: flex;
+  gap: var(--ap-space-2);
+  align-items: center;
+  margin: 0 0 var(--ap-space-2);
+  color: var(--ap-color-primary);
   font-weight: var(--ap-font-weight-semibold);
   font-size: var(--ap-font-size-xs);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  opacity: 0.9;
+  letter-spacing: 0.05em;
+}
+
+// Point clignotant, seul rappel visuel qu'il s'agit d'un signal entrant.
+.ap-new-request__dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  background-color: var(--ap-color-primary);
+  border-radius: var(--ap-radius-full);
+  animation: ap-new-request-pulse 1.6s var(--ap-easing-standard) infinite;
+
+  @include ds.respect-reduced-motion {
+    animation: none;
+  }
+}
+
+@keyframes ap-new-request-pulse {
+  50% {
+    opacity: 0.35;
+  }
 }
 
 .ap-new-request__distance {
-  position: relative;
-  display: flex;
-  gap: var(--ap-space-2);
-  align-items: center;
-  margin: 0;
-  font-weight: var(--ap-font-weight-semibold);
-  font-size: var(--ap-font-size-lg);
-}
-
-// --- Corps -------------------------------------------------------------------
-
-.ap-new-request__body {
-  padding: var(--ap-space-5);
+  margin-left: auto;
+  color: var(--ap-text-secondary);
+  font-weight: var(--ap-font-weight-medium);
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 .ap-new-request__title {
-  margin: 0 0 var(--ap-space-2);
-  font-size: var(--ap-font-size-xl);
+  margin: 0 0 var(--ap-space-1);
+  font-size: var(--ap-font-size-base);
   line-height: var(--ap-line-height-tight);
 }
 
-.ap-new-request__vehicle {
-  display: flex;
-  gap: var(--ap-space-2);
-  align-items: center;
-  margin: 0 0 var(--ap-space-1);
-  color: var(--ap-text-secondary);
-  font-size: var(--ap-font-size-sm);
-}
-
-.ap-new-request__problem {
-  margin: 0 0 var(--ap-space-5);
-  font-weight: var(--ap-font-weight-medium);
-}
-
-// Liste de description plutôt qu'un paragraphe : le montant est une donnée
-// étiquetée, et les lecteurs d'écran annoncent le couple libellé / valeur.
-.ap-new-request__payout {
+.ap-new-request__detail {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--ap-space-1);
+  gap: var(--ap-space-2);
   align-items: baseline;
   justify-content: space-between;
-  margin: 0 0 var(--ap-space-5);
-  padding: var(--ap-space-4);
-  background-color: var(--ap-surface-sunken);
-  border-radius: var(--ap-radius-lg);
+  margin: 0 0 var(--ap-space-4);
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-xs);
+}
 
-  dt {
-    color: var(--ap-text-secondary);
-    font-size: var(--ap-font-size-xs);
-  }
-
-  dd {
-    margin: 0;
-    color: var(--ap-color-primary);
-    font-weight: var(--ap-font-weight-bold);
-    font-size: var(--ap-font-size-xl);
-  }
+.ap-new-request__payout {
+  color: var(--ap-color-primary);
+  font-weight: var(--ap-font-weight-bold);
+  font-size: var(--ap-font-size-sm);
+  white-space: nowrap;
 }
 
 .ap-new-request__actions {
   display: flex;
-  gap: var(--ap-space-3);
+  gap: var(--ap-space-2);
 }
 
 .ap-new-request__decline {
   flex: 1;
 }
 
+// « Accepter » reste plus large : la hiérarchie des deux gestes se lit avant
+// même d'avoir déchiffré les libellés.
 .ap-new-request__accept {
   flex: 2;
 }

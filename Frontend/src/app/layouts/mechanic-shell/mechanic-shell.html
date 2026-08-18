@@ -35,10 +35,13 @@
       Mes tarifs
     </a>
 
-    <!-- Identifie qui est connecté, sans encombrer la barre d'un nom entier. -->
+    <!--
+      La pastille seule : deux initiales suffisent à identifier qui est
+      connecté, et la barre reste dégagée. Le nom complet n'est pas affiché,
+      seulement annoncé aux lecteurs d'écran par l'avatar lui-même.
+    -->
     <a actions class="ap-mecano-shell__account" routerLink="/mecanicien/profil">
       <app-avatar [name]="nomAffiche()" size="sm" />
-      <span class="ap-mecano-shell__account-label">Mon profil</span>
     </a>
   </app-header>
 

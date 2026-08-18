@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
-import { Button, Icon } from '@shared/ui';
+import { Button } from '@shared/ui';
 import { NewRequest, RequestDecision } from '../../models/mechanic-dashboard.model';
 
 /**
@@ -35,7 +35,7 @@ import { NewRequest, RequestDecision } from '../../models/mechanic-dashboard.mod
  */
 @Component({
   selector: 'app-new-request-dialog',
-  imports: [Button, Icon],
+  imports: [Button],
   templateUrl: './new-request-dialog.html',
   styleUrl: './new-request-dialog.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

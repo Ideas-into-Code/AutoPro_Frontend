@@ -6,64 +6,47 @@
 >
   @if (request(); as demande) {
     <!--
-      Bandeau en tête, à la place de l'aperçu cartographique de la maquette :
-      charger une vraie carte dans une popup coûterait le poids de la
-      bibliothèque et une requête réseau, pour une vignette qu'on regarde une
-      seconde avant de décider.
+      Une seule ligne d'en-tête, sans bandeau : le mécanicien décide en
+      quelques secondes, la notification doit tenir dans un coup d'œil et non
+      occuper l'écran.
     -->
-    <div class="ap-new-request__banner">
-      <span class="ap-new-request__pulse" aria-hidden="true"></span>
+    <p class="ap-new-request__eyebrow">
+      <span class="ap-new-request__dot" aria-hidden="true"></span>
+      Nouvelle demande
+      <span class="ap-new-request__distance">{{ demande.distanceLabel }}</span>
+    </p>
 
-      <p class="ap-new-request__eyebrow">Nouvelle demande</p>
+    <h2 class="ap-new-request__title" id="ap-new-request-titre">{{ demande.clientName }}</h2>
 
-      <p class="ap-new-request__distance">
-        <app-icon name="position" size="sm" />
-        à {{ demande.distanceLabel }} de vous
-      </p>
-    </div>
+    <p class="ap-new-request__detail">
+      {{ demande.vehicle }} · {{ demande.problemLabel }}
+      <strong class="ap-new-request__payout">{{ montantFormate() }} FCFA</strong>
+    </p>
 
-    <div class="ap-new-request__body">
-      <h2 class="ap-new-request__title" id="ap-new-request-titre">{{ demande.clientName }}</h2>
+    <div class="ap-new-request__actions">
+      <button
+        appButton
+        type="button"
+        variant="ghost"
+        size="sm"
+        class="ap-new-request__decline"
+        [disabled]="pending()"
+        (click)="repondre('refusee')"
+      >
+        Refuser
+      </button>
 
-      <p class="ap-new-request__vehicle">
-        <app-icon name="voiture" size="sm" />
-        {{ demande.vehicle }}
-      </p>
-
-      <p class="ap-new-request__problem">{{ demande.problemLabel }}</p>
-
-      <dl class="ap-new-request__payout">
-        <dt>Rémunération estimée</dt>
-        <dd>{{ montantFormate() }} FCFA</dd>
-      </dl>
-
-      <!--
-        « Accepter » occupe deux tiers de la largeur : la hiérarchie des deux
-        gestes se lit avant même d'avoir déchiffré les libellés.
-      -->
-      <div class="ap-new-request__actions">
-        <button
-          appButton
-          type="button"
-          variant="ghost"
-          class="ap-new-request__decline"
-          [disabled]="pending()"
-          (click)="repondre('refusee')"
-        >
-          Refuser
-        </button>
-
-        <button
-          appButton
-          type="button"
-          variant="primary"
-          class="ap-new-request__accept"
-          [loading]="pending()"
-          (click)="repondre('acceptee')"
-        >
-          Accepter
-        </button>
-      </div>
+      <button
+        appButton
+        type="button"
+        variant="primary"
+        size="sm"
+        class="ap-new-request__accept"
+        [loading]="pending()"
+        (click)="repondre('acceptee')"
+      >
+        Accepter
+      </button>
     </div>
   }
 </dialog>
