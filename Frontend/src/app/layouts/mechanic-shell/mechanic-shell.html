@@ -1,0 +1,61 @@
+<a class="ap-mecano-shell__skip" href="#contenu-mecanicien">Aller au contenu principal</a>
+
+<header class="ap-mecano-shell__bar">
+  <p class="ap-mecano-shell__brand">
+    <app-icon class="ap-mecano-shell__brand-icon" name="voiture" size="sm" />
+    AutoPro
+    <span class="ap-mecano-shell__brand-space">Espace mécanicien</span>
+  </p>
+
+  <button type="button" class="ap-mecano-shell__notifications">
+    <span class="ap-mecano-shell__notifications-label">Notifications</span>
+    <app-icon name="cloche" size="sm" />
+  </button>
+</header>
+
+<main id="contenu-mecanicien" class="ap-mecano-shell__main" tabindex="-1">
+  <router-outlet />
+</main>
+
+<!--
+  `aria-current="page"` en plus de la couleur : dans une barre de quatre
+  pictogrammes, la seule teinte ne dit pas à un lecteur d'écran où l'on est.
+-->
+<nav class="ap-mecano-shell__nav" aria-label="Navigation mécanicien">
+  <a
+    routerLink="/mecanicien"
+    routerLinkActive="ap-mecano-shell__link--active"
+    [routerLinkActiveOptions]="{ exact: true }"
+    ariaCurrentWhenActive="page"
+  >
+    <app-icon name="accueil" size="sm" />
+    Tableau de bord
+  </a>
+
+  <a
+    routerLink="/carte"
+    routerLinkActive="ap-mecano-shell__link--active"
+    ariaCurrentWhenActive="page"
+  >
+    <app-icon name="carte" size="sm" />
+    Carte
+  </a>
+
+  <a
+    routerLink="/demandes"
+    routerLinkActive="ap-mecano-shell__link--active"
+    ariaCurrentWhenActive="page"
+  >
+    <app-icon name="cle" size="sm" />
+    Demandes
+  </a>
+
+  <a
+    routerLink="/mecaniciens/mec-001"
+    routerLinkActive="ap-mecano-shell__link--active"
+    ariaCurrentWhenActive="page"
+  >
+    <app-icon name="profil" size="sm" />
+    Profil
+  </a>
+</nav>
