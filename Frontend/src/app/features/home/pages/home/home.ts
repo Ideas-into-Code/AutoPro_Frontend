@@ -1,34 +1,29 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { ServiceCategory, ServiceCategoryRepository, emptyPage } from '@core';
-import { Button, SearchBar, Spinner } from '@shared/ui';
-import { CategoryCard } from '../../components/category-card/category-card';
-import { SosButton } from '../../components/sos-button/sos-button';
+import { Button, Icon, IconName, SearchBar, Spinner } from '@shared/ui';
+import { MOCK_NEARBY_MECHANICS, MOCK_RECENT_REQUESTS } from '../../data/mock-home-highlights.data';
+import { MapPreview } from '../../components/map-preview/map-preview';
+import { NearbyMechanics } from '../../components/nearby-mechanics/nearby-mechanics';
+import { RecentRequests } from '../../components/recent-requests/recent-requests';
 
-/** Écran vers lequel mène une catégorie ou une recherche. */
 const ECRAN_MECANICIENS = '/mecaniciens';
-
-/** Écran de signalement d'un problème, ouvert par le bouton SOS. */
 const ECRAN_SIGNALEMENT = '/demandes/signaler';
 
-/**
- * Accueil de l'espace client : point d'entrée après la connexion.
- *
- * Trois portes d'entrée, par ordre d'urgence décroissante — le dépannage
- * immédiat, la recherche libre, puis le parcours par catégorie. C'est
- * l'inverse de l'ordre de lecture habituel, et c'est délibéré : un
- * automobiliste en panne sur la route de Rufisque n'a pas le loisir de
- * parcourir une grille.
- *
- * L'écran ne connaît que le contrat `ServiceCategoryRepository`. Il ignore si
- * les catégories viennent de données simulées ou du microservice, et n'aura
- * pas à changer le jour de la bascule.
- */
 @Component({
   selector: 'app-home',
-  imports: [Button, SearchBar, Spinner, CategoryCard, SosButton],
+  imports: [
+    RouterLink,
+    Button,
+    Icon,
+    SearchBar,
+    Spinner,
+    NearbyMechanics,
+    RecentRequests,
+    MapPreview,
+  ],
   templateUrl: './home.html',
   styleUrl: './home.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,26 +35,32 @@ export class HomePage {
   protected readonly ecranMecaniciens = ECRAN_MECANICIENS;
   protected readonly ecranSignalement = ECRAN_SIGNALEMENT;
 
-  /**
-   * `rxResource` porte à lui seul les trois états d'un chargement — en cours,
-   * abouti, en échec — là où un `toSignal` obligerait à les reconstituer à la
-   * main. Il expose aussi `reload()`, ce qui permet de proposer une nouvelle
-   * tentative plutôt que de laisser l'utilisateur devant un écran mort.
-   */
   protected readonly categoriesResource = rxResource({
     stream: () => this.repository.findAll(),
     defaultValue: emptyPage<ServiceCategory>(),
   });
 
   protected readonly categories = computed(() => this.categoriesResource.value().items);
-
   protected readonly hasFailed = computed(() => this.categoriesResource.error() !== undefined);
 
-  /**
-   * La recherche n'interroge pas de dépôt ici : elle délègue à l'écran des
-   * mécaniciens, qui sait filtrer et afficher des résultats. L'accueil n'aurait
-   * rien à faire d'une liste de résultats qu'il ne sait pas présenter.
-   */
+  /** 3 premiers mécaniciens du mock comme "proches" */
+  protected readonly nearbyMechanics = MOCK_NEARBY_MECHANICS;
+
+  protected readonly recentRequests = MOCK_RECENT_REQUESTS;
+
+  protected categoryIcon(slug: string): IconName {
+    const map: Record<string, IconName> = {
+      batterie: 'batterie',
+      pneu: 'pneu',
+      'panne-moteur': 'cle',
+      freinage: 'freinage',
+      remorquage: 'remorquage',
+      climatisation: 'climatisation',
+      electricite: 'electricite',
+    };
+    return map[slug] ?? 'cle';
+  }
+
   protected rechercher(terme: string): void {
     void this.router.navigate([ECRAN_MECANICIENS], {
       queryParams: terme === '' ? {} : { recherche: terme },

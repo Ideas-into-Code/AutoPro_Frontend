@@ -1,7 +1,7 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { Observable, delay, of, tap, throwError } from 'rxjs';
+import { Observable, delay, of, tap } from 'rxjs';
 import { MOCK_USERS } from '../data/mock/mock-users.data';
-import { AuthResponse, User, UserRole } from '../models/user.model';
+import { AuthResponse, User } from '../models/user.model';
 
 const STORAGE_KEY = 'autopro_auth_session';
 
@@ -16,8 +16,6 @@ export class AuthService {
   public readonly isAuthenticated = computed(() => this._currentUser() !== null);
   public readonly userRole = computed(() => this._currentUser()?.role ?? null);
 
-  constructor() {}
-
   /**
    * Simule la connexion d'un utilisateur avec vérification des identifiants mock
    */
@@ -29,7 +27,7 @@ export class AuthService {
       MOCK_USERS.find(
         (u) =>
           u.email.toLowerCase() === cleanIdentifier ||
-          u.phone.replace(/\s+/g, '') === cleanIdentifier.replace(/\s+/g, '')
+          u.phone.replace(/\s+/g, '') === cleanIdentifier.replace(/\s+/g, ''),
       ) ?? MOCK_USERS[0];
 
     const mockResponse: AuthResponse = {
@@ -39,7 +37,7 @@ export class AuthService {
 
     return of(mockResponse).pipe(
       delay(600), // Simulation du délai réseau
-      tap((response) => this.setSession(response))
+      tap((response) => this.setSession(response)),
     );
   }
 
@@ -64,7 +62,7 @@ export class AuthService {
 
     return of(mockResponse).pipe(
       delay(800),
-      tap((response) => this.setSession(response))
+      tap((response) => this.setSession(response)),
     );
   }
 
@@ -89,7 +87,9 @@ export class AuthService {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        const parsed: AuthResponse = JSON.parse(saved);
+        // `JSON.parse` renvoie `any` : on annote explicitement plutôt que de
+        // laisser une valeur non typée se propager dans le signal.
+        const parsed = JSON.parse(saved) as AuthResponse;
         return parsed.user;
       }
     } catch {

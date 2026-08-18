@@ -1,0 +1,38 @@
+<div class="ap-home__mechanics-scroll" role="list" aria-label="Mécaniciens à proximité">
+  @for (mec of mechanics(); track mec.id) {
+    <article class="ap-home__mechanic-card" role="listitem">
+      <a
+        class="ap-home__mechanic-link"
+        [routerLink]="['/mecaniciens', mec.id]"
+        [attr.aria-label]="'Voir le profil de ' + mec.name"
+      >
+        <div class="ap-home__mechanic-img-wrap">
+          <div class="ap-home__mechanic-img-placeholder" aria-hidden="true">
+            {{ mec.name.slice(0, 1) }}
+          </div>
+
+          <!--
+            La note est doublée d'un texte lisible par les lecteurs d'écran :
+            l'étoile seule ne dit rien à qui ne la voit pas.
+          -->
+          <div class="ap-home__mechanic-rating">
+            <span class="ap-home__mechanic-rating-star" aria-hidden="true">★</span>
+            <span aria-hidden="true">{{ mec.rating }}</span>
+            <span class="ap-home__mechanic-rating-text">Note : {{ mec.rating }} sur 5</span>
+          </div>
+        </div>
+
+        <div class="ap-home__mechanic-info">
+          <h3 class="ap-home__mechanic-name">{{ mec.name }}</h3>
+          <p class="ap-home__mechanic-meta">{{ mec.distance }} · {{ mec.district }}</p>
+
+          <div class="ap-home__mechanic-tags">
+            @for (tag of mec.tags; track tag) {
+              <span class="ap-home__mechanic-tag">{{ tag }}</span>
+            }
+          </div>
+        </div>
+      </a>
+    </article>
+  }
+</div>

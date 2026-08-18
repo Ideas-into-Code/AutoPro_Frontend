@@ -20,3 +20,6 @@ export { SearchBar } from './search-bar/search-bar';
 
 export { Spinner } from './spinner/spinner';
 export type { SpinnerSize } from './spinner/spinner';
+
+export { InteractiveMapComponent } from './interactive-map/interactive-map';
+export type { InteractiveMapMarker, MapCoordinates } from './interactive-map/interactive-map';

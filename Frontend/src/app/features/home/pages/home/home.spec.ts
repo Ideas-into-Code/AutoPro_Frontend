@@ -74,32 +74,47 @@ describe('HomePage', () => {
     TestBed.resetTestingModule();
   });
 
-  it('affiche une carte par catégorie renvoyée par le dépôt', async () => {
+  /**
+   * Ces trois tests visent les **liens produits**, jamais les classes ni les
+   * balises. Ils avaient été écrits sur la structure d'origine et sont tombés
+   * à la première refonte de l'écran, alors que le comportement, lui, n'avait
+   * pas changé. Un test qui casse sans qu'aucune fonctionnalité ne bouge finit
+   * par être désactivé plutôt que lu.
+   */
+  const lienSos = (): HTMLAnchorElement | null =>
+    hote().querySelector('a[href^="/demandes/signaler"]');
+
+  const liensCategories = (): HTMLAnchorElement[] => [
+    ...hote().querySelectorAll<HTMLAnchorElement>('a[href^="/mecaniciens?categorie="]'),
+  ];
+
+  it('ouvre un lien par catégorie renvoyée par le dépôt', async () => {
     await rendre(() => of(page(CATEGORIES)));
 
-    expect(hote().querySelectorAll('app-category-card').length).toBe(2);
+    expect(liensCategories().map((a) => a.getAttribute('href'))).toEqual([
+      '/mecaniciens?categorie=batterie',
+      '/mecaniciens?categorie=freinage',
+    ]);
     expect(hote().textContent).toContain('Batterie');
     expect(hote().textContent).toContain('Freinage');
   });
 
-  it('propose le dépannage en urgence avant la grille de catégories', async () => {
+  it('propose le dépannage en urgence avant les catégories', async () => {
     await rendre(() => of(page(CATEGORIES)));
 
-    const sos = hote().querySelector('app-sos-button');
-    const grille = hote().querySelector('.ap-home__grid');
+    const sos = lienSos();
+    const premiereCategorie = liensCategories()[0];
 
     expect(sos).not.toBeNull();
-    // `DOCUMENT_POSITION_FOLLOWING` : la grille suit le bloc SOS dans le
+    // `DOCUMENT_POSITION_FOLLOWING` : les catégories suivent le SOS dans le
     // document. L'ordre du balisage est aussi celui du lecteur d'écran.
-    expect(sos?.compareDocumentPosition(grille as Node)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(sos?.compareDocumentPosition(premiereCategorie)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
 
   it('dirige le bouton SOS vers le formulaire de signalement, marqué comme urgent', async () => {
     await rendre(() => of(page(CATEGORIES)));
 
-    const lien = hote().querySelector('app-sos-button a') as HTMLAnchorElement;
-
-    expect(lien.getAttribute('href')).toBe('/demandes/signaler?urgence=true');
+    expect(lienSos()?.getAttribute('href')).toBe('/demandes/signaler?urgence=true');
   });
 
   it('explique la panne et propose de réessayer quand le chargement échoue', async () => {
@@ -109,7 +124,7 @@ describe('HomePage', () => {
 
     expect(alerte).not.toBeNull();
     expect(alerte?.textContent).toContain('Réessayer');
-    expect(hote().querySelectorAll('app-category-card').length).toBe(0);
+    expect(liensCategories()).toEqual([]);
   });
 
   it('annonce une grille vide sans laisser la page muette', async () => {
