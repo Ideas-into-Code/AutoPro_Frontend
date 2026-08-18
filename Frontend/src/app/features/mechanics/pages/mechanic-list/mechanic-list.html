@@ -115,6 +115,15 @@
                 >
                   Voir le profil
                 </a>
+                <a
+                  appButton
+                  variant="secondary"
+                  [routerLink]="['/messages']"
+                  [queryParams]="{ mecanicien: mec.id }"
+                  fullWidth
+                >
+                  Message
+                </a>
               </div>
 
             </article>
