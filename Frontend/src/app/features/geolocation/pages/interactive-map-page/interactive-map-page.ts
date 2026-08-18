@@ -47,7 +47,7 @@ export class InteractiveMapPage implements OnInit {
   protected readonly isBottomSheetOpen = signal(false);
   protected readonly selectedMechanicId = signal<string | null>(null);
 
-  protected readonly filterChips: ReadonlyArray<{ id: FilterChip; label: string; icon: string }> = [
+  protected readonly filterChips: readonly { id: FilterChip; label: string; icon: string }[] = [
     { id: 'near_me',    label: 'Près de moi',  icon: 'near_me' },
     { id: 'rating',     label: 'Note 4.8+',    icon: 'star' },
     { id: 'price',      label: 'Prix modéré',  icon: 'payments' },

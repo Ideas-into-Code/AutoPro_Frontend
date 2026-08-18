@@ -8,7 +8,7 @@ const ONBOARDING_SEEN_KEY = 'autopro_onboarding_seen';
 })
 export class OnboardingService {
   private readonly platformId = inject(PLATFORM_ID);
-  
+
   // Signal réactif indiquant si l'onboarding a été vu
   private readonly _hasSeenOnboarding = signal<boolean>(this.checkIfSeen());
   public readonly hasSeenOnboarding = this._hasSeenOnboarding.asReadonly();
@@ -35,7 +35,9 @@ export class OnboardingService {
     if (isPlatformBrowser(this.platformId)) {
       try {
         localStorage.removeItem(ONBOARDING_SEEN_KEY);
-      } catch {}
+      } catch {
+        // Stockage local refusé par le navigateur : l'état en mémoire suffit.
+      }
     }
   }
 
