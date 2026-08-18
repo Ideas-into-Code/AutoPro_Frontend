@@ -1,0 +1,41 @@
+<p class="ap-earnings__label">Gains du jour</p>
+
+<div class="ap-earnings__total-row">
+  <p class="ap-earnings__total">
+    {{ formater(earnings().todayXOF) }}
+    <span class="ap-earnings__currency">FCFA</span>
+  </p>
+
+  <p
+    class="ap-earnings__trend"
+    [class.ap-earnings__trend--down]="!enHausse()"
+    [attr.aria-label]="
+      (enHausse() ? 'En hausse de ' : 'En baisse de ') +
+      earnings().trendPercent +
+      ' pour cent par rapport à hier'
+    "
+  >
+    <app-icon class="ap-earnings__trend-icon" name="tendance" size="sm" />
+    <span aria-hidden="true">{{ enHausse() ? '+' : '' }}{{ earnings().trendPercent }} %</span>
+  </p>
+</div>
+
+<!--
+  Le graphique est décoratif pour les lecteurs d'écran (`aria-hidden`), et le
+  résumé textuel qui le suit porte la même information sous forme lisible.
+  Annoncer six barres sans valeurs n'apprendrait rien.
+-->
+<ul class="ap-earnings__chart" aria-hidden="true">
+  @for (barre of barres(); track barre.label) {
+    <li class="ap-earnings__bar-slot">
+      <span
+        class="ap-earnings__bar"
+        [class.ap-earnings__bar--current]="barre.isLast"
+        [style.height.%]="barre.heightPercent"
+      ></span>
+      <span class="ap-earnings__bar-label">{{ barre.label }}</span>
+    </li>
+  }
+</ul>
+
+<p class="ap-earnings__chart-summary">Gains des derniers jours — {{ resumeAccessible() }}</p>

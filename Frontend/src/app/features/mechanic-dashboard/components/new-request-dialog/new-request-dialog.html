@@ -1,0 +1,57 @@
+<dialog
+  #dialogue
+  class="ap-new-request"
+  aria-labelledby="ap-new-request-titre"
+  (close)="surFermetureNative()"
+>
+  @if (request(); as demande) {
+    <div class="ap-new-request__header">
+      <span class="ap-new-request__badge">
+        <app-icon name="cle" size="sm" />
+        Nouvelle demande
+      </span>
+
+      <p class="ap-new-request__distance">
+        <app-icon name="position" size="sm" />
+        {{ demande.distanceLabel }}
+      </p>
+    </div>
+
+    <h2 class="ap-new-request__title" id="ap-new-request-titre">{{ demande.clientName }}</h2>
+
+    <p class="ap-new-request__vehicle">{{ demande.vehicle }} · {{ demande.problemLabel }}</p>
+
+    <p class="ap-new-request__payout">
+      <span class="ap-new-request__payout-amount">{{ montantFormate() }} FCFA</span>
+      <span class="ap-new-request__payout-label">Rémunération estimée</span>
+    </p>
+
+    <!--
+      « Accepter » est plus large et coloré : c'est l'action attendue. Refuser
+      reste atteignable, mais ne doit pas se cliquer par réflexe.
+    -->
+    <div class="ap-new-request__actions">
+      <button
+        appButton
+        type="button"
+        variant="secondary"
+        class="ap-new-request__decline"
+        [disabled]="pending()"
+        (click)="repondre('refusee')"
+      >
+        Refuser
+      </button>
+
+      <button
+        appButton
+        type="button"
+        variant="primary"
+        class="ap-new-request__accept"
+        [loading]="pending()"
+        (click)="repondre('acceptee')"
+      >
+        Accepter la demande
+      </button>
+    </div>
+  }
+</dialog>
