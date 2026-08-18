@@ -32,6 +32,19 @@ import { filter } from 'rxjs';
 export class Header {
   readonly brand = input('AutoPro');
 
+  /**
+   * Destination du logo.
+   *
+   * Une **entrée** et non une route écrite dans le gabarit : `Header` est une
+   * brique partagée, et `shared/` ne doit connaître ni le métier ni la
+   * navigation (CONVENTIONS.md §1). Un `routerLink="/accueil"` en dur renvoyait
+   * le mécanicien vers l'accueil client depuis sa propre barre.
+   */
+  readonly brandLink = input<string | unknown[]>('/accueil');
+
+  /** Libellé accessible du logo, à accorder avec sa destination. */
+  readonly brandLabel = input('AutoPro — Accueil');
+
   /** Masque le déclencheur de menu quand aucune navigation n'est projetée. */
   readonly showNavToggle = input(true);
 

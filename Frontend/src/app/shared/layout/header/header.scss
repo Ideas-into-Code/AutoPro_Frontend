@@ -12,7 +12,9 @@
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   border-bottom: 1px solid rgba(195, 198, 216, 0.4);
-  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(255,255,255,0.5) inset;
+  box-shadow:
+    0 1px 20px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -118,7 +120,9 @@
   font-weight: var(--ap-font-weight-medium);
   color: var(--ap-text-secondary);
   text-decoration: none;
-  transition: color 0.18s ease, background-color 0.18s ease;
+  transition:
+    color 0.18s ease,
+    background-color 0.18s ease;
   white-space: nowrap;
 
   /* Indicateur actif animé en bas */
@@ -212,7 +216,9 @@
   background: none;
   border: 1.5px solid var(--ap-border-subtle);
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 
   &:hover {
     background-color: rgba(0, 76, 205, 0.06);
@@ -243,7 +249,10 @@
     height: 1.5px;
     background-color: var(--ap-text-primary);
     border-radius: 2px;
-    transition: transform 0.22s ease, opacity 0.22s ease, width 0.22s ease;
+    transition:
+      transform 0.22s ease,
+      opacity 0.22s ease,
+      width 0.22s ease;
     transform-origin: center;
   }
 
