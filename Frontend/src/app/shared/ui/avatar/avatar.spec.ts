@@ -13,7 +13,8 @@ describe('Avatar', () => {
 
   const hote = (): HTMLElement => fixture.nativeElement as HTMLElement;
 
-  const initiales = (): string => hote().textContent?.trim() ?? '';
+  const initiales = (): string =>
+    hote().querySelector('.ap-avatar__initials')?.textContent?.trim() ?? '';
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({ imports: [Avatar] }).compileComponents();
@@ -56,13 +57,18 @@ describe('Avatar', () => {
     expect(initiales()).toBe('?');
   });
 
-  it('annonce le nom complet aux lecteurs d’écran', async () => {
+  it('affiche une pastille de profil à côté des initiales', async () => {
     await rendre('Boubacar Sidibe');
 
-    // Deux lettres épelées n'apprendraient rien : le libellé porte le nom.
-    const pastille = hote().querySelector('[role="img"]');
+    expect(hote().querySelector('.ap-avatar__photo app-icon')).not.toBeNull();
+    expect(initiales()).toBe('BS');
+  });
 
-    expect(pastille?.getAttribute('aria-label')).toBe('Boubacar Sidibe');
-    expect(pastille?.querySelector('[aria-hidden="true"]')?.textContent).toBe('BS');
+  it('annonce le nom complet aux lecteurs d’écran sans l’afficher', async () => {
+    await rendre('Boubacar Sidibe');
+
+    // « B, S » épelé n'apprendrait rien : le nom entier reste disponible,
+    // mais visuellement masqué pour ne pas encombrer la barre.
+    expect(hote().querySelector('.ap-avatar__name')?.textContent).toBe('Boubacar Sidibe');
   });
 });

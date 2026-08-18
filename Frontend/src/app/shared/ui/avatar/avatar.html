@@ -1,7 +1,12 @@
-<!--
-  `role="img"` avec le nom complet en libellé : les initiales sont masquées aux
-  lecteurs d'écran, qui épelleraient « B, S » sans rien apprendre.
--->
-<span class="ap-avatar__initials" role="img" [attr.aria-label]="name()">
-  <span aria-hidden="true">{{ initiales() }}</span>
+<!-- Pastille de profil : silhouette générique, en attendant les photos. -->
+<span class="ap-avatar__photo" aria-hidden="true">
+  <app-icon name="profil" size="sm" />
 </span>
+
+<span class="ap-avatar__initials" aria-hidden="true">{{ initiales() }}</span>
+
+<!--
+  Le nom complet n'est pas affiché mais reste annoncé : deux initiales épelées
+  « M, B » n'apprendraient rien à qui ne voit pas la pastille.
+-->
+<span class="ap-avatar__name">{{ name() }}</span>

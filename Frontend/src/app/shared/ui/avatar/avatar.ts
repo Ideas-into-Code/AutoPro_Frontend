@@ -1,22 +1,25 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
+import { Icon } from '../icon/icon';
+
 export type AvatarSize = 'sm' | 'md' | 'lg';
 
 /**
- * Pastille d'identité, affichant les initiales d'une personne.
+ * Identité d'une personne : pastille de profil suivie de ses initiales.
  *
- *   <app-avatar name="Boubacar Sidibe" />        → « BS »
- *   <app-avatar name="Fatou Gueye" size="lg" />  → « FG »
+ *   <app-avatar name="Mohamed Badji" />   → ⬤ MB
  *
- * Aucune image : une photo demanderait un stockage, une requête réseau de plus
- * au premier écran, et un repli à dessiner quand elle manque. Les initiales
- * suffisent à identifier qui est connecté, et se rendent instantanément.
+ * Aucune photo : elle demanderait un stockage, une requête réseau de plus au
+ * premier écran, et un repli à dessiner quand elle manque. La silhouette et
+ * deux initiales suffisent à identifier qui est connecté, et se rendent
+ * instantanément.
  *
- * Le nom complet reste **annoncé aux lecteurs d'écran** : deux lettres ne
- * disent rien à qui ne voit pas la pastille.
+ * Le nom complet reste **annoncé aux lecteurs d'écran** sans être affiché :
+ * « M, B » épelé n'apprendrait rien à qui ne voit pas la pastille.
  */
 @Component({
   selector: 'app-avatar',
+  imports: [Icon],
   templateUrl: './avatar.html',
   styleUrl: './avatar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
