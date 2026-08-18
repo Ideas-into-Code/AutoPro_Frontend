@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
-import { Footer, Header, PageShell } from '@shared/layout';
+import { BottomNav, BottomNavItem, Footer, Header, PageShell } from '@shared/layout';
 import { Button } from '@shared/ui';
 
 /**
@@ -31,9 +31,34 @@ import { Button } from '@shared/ui';
  */
 @Component({
   selector: 'app-client-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, PageShell, Header, Footer, Button],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    PageShell,
+    Header,
+    Footer,
+    Button,
+    BottomNav,
+  ],
   templateUrl: './client-shell.html',
   styleUrl: './client-shell.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ClientShell {}
+export class ClientShell {
+  /**
+   * Entrées de la barre basse.
+   *
+   * Fournies en données à `BottomNav`, composant partagé : la barre était
+   * auparavant écrite en dur dans ce gabarit, avec cent cinquante lignes de
+   * style encapsulées ici — donc impossibles à réutiliser dans l'espace
+   * mécanicien, qui a pourtant exactement la même barre.
+   */
+  protected readonly navItems: readonly BottomNavItem[] = [
+    { label: 'Accueil', icon: 'accueil', link: '/accueil' },
+    { label: 'Mécanos', icon: 'cle', link: '/mecaniciens' },
+    { label: 'Carte', icon: 'carte', link: '/carte' },
+    { label: 'Demandes', icon: 'liste', link: '/demandes' },
+    { label: 'Messages', icon: 'message', link: '/messages' },
+  ];
+}

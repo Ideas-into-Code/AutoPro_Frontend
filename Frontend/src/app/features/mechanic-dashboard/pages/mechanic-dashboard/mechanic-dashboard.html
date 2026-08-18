@@ -1,0 +1,40 @@
+<div class="ap-mecano">
+  <header class="ap-mecano__intro">
+    <h1 class="ap-mecano__title">Mon tableau de bord</h1>
+    <p class="ap-mecano__subtitle">Vos gains du jour et vos demandes en attente.</p>
+  </header>
+
+  <!-- Tâche 2 — bascule En ligne / Hors ligne -->
+  <app-availability-toggle
+    [isOnline]="isOnline()"
+    [pending]="savingAvailability()"
+    (toggled)="changerDisponibilite($event)"
+  />
+
+  @if (availabilityError(); as message) {
+    <p class="ap-mecano__error" role="alert">{{ message }}</p>
+  }
+
+  <!-- Tâche 1 — graphique des gains -->
+  @if (earningsResource.isLoading()) {
+    <p class="ap-mecano__state">
+      <app-spinner label="Chargement de vos gains" />
+    </p>
+  } @else if (earningsFailed()) {
+    <div class="ap-mecano__error" role="alert">
+      <p>Vos gains n'ont pas pu être chargés. Vérifiez votre connexion.</p>
+      <button appButton type="button" variant="secondary" size="sm" (click)="reessayerGains()">
+        Réessayer
+      </button>
+    </div>
+  } @else if (earningsResource.value(); as gains) {
+    <app-earnings-card [earnings]="gains" />
+  }
+</div>
+
+<!-- Tâche 3 — popup « Nouvelle demande ». Hors du flux : elle se superpose. -->
+<app-new-request-dialog
+  [request]="incomingRequest()"
+  [pending]="sendingDecision()"
+  (decided)="repondreALaDemande($event)"
+/>

@@ -1,0 +1,60 @@
+<app-page-shell>
+  <app-header
+    header
+    brand="AutoPro"
+    brandLink="/mecanicien"
+    brandLabel="AutoPro — Tableau de bord mécanicien"
+  >
+    <!--
+      Toutes les destinations restent sous `/mecanicien` : un lien vers une
+      route cliente ferait sortir de cet espace, coquille comprise.
+    -->
+    <a
+      nav
+      routerLink="/mecanicien"
+      routerLinkActive="ap-mecano-shell__link--active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      ariaCurrentWhenActive="page"
+    >
+      Accueil
+    </a>
+    <a
+      nav
+      routerLink="/mecanicien/carte"
+      routerLinkActive="ap-mecano-shell__link--active"
+      ariaCurrentWhenActive="page"
+    >
+      Carte
+    </a>
+    <a
+      nav
+      routerLink="/mecanicien/demandes"
+      routerLinkActive="ap-mecano-shell__link--active"
+      ariaCurrentWhenActive="page"
+    >
+      Demandes
+    </a>
+
+    <!--
+      La pastille seule : deux initiales suffisent à identifier qui est
+      connecté, et la barre reste dégagée. Le nom complet n'est pas affiché,
+      seulement annoncé aux lecteurs d'écran par l'avatar lui-même.
+    -->
+    <a actions class="ap-mecano-shell__account" routerLink="/mecanicien/profil">
+      <app-avatar [name]="nomAffiche()" size="sm" />
+    </a>
+  </app-header>
+
+  <router-outlet />
+
+  <!--
+    Le pied de page cède la place à la barre basse sur mobile : afficher les
+    deux ferait deux navigations empilées au même endroit.
+  -->
+  <app-footer footer class="ap-mecano-shell__footer-desktop">
+    <a link routerLink="/mecanicien">Tableau de bord</a>
+    <a link routerLink="/mecanicien/profil">Mon profil</a>
+  </app-footer>
+</app-page-shell>
+
+<app-bottom-nav [items]="navItems" ariaLabel="Navigation mécanicien" />

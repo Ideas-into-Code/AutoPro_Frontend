@@ -1,0 +1,28 @@
+<div class="ap-availability__text">
+  <h2 class="ap-availability__title">{{ titre() }}</h2>
+  <p class="ap-availability__hint" [id]="fieldId + '-aide'">{{ aide() }}</p>
+</div>
+
+<label class="ap-availability__switch" [for]="fieldId">
+  <!--
+    `role="switch"` plutôt que la simple case : les lecteurs d'écran annoncent
+    « activé / désactivé » au lieu de « coché », ce qui correspond au geste.
+  -->
+  <input
+    #champ
+    class="ap-availability__input"
+    type="checkbox"
+    role="switch"
+    [id]="fieldId"
+    [checked]="isOnline()"
+    [disabled]="pending()"
+    [attr.aria-describedby]="fieldId + '-aide'"
+    (change)="surChangement(champ.checked)"
+  />
+
+  <span class="ap-availability__track" aria-hidden="true">
+    <span class="ap-availability__thumb"></span>
+  </span>
+
+  <span class="ap-availability__state">{{ isOnline() ? 'En ligne' : 'Hors ligne' }}</span>
+</label>

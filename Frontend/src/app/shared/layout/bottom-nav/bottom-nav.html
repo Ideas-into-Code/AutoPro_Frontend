@@ -1,0 +1,16 @@
+<nav class="ap-bottom-nav" [attr.aria-label]="ariaLabel()">
+  @for (item of items(); track item.label) {
+    <a
+      class="ap-bottom-nav__item"
+      [routerLink]="item.link"
+      routerLinkActive="ap-bottom-nav__item--active"
+      [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+      ariaCurrentWhenActive="page"
+    >
+      <span class="ap-bottom-nav__icon" aria-hidden="true">
+        <app-icon [name]="item.icon" size="sm" />
+      </span>
+      <span class="ap-bottom-nav__label">{{ item.label }}</span>
+    </a>
+  }
+</nav>

@@ -1,0 +1,102 @@
+@use 'index' as ds;
+
+:host {
+  display: flex;
+  gap: var(--ap-space-4);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ap-space-5);
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-xl);
+  box-shadow: var(--ap-shadow-sm);
+}
+
+.ap-availability__title {
+  margin: 0 0 var(--ap-space-1);
+  font-weight: var(--ap-font-weight-semibold);
+  font-size: var(--ap-font-size-lg);
+}
+
+.ap-availability__hint {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+  line-height: var(--ap-line-height-base);
+}
+
+.ap-availability__switch {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--ap-space-1);
+  align-items: center;
+  cursor: pointer;
+}
+
+// La case native reste dans le document — elle porte l'état et le focus — mais
+// n'est pas affichée : c'est la piste ci-dessous qui la représente.
+.ap-availability__input {
+  @include ds.visually-hidden;
+}
+
+.ap-availability__track {
+  position: relative;
+  display: block;
+  width: 3.5rem;
+  // 2 rem de haut, mais la cible tactile atteint 44 px grâce au libellé
+  // d'état placé dessous, tous deux dans le même `<label>`.
+  height: 2rem;
+  background-color: var(--ap-border-strong);
+  border-radius: var(--ap-radius-full);
+  transition: background-color var(--ap-duration-base) var(--ap-easing-standard);
+
+  @include ds.respect-reduced-motion {
+    transition: none;
+  }
+}
+
+.ap-availability__thumb {
+  position: absolute;
+  top: 0.25rem;
+  left: 0.25rem;
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: var(--ap-color-neutral-0);
+  border-radius: var(--ap-radius-full);
+  box-shadow: var(--ap-shadow-sm);
+  transition: transform var(--ap-duration-base) var(--ap-easing-standard);
+
+  @include ds.respect-reduced-motion {
+    transition: none;
+  }
+}
+
+.ap-availability__state {
+  color: var(--ap-text-secondary);
+  font-weight: var(--ap-font-weight-medium);
+  font-size: var(--ap-font-size-xs);
+}
+
+// --- États de la case, répercutés sur l'habillage ----------------------------
+
+.ap-availability__input:checked + .ap-availability__track {
+  background-color: var(--ap-color-primary);
+}
+
+.ap-availability__input:checked + .ap-availability__track .ap-availability__thumb {
+  transform: translateX(1.5rem);
+}
+
+// L'anneau de focus se pose sur la piste, la case étant masquée : sans cela,
+// la navigation au clavier n'aurait aucun repère visible.
+.ap-availability__input:focus-visible + .ap-availability__track {
+  outline: var(--ap-border-width-thick) solid var(--ap-focus-ring);
+  outline-offset: 2px;
+}
+
+.ap-availability__input:disabled + .ap-availability__track {
+  opacity: 0.6;
+  cursor: progress;
+}

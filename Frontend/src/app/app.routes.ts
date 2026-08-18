@@ -43,6 +43,25 @@ export const routes: Routes = [
     loadChildren: () => import('@features/auth/auth.routes').then((m) => m.authRoutes),
   },
 
+  // --- Espace mécanicien, sous sa propre coquille ---------------------------
+  // Séparé de l'espace client : un mécanicien n'a que faire d'un menu qui
+  // propose « Mécaniciens » ou « Mes demandes ». Deux personas, deux
+  // navigations, donc deux coquilles.
+  {
+    path: 'mecanicien',
+    loadComponent: () =>
+      import('./layouts/mechanic-shell/mechanic-shell').then((m) => m.MechanicShell),
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('@features/mechanic-dashboard/mechanic-dashboard.routes').then(
+            (m) => m.mechanicDashboardRoutes,
+          ),
+      },
+    ],
+  },
+
   // --- Espace client, sous la coquille commune ------------------------------
   {
     path: '',

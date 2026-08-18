@@ -1,0 +1,42 @@
+@use 'index' as ds;
+
+// La barre, le pied de page et les proportions viennent de `PageShell`,
+// `Header` et `Footer`, exactement comme dans la coquille client. Seuls les
+// repères propres à cet espace sont décrits ici.
+
+// Indispensable : l'hôte d'un composant est `inline` par défaut. `PageShell`
+// s'appuie sur `min-height: 100dvh` pour pousser le pied de page en bas ;
+// dans une boîte en ligne, cette hauteur ne s'applique pas et le pied
+// disparaît sous le contenu.
+:host {
+  display: block;
+}
+
+// Sur mobile, la barre basse remplace le pied de page, et le contenu réserve
+// sa hauteur pour ne pas finir masqué dessous.
+@media (max-width: 47.999em) {
+  :host {
+    padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .ap-mecano-shell__footer-desktop {
+    display: none;
+  }
+}
+
+// Le lien de la page courante. Le soulignement double la couleur : un écart de
+// teinte seul serait invisible pour une partie des daltoniens.
+.ap-mecano-shell__link--active {
+  color: var(--ap-color-primary);
+  font-weight: var(--ap-font-weight-semibold);
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+}
+
+.ap-mecano-shell__account {
+  display: inline-flex;
+  text-decoration: none;
+  border-radius: var(--ap-radius-full);
+
+  @include ds.focus-ring;
+}

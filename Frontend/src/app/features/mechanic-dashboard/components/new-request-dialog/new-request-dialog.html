@@ -1,0 +1,52 @@
+<dialog
+  #dialogue
+  class="ap-new-request"
+  aria-labelledby="ap-new-request-titre"
+  (close)="surFermetureNative()"
+>
+  @if (request(); as demande) {
+    <!--
+      Une seule ligne d'en-tête, sans bandeau : le mécanicien décide en
+      quelques secondes, la notification doit tenir dans un coup d'œil et non
+      occuper l'écran.
+    -->
+    <p class="ap-new-request__eyebrow">
+      <span class="ap-new-request__dot" aria-hidden="true"></span>
+      Nouvelle demande
+      <span class="ap-new-request__distance">{{ demande.distanceLabel }}</span>
+    </p>
+
+    <h2 class="ap-new-request__title" id="ap-new-request-titre">{{ demande.clientName }}</h2>
+
+    <p class="ap-new-request__detail">
+      {{ demande.vehicle }} · {{ demande.problemLabel }}
+      <strong class="ap-new-request__payout">{{ montantFormate() }} FCFA</strong>
+    </p>
+
+    <div class="ap-new-request__actions">
+      <button
+        appButton
+        type="button"
+        variant="ghost"
+        size="sm"
+        class="ap-new-request__decline"
+        [disabled]="pending()"
+        (click)="repondre('refusee')"
+      >
+        Refuser
+      </button>
+
+      <button
+        appButton
+        type="button"
+        variant="primary"
+        size="sm"
+        class="ap-new-request__accept"
+        [loading]="pending()"
+        (click)="repondre('acceptee')"
+      >
+        Accepter
+      </button>
+    </div>
+  }
+</dialog>

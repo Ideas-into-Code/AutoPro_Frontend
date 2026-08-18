@@ -16,7 +16,17 @@ export type IconName =
   | 'cle'
   | 'position'
   | 'fleche-droite'
-  | 'croix';
+  | 'croix'
+  | 'cloche'
+  | 'tendance'
+  | 'valide'
+  | 'annule'
+  | 'accueil'
+  | 'carte'
+  | 'profil'
+  | 'voiture'
+  | 'liste'
+  | 'message';
 
 export type IconSize = 'sm' | 'md' | 'lg';
 
