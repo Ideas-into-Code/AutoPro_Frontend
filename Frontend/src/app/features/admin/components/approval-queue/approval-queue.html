@@ -1,0 +1,56 @@
+<header class="ap-queue__header">
+  <h3 class="ap-queue__title">File de validation</h3>
+  <p class="ap-queue__count" aria-live="polite">{{ resume() }}</p>
+</header>
+
+<ul class="ap-queue__list">
+  @for (dossier of applications(); track dossier.id) {
+    <li class="ap-queue__item">
+      <div class="ap-queue__identity">
+        <app-avatar [name]="dossier.fullName" size="md" />
+
+        <div class="ap-queue__details">
+          <p class="ap-queue__name">{{ dossier.fullName }}</p>
+          <p class="ap-queue__specialty">{{ dossier.specialty }}</p>
+          <p class="ap-queue__meta">
+            <app-icon name="position" size="sm" />
+            {{ dossier.city }}
+            <span class="ap-queue__dot" aria-hidden="true">·</span>
+            <span>déposé le {{ dateCourte(dossier.submittedAt) }}</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="ap-queue__actions">
+        <button
+          appButton
+          type="button"
+          variant="primary"
+          size="sm"
+          class="ap-queue__accept"
+          [loading]="savingId() === dossier.id"
+          (click)="trancher(dossier.id, 'validee')"
+        >
+          Valider
+          <span class="ap-queue__sr"> la candidature de {{ dossier.fullName }}</span>
+        </button>
+
+        <button
+          appButton
+          type="button"
+          variant="ghost"
+          size="sm"
+          [disabled]="savingId() === dossier.id"
+          (click)="trancher(dossier.id, 'rejetee')"
+        >
+          Rejeter
+          <span class="ap-queue__sr"> la candidature de {{ dossier.fullName }}</span>
+        </button>
+      </div>
+    </li>
+  } @empty {
+    <li class="ap-queue__empty">
+      Aucune candidature en attente. Les nouveaux dossiers apparaîtront ici.
+    </li>
+  }
+</ul>

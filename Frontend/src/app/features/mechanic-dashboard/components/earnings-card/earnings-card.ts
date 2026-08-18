@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 import { Icon } from '@shared/ui';
+import { separerMilliers } from '@shared/utils/format-number';
 import { EarningsSummary } from '../../models/mechanic-dashboard.model';
 
 /** Barre du graphique, avec sa hauteur déjà exprimée en pourcentage. */
@@ -64,12 +65,10 @@ export class EarningsCard {
   /** Résumé lu par les lecteurs d'écran à la place du graphique. */
   protected readonly resumeAccessible = computed(() =>
     this.barres()
-      .map((barre) => `${barre.label} : ${this.formater(barre.amountXOF)} francs CFA`)
+      .map((barre) => `${barre.label} : ${separerMilliers(barre.amountXOF)} francs CFA`)
       .join(', '),
   );
 
-  /** Sépare les milliers par une espace, comme l'usage francophone. */
-  protected formater(montant: number): string {
-    return montant.toLocaleString('fr-FR').replace(/[\u00A0\u202F\u2009]/g, ' ');
-  }
+  /** Réexposé au gabarit : la mise en forme est commune à tout le projet. */
+  protected readonly separerMilliers = separerMilliers;
 }

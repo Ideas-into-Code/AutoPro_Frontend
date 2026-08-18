@@ -1,0 +1,24 @@
+// La barre, le pied de page et les proportions viennent de `PageShell`,
+// `Header` et `Footer`, exactement comme dans les coquilles client et
+// mécanicien. Seuls les repères propres à cet espace sont décrits ici.
+
+// Indispensable : l'hôte d'un composant est `inline` par défaut. `PageShell`
+// s'appuie sur `min-height: 100dvh` pour pousser le pied de page en bas ;
+// dans une boîte en ligne, cette hauteur ne s'applique pas et le pied
+// disparaît sous le contenu.
+:host {
+  display: block;
+}
+
+// Le lien de la page courante. Le soulignement double la couleur : un écart de
+// teinte seul serait invisible pour une partie des daltoniens.
+.ap-admin-shell__link--active {
+  color: var(--ap-color-primary);
+  font-weight: var(--ap-font-weight-semibold);
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+}
+
+.ap-admin-shell__account {
+  display: inline-flex;
+}

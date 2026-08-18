@@ -13,6 +13,7 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 
 import { Button } from '@shared/ui';
+import { separerMilliers } from '@shared/utils/format-number';
 import { NewRequest, RequestDecision } from '../../models/mechanic-dashboard.model';
 
 /**
@@ -52,9 +53,7 @@ export class NewRequestDialog {
   private readonly dialogue = viewChild.required<ElementRef<HTMLDialogElement>>('dialogue');
 
   protected readonly montantFormate = computed(() =>
-    (this.request()?.estimatedPayoutXOF ?? 0)
-      .toLocaleString('fr-FR')
-      .replace(/[\u00A0\u202F\u2009]/g, ' '),
+    separerMilliers(this.request()?.estimatedPayoutXOF ?? 0),
   );
 
   private readonly platformId = inject(PLATFORM_ID);

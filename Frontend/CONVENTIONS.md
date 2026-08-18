@@ -18,7 +18,8 @@ src/
     │   ├── ui/                button, card, form-field, spinner
     │   ├── layout/            header, footer, page-shell
     │   ├── pages/             pages transverses (404)
-    │   └── validators/        validateurs et messages d'erreur en français
+    │   ├── validators/        validateurs et messages d'erreur en français
+    │   └── utils/             fonctions pures (mise en forme des nombres)
     └── features/              un dossier = un domaine = un microservice
         ├── auth/              authentification, OTP
         ├── onboarding/        parcours de première utilisation

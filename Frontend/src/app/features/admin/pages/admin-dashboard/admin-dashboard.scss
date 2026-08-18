@@ -1,0 +1,80 @@
+@use 'index' as ds;
+
+.ap-admin {
+  display: grid;
+  gap: var(--ap-space-6);
+}
+
+.ap-admin__intro {
+  display: grid;
+  gap: var(--ap-space-1);
+}
+
+.ap-admin__title {
+  margin: 0;
+  font-size: var(--ap-font-size-2xl);
+  line-height: var(--ap-line-height-tight);
+}
+
+.ap-admin__subtitle {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+}
+
+.ap-admin__heading {
+  margin: 0 0 var(--ap-space-3);
+  font-size: var(--ap-font-size-lg);
+}
+
+.ap-admin__section {
+  min-width: 0;
+}
+
+// Les cartes se répartissent d'elles-mêmes : ajouter un indicateur côté serveur
+// ne demande aucune règle de plus ici.
+.ap-admin__metrics {
+  display: grid;
+  gap: var(--ap-space-4);
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+// La table prend deux tiers de la largeur, la file le tiers restant : c'est
+// l'écran de travail principal, la file n'est qu'un rappel.
+.ap-admin__columns {
+  display: grid;
+  gap: var(--ap-space-6);
+  align-items: start;
+
+  @include ds.from(lg) {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.ap-admin__state {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: var(--ap-space-8) 0;
+}
+
+.ap-admin__error {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-3);
+  align-items: center;
+  margin: 0;
+  padding: var(--ap-space-4);
+  color: var(--ap-color-danger);
+  background-color: var(--ap-color-danger-surface);
+  border-radius: var(--ap-radius-lg);
+  font-size: var(--ap-font-size-sm);
+
+  p {
+    margin: 0;
+  }
+}
+
+.ap-admin__sr {
+  @include ds.visually-hidden;
+}
