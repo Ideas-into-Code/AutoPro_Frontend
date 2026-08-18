@@ -41,8 +41,14 @@
 
   <router-outlet />
 
-  <app-footer footer>
+  <!--
+    Le pied de page cède la place à la barre basse sur mobile : afficher les
+    deux ferait deux navigations empilées au même endroit.
+  -->
+  <app-footer footer class="ap-mecano-shell__footer-desktop">
     <a link routerLink="/mecanicien">Tableau de bord</a>
     <a link routerLink="/mecanicien/profil">Mon profil</a>
   </app-footer>
 </app-page-shell>
+
+<app-bottom-nav [items]="navItems" ariaLabel="Navigation mécanicien" />

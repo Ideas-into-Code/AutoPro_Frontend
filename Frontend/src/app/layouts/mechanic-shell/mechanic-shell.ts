@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { AuthService } from '@core/services/auth.service';
-import { Footer, Header, PageShell } from '@shared/layout';
+import { BottomNav, BottomNavItem, Footer, Header, PageShell } from '@shared/layout';
 
 /**
  * Coquille de l'espace mécanicien.
@@ -24,7 +24,7 @@ import { Footer, Header, PageShell } from '@shared/layout';
  */
 @Component({
   selector: 'app-mechanic-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, PageShell, Header, Footer],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, PageShell, Header, Footer, BottomNav],
   templateUrl: './mechanic-shell.html',
   styleUrl: './mechanic-shell.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,4 +40,17 @@ export class MechanicShell {
    * Repli sur un libellé neutre tant que personne n'est authentifié.
    */
   protected readonly nomAffiche = computed(() => this.auth.currentUser()?.fullName ?? 'Mécanicien');
+
+  /**
+   * Entrées de la barre basse, toutes sous `/mecanicien`.
+   *
+   * Le tableau de bord est marqué `exact` : sans cela, il resterait actif sur
+   * toutes les pages de l'espace, puisque son chemin les préfixe toutes.
+   */
+  protected readonly navItems: readonly BottomNavItem[] = [
+    { label: 'Tableau de bord', icon: 'accueil', link: '/mecanicien', exact: true },
+    { label: 'Interventions', icon: 'cle', link: '/mecanicien/interventions' },
+    { label: 'Tarifs', icon: 'tendance', link: '/mecanicien/tarifs' },
+    { label: 'Profil', icon: 'profil', link: '/mecanicien/profil' },
+  ];
 }
