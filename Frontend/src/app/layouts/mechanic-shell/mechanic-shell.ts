@@ -52,15 +52,20 @@ export class MechanicShell {
   protected readonly nomAffiche = computed(() => this.auth.currentUser()?.fullName ?? 'Mécanicien');
 
   /**
-   * Entrées de la barre basse, toutes sous `/mecanicien`.
+   * Entrées de la barre basse, reprises de la maquette — Accueil, Carte,
+   * Demandes, Profil — mais **toutes sous `/mecanicien`**.
    *
-   * Le tableau de bord est marqué `exact` : sans cela, il resterait actif sur
-   * toutes les pages de l'espace, puisque son chemin les préfixe toutes.
+   * Les mêmes intitulés existent côté client et y mènent à d'autres écrans :
+   * pointer `/carte` ou `/demandes` depuis ici ferait basculer le mécanicien
+   * dans l'espace client, coquille comprise.
+   *
+   * L'accueil est marqué `exact` : sans cela, il resterait actif sur toutes
+   * les pages de l'espace, puisque son chemin les préfixe toutes.
    */
   protected readonly navItems: readonly BottomNavItem[] = [
-    { label: 'Tableau de bord', icon: 'accueil', link: '/mecanicien', exact: true },
-    { label: 'Interventions', icon: 'cle', link: '/mecanicien/interventions' },
-    { label: 'Tarifs', icon: 'tendance', link: '/mecanicien/tarifs' },
+    { label: 'Accueil', icon: 'accueil', link: '/mecanicien', exact: true },
+    { label: 'Carte', icon: 'carte', link: '/mecanicien/carte' },
+    { label: 'Demandes', icon: 'liste', link: '/mecanicien/demandes' },
     { label: 'Profil', icon: 'profil', link: '/mecanicien/profil' },
   ];
 }

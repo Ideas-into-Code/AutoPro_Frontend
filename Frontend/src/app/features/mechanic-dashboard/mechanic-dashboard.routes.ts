@@ -58,18 +58,18 @@ export const mechanicDashboardRoutes: Routes = [
        * comprendre pourquoi. À remplacer par les vrais écrans.
        */
       {
-        path: 'interventions',
+        path: 'carte',
         loadComponent: () =>
           import('@shared/pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
-        data: { fonctionnalite: 'Le suivi de vos interventions' },
-        title: 'Mes interventions — AutoPro',
+        data: { fonctionnalite: 'La carte de vos interventions' },
+        title: 'Carte — AutoPro',
       },
       {
-        path: 'tarifs',
+        path: 'demandes',
         loadComponent: () =>
           import('@shared/pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
-        data: { fonctionnalite: 'Votre grille tarifaire' },
-        title: 'Mes tarifs — AutoPro',
+        data: { fonctionnalite: 'Vos demandes reçues' },
+        title: 'Mes demandes — AutoPro',
       },
       {
         path: 'profil',
