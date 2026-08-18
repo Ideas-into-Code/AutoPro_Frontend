@@ -24,7 +24,9 @@ export type IconName =
   | 'accueil'
   | 'carte'
   | 'profil'
-  | 'voiture';
+  | 'voiture'
+  | 'liste'
+  | 'message';
 
 export type IconSize = 'sm' | 'md' | 'lg';
 
