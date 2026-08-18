@@ -1,134 +1,18 @@
-@use 'index' as ds;
+// Rien de structurel ici : la barre, le pied de page et les proportions
+// viennent de `PageShell`, `Header` et `Footer`, exactement comme dans la
+// coquille client. Seuls les deux repères propres à cet espace sont décrits.
 
-:host {
-  display: flex;
-  flex-direction: column;
-  min-height: 100dvh;
-  background-color: var(--ap-surface-page);
-}
-
-.ap-mecano-shell__skip {
-  @include ds.visually-hidden;
-
-  // Réapparaît à la tabulation : c'est le premier élément atteint au clavier.
-  &:focus {
-    position: static;
-    display: block;
-    width: auto;
-    height: auto;
-    padding: var(--ap-space-3);
-    overflow: visible;
-    color: var(--ap-text-on-primary);
-    background-color: var(--ap-color-primary);
-    clip-path: none;
-  }
-}
-
-// --- Barre de marque ---------------------------------------------------------
-
-.ap-mecano-shell__bar {
-  position: sticky;
-  top: 0;
-  z-index: var(--ap-z-sticky);
-  display: flex;
-  gap: var(--ap-space-3);
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--ap-space-3) var(--ap-space-4);
-  background-color: var(--ap-surface-raised);
-  border-bottom: var(--ap-border-width-thin) solid var(--ap-border-subtle);
-}
-
-.ap-mecano-shell__brand {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--ap-space-2);
-  align-items: baseline;
-  margin: 0;
-  color: var(--ap-color-primary);
-  font-weight: var(--ap-font-weight-bold);
-  font-size: var(--ap-font-size-lg);
-}
-
-.ap-mecano-shell__brand-icon {
-  align-self: center;
-}
-
-// Mention qui distingue l'espace mécanicien de l'espace client, pour éviter
-// toute confusion quand on jongle entre les deux pendant les démonstrations.
-.ap-mecano-shell__brand-space {
-  color: var(--ap-text-secondary);
-  font-weight: var(--ap-font-weight-regular);
-  font-size: var(--ap-font-size-xs);
-}
-
-.ap-mecano-shell__notifications {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  // Cible tactile de 44 px, minimum exigé par les conventions.
-  min-width: 2.75rem;
-  min-height: 2.75rem;
-  color: var(--ap-text-secondary);
-  background: none;
-  border: 0;
-  border-radius: var(--ap-radius-full);
-  cursor: pointer;
-
-  @include ds.focus-ring;
-
-  &:hover {
-    color: var(--ap-text-primary);
-    background-color: var(--ap-surface-sunken);
-  }
-}
-
-.ap-mecano-shell__notifications-label {
-  @include ds.visually-hidden;
-}
-
-// --- Contenu -----------------------------------------------------------------
-
-.ap-mecano-shell__main {
-  flex: 1;
-  // Réserve la hauteur de la barre basse : sans cela, elle recouvrirait la fin
-  // du contenu au défilement.
-  padding-bottom: 5rem;
-}
-
-// --- Navigation basse --------------------------------------------------------
-
-.ap-mecano-shell__nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  z-index: var(--ap-z-sticky);
-  display: flex;
-  width: 100%;
-  background-color: var(--ap-surface-raised);
-  border-top: var(--ap-border-width-thin) solid var(--ap-border-subtle);
-  // Évite que la barre passe sous le geste de retour des téléphones récents.
-  padding-bottom: env(safe-area-inset-bottom, 0);
-
-  a {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: var(--ap-space-1);
-    align-items: center;
-    justify-content: center;
-    min-height: 3.5rem;
-    padding: var(--ap-space-2);
-    color: var(--ap-text-secondary);
-    font-size: var(--ap-font-size-xs);
-    text-align: center;
-    text-decoration: none;
-
-    @include ds.focus-ring(-2px);
-  }
-}
-
+// Le lien de la page courante. Le soulignement double la couleur : un écart de
+// teinte seul serait invisible pour une partie des daltoniens.
 .ap-mecano-shell__link--active {
   color: var(--ap-color-primary);
   font-weight: var(--ap-font-weight-semibold);
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+}
+
+.ap-mecano-shell__user {
+  color: var(--ap-text-secondary);
+  font-weight: var(--ap-font-weight-medium);
+  font-size: var(--ap-font-size-sm);
 }

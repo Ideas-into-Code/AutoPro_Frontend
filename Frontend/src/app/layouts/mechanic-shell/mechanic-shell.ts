@@ -1,26 +1,43 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
-import { Icon } from '@shared/ui';
+import { AuthService } from '@core/services/auth.service';
+import { Footer, Header, PageShell } from '@shared/layout';
 
 /**
- * Coquille de l'espace mécanicien : barre de marque, contenu, navigation basse.
+ * Coquille de l'espace mécanicien.
  *
- * Distincte de `ClientShell`, et c'est tout l'objet de ce composant. Le
- * tableau de bord était initialement rendu sous la coquille client, dont il
- * héritait le menu — « Mécaniciens », « Mes demandes »… — c'est-à-dire la
- * navigation de quelqu'un qui *cherche* un mécanicien, proposée à un
- * mécanicien. Deux personas, deux navigations.
+ * Assemble **les mêmes briques que la coquille client** — `PageShell`,
+ * `Header`, `Footer` — et n'en change que le contenu projeté. Le mécanicien
+ * retrouve donc exactement la même barre, le même pied de page et les mêmes
+ * proportions ; seuls les liens diffèrent. C'est précisément ce pour quoi ces
+ * composants avaient été écrits sans connaître les routes.
  *
- * Navigation basse plutôt que latérale : le mécanicien consulte son tableau de
- * bord au téléphone, souvent debout devant un véhicule. C'est ce que montre la
- * maquette, et ce que le pouce atteint.
+ * Distincte de `ClientShell` malgré tout, pour deux raisons :
+ *
+ *   - la navigation n'est pas la même. Proposer « Mécaniciens » ou « Mes
+ *     demandes » à un mécanicien n'a pas de sens : ce sont les entrées de
+ *     quelqu'un qui *cherche* un mécanicien ;
+ *   - **tous les liens restent sous `/mecanicien`**. Une barre qui renverrait
+ *     vers `/carte` ou `/demandes` ferait basculer le mécanicien dans l'espace
+ *     client sans qu'il s'en aperçoive, coquille comprise.
  */
 @Component({
   selector: 'app-mechanic-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, PageShell, Header, Footer],
   templateUrl: './mechanic-shell.html',
   styleUrl: './mechanic-shell.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MechanicShell {}
+export class MechanicShell {
+  private readonly auth = inject(AuthService);
+
+  /**
+   * Nom du mécanicien connecté, affiché à la place d'une mention générique.
+   *
+   * « Espace mécanicien » n'apprenait rien : la barre indique désormais *qui*
+   * est connecté, ce qui compte davantage sur un poste partagé en atelier.
+   * Repli sur un libellé neutre tant que personne n'est authentifié.
+   */
+  protected readonly nomAffiche = computed(() => this.auth.currentUser()?.fullName ?? 'Mécanicien');
+}

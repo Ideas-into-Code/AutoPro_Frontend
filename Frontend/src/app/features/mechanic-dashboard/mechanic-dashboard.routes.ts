@@ -48,6 +48,36 @@ export const mechanicDashboardRoutes: Routes = [
           ),
         title: 'Tableau de bord mécanicien — AutoPro',
       },
+
+      /**
+       * Écrans annoncés par la navigation mais pas encore écrits.
+       *
+       * Déclarés ici plutôt que laissés absents : sans eux, les liens de la
+       * barre tomberaient sur la route joker, c'est-à-dire hors de l'espace
+       * mécanicien — l'utilisateur se retrouverait dans l'espace client sans
+       * comprendre pourquoi. À remplacer par les vrais écrans.
+       */
+      {
+        path: 'interventions',
+        loadComponent: () =>
+          import('@shared/pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
+        data: { fonctionnalite: 'Le suivi de vos interventions' },
+        title: 'Mes interventions — AutoPro',
+      },
+      {
+        path: 'tarifs',
+        loadComponent: () =>
+          import('@shared/pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
+        data: { fonctionnalite: 'Votre grille tarifaire' },
+        title: 'Mes tarifs — AutoPro',
+      },
+      {
+        path: 'profil',
+        loadComponent: () =>
+          import('@shared/pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
+        data: { fonctionnalite: 'Votre profil professionnel' },
+        title: 'Mon profil — AutoPro',
+      },
     ],
   },
 ];
