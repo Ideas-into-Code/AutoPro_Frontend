@@ -60,7 +60,7 @@ describe('Avatar', () => {
   it('affiche une pastille de profil à côté des initiales', async () => {
     await rendre('Boubacar Sidibe');
 
-    expect(hote().querySelector('.ap-avatar__photo app-icon')).not.toBeNull();
+    expect(hote().querySelector('.ap-avatar__photo .ap-avatar__glyph')).not.toBeNull();
     expect(initiales()).toBe('BS');
   });
 

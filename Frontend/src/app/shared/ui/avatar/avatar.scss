@@ -10,12 +10,22 @@
 .ap-avatar__photo {
   display: inline-flex;
   flex: none;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
+
+  // Recoupe la silhouette au ras du cercle : c'est ce détourage qui la fait
+  // lire comme un portrait plutôt que comme un pictogramme posé au centre.
+  overflow: hidden;
   color: var(--ap-color-primary);
   background-color: var(--ap-color-primary-100);
   border: var(--ap-border-width-thin) solid var(--ap-color-primary-200);
   border-radius: var(--ap-radius-full);
+}
+
+.ap-avatar__glyph {
+  width: 100%;
+  height: 100%;
+  fill: currentcolor;
 }
 
 .ap-avatar__initials {

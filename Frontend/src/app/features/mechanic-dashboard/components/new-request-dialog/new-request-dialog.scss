@@ -4,8 +4,12 @@
 // boîte au milieu se lit comme une interruption, un bandeau haut comme une
 // alerte qu'on traite en passant.
 .ap-new-request {
-  width: min(100% - var(--ap-space-6), 20rem);
-  margin-top: var(--ap-space-4);
+  width: min(100% - var(--ap-space-6), 21rem);
+
+  // Sous la barre du haut, dont la hauteur utile est de 4 rem : collée au
+  // sommet, la notification recouvrait le compte connecté et se lisait comme
+  // un empilement accidentel plutôt que comme un signal.
+  margin-top: 4.75rem;
   margin-bottom: auto;
   padding: var(--ap-space-4);
   color: var(--ap-text-primary);
@@ -16,7 +20,10 @@
   box-shadow: var(--ap-shadow-lg);
 
   &::backdrop {
-    background-color: rgb(25 27 36 / 35%);
+    // Voile discret : une notification signale, elle n'interrompt pas. Un fond
+    // franchement assombri donnait à cette petite carte l'allure d'une boîte
+    // de dialogue bloquante, disproportionnée pour un choix de deux secondes.
+    background-color: rgb(25 27 36 / 12%);
   }
 
   animation: ap-new-request-in var(--ap-duration-base) var(--ap-easing-standard);

@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-import { Icon } from '../icon/icon';
-
 export type AvatarSize = 'sm' | 'md' | 'lg';
 
 /**
@@ -19,7 +17,6 @@ export type AvatarSize = 'sm' | 'md' | 'lg';
  */
 @Component({
   selector: 'app-avatar',
-  imports: [Icon],
   templateUrl: './avatar.html',
   styleUrl: './avatar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
