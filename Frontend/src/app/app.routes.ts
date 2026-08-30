@@ -62,6 +62,22 @@ export const routes: Routes = [
     ],
   },
 
+  // --- Back-office, sous sa propre coquille ---------------------------------
+  // Sorti de la coquille client, où il était jusqu'ici : le menu y proposait
+  // « Mécaniciens » et « Mes demandes » à un administrateur, c'est-à-dire les
+  // entrées de quelqu'un qui *cherche* un mécanicien plutôt que de celui qui
+  // les valide. Troisième persona, troisième navigation.
+  {
+    path: 'admin',
+    loadComponent: () => import('./layouts/admin-shell/admin-shell').then((m) => m.AdminShell),
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('@features/admin/admin.routes').then((m) => m.adminRoutes),
+      },
+    ],
+  },
+
   // --- Espace client, sous la coquille commune ------------------------------
   {
     path: '',
@@ -100,12 +116,6 @@ export const routes: Routes = [
       {
         path: 'tarifs',
         loadChildren: () => import('@features/pricing/pricing.routes').then((m) => m.pricingRoutes),
-      },
-
-      // --- Back-office ------------------------------------------------------
-      {
-        path: 'admin',
-        loadChildren: () => import('@features/admin/admin.routes').then((m) => m.adminRoutes),
       },
 
       // --- Repli ------------------------------------------------------------

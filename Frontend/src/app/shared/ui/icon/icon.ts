@@ -26,7 +26,9 @@ export type IconName =
   | 'profil'
   | 'voiture'
   | 'liste'
-  | 'message';
+  | 'message'
+  | 'groupes'
+  | 'paiement';
 
 export type IconSize = 'sm' | 'md' | 'lg';
 

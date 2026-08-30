@@ -1,0 +1,26 @@
+<p class="ap-metric__top">
+  <span class="ap-metric__icon" aria-hidden="true">
+    <app-icon [name]="metric().icon" />
+  </span>
+
+  <!--
+    L'évolution est doublée d'une phrase complète : la couleur et la flèche
+    portent seules le sens de « +12 % », et aucune des deux ne s'entend.
+  -->
+  <span class="ap-metric__trend">
+    @if (metric().direction !== 'stable') {
+      <app-icon name="tendance" size="sm" />
+    }
+    <span aria-hidden="true">{{ evolution() }}</span>
+    <span class="ap-metric__sr">{{ evolutionAnnoncee() }}</span>
+  </span>
+</p>
+
+<p class="ap-metric__value">
+  {{ valeur() }}
+  @if (metric().unit; as unite) {
+    <span class="ap-metric__unit">{{ unite }}</span>
+  }
+</p>
+
+<p class="ap-metric__label">{{ metric().label }}</p>

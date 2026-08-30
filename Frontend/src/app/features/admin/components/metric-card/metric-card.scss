@@ -1,0 +1,86 @@
+@use 'index' as ds;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-2);
+  padding: var(--ap-space-5);
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-xl);
+  box-shadow: var(--ap-shadow-sm);
+}
+
+.ap-metric__top {
+  display: flex;
+  gap: var(--ap-space-3);
+  align-items: flex-start;
+  justify-content: space-between;
+  margin: 0;
+}
+
+.ap-metric__icon {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  color: var(--ap-color-primary);
+  background-color: var(--ap-color-primary-100);
+  border-radius: var(--ap-radius-lg);
+}
+
+// Neutre par défaut : c'est le sens de l'évolution qui colore la pastille, et
+// un indicateur stable ne doit pas emprunter la couleur d'une bonne nouvelle.
+.ap-metric__trend {
+  display: inline-flex;
+  gap: var(--ap-space-1);
+  align-items: center;
+  padding: var(--ap-space-1) var(--ap-space-2);
+  color: var(--ap-text-secondary);
+  font-weight: var(--ap-font-weight-bold);
+  font-size: var(--ap-font-size-xs);
+  background-color: var(--ap-surface-sunken);
+  border-radius: var(--ap-radius-full);
+  white-space: nowrap;
+}
+
+:host(.ap-metric--hausse) .ap-metric__trend {
+  color: var(--ap-color-success);
+  background-color: var(--ap-color-success-surface);
+}
+
+:host(.ap-metric--baisse) .ap-metric__trend {
+  color: var(--ap-color-danger);
+  background-color: var(--ap-color-danger-surface);
+
+  // La flèche de tendance pointe vers le haut : retournée, elle dit l'inverse
+  // sans qu'il faille un second tracé dans le jeu d'icônes.
+  app-icon {
+    transform: rotate(180deg);
+  }
+}
+
+.ap-metric__value {
+  margin: 0;
+  font-weight: var(--ap-font-weight-bold);
+  font-size: var(--ap-font-size-3xl);
+  line-height: var(--ap-line-height-tight);
+  letter-spacing: -0.02em;
+}
+
+.ap-metric__unit {
+  margin-left: var(--ap-space-1);
+  color: var(--ap-text-secondary);
+  font-weight: var(--ap-font-weight-medium);
+  font-size: var(--ap-font-size-base);
+}
+
+.ap-metric__label {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+}
+
+.ap-metric__sr {
+  @include ds.visually-hidden;
+}

@@ -1,0 +1,109 @@
+<div class="ap-accounts__bar">
+  <!--
+    Boutons et non liens : filtrer ne change pas de page. `aria-pressed` dit
+    lequel est enfoncé, ce que la seule couleur ne dit pas.
+  -->
+  <div class="ap-accounts__tabs" role="group" aria-label="Filtrer par type de compte">
+    @for (onglet of onglets; track onglet.valeur) {
+      <button
+        type="button"
+        class="ap-accounts__tab"
+        [class.ap-accounts__tab--active]="filtre() === onglet.valeur"
+        [attr.aria-pressed]="filtre() === onglet.valeur"
+        (click)="changerFiltre(onglet.valeur)"
+      >
+        {{ onglet.label }}
+      </button>
+    }
+  </div>
+
+  <app-search-bar
+    class="ap-accounts__search"
+    label="Rechercher un compte"
+    placeholder="Nom, adresse e-mail, ville…"
+    (searchSubmit)="rechercher($event)"
+  />
+</div>
+
+<!-- Le décompte est annoncé : filtrer ne déplace pas le focus. -->
+<p class="ap-accounts__summary" aria-live="polite">{{ resume() }}</p>
+
+<div class="ap-accounts__scroll">
+  <table class="ap-accounts__table">
+    <caption class="ap-accounts__caption">
+      Comptes inscrits sur la plateforme, avec leur statut et l'action de modération disponible.
+    </caption>
+
+    <thead>
+      <tr>
+        <th scope="col">Compte</th>
+        <th scope="col">Rôle</th>
+        <th scope="col">Ville</th>
+        <th scope="col">Inscrit le</th>
+        <th scope="col">Statut</th>
+        <th scope="col" class="ap-accounts__col-action">Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (compte of visibles(); track compte.id) {
+        <tr>
+          <!--
+            La cellule reste une cellule : la mise en flex est portée par un
+            conteneur interne, sinon `display: flex` retirerait au `<th>` son
+            rôle de cellule et désalignerait toute la colonne.
+          -->
+          <th scope="row">
+            <span class="ap-accounts__identity">
+              <app-avatar [name]="compte.fullName" size="sm" />
+              <span class="ap-accounts__identity-text">
+                <span class="ap-accounts__name">{{ compte.fullName }}</span>
+                <span class="ap-accounts__email">{{ compte.email }}</span>
+              </span>
+            </span>
+          </th>
+
+          <td>{{ libelleRole(compte.role) }}</td>
+          <td>{{ compte.city }}</td>
+          <td>{{ dateCourte(compte.registeredAt) }}</td>
+
+          <td>
+            <span
+              class="ap-accounts__status"
+              [class.ap-accounts__status--actif]="compte.status === 'actif'"
+              [class.ap-accounts__status--suspendu]="compte.status === 'suspendu'"
+              [class.ap-accounts__status--attente]="compte.status === 'en_attente'"
+            >
+              {{ libelleStatut(compte.status) }}
+            </span>
+          </td>
+
+          <td class="ap-accounts__col-action">
+            @if (compte.status === 'en_attente') {
+              <!-- Un dossier se tranche dans la file de validation, pas ici. -->
+              <span class="ap-accounts__no-action">Dossier à valider</span>
+            } @else {
+              <button
+                appButton
+                type="button"
+                size="sm"
+                [variant]="compte.status === 'actif' ? 'ghost' : 'secondary'"
+                [loading]="savingId() === compte.id"
+                (click)="basculerStatut(compte)"
+              >
+                {{ compte.status === 'actif' ? 'Suspendre' : 'Réactiver' }}
+                <span class="ap-accounts__sr"> le compte de {{ compte.fullName }}</span>
+              </button>
+            }
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td class="ap-accounts__empty" colspan="6">
+            Aucun compte ne correspond à cette recherche.
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
