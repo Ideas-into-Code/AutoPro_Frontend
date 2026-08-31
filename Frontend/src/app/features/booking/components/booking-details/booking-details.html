@@ -1,0 +1,42 @@
+<div class="ap-booking__mechanic">
+  <app-avatar [name]="booking().mechanic.fullName" size="md" />
+
+  <div class="ap-booking__identity">
+    <p class="ap-booking__name">{{ booking().mechanic.fullName }}</p>
+    <p class="ap-booking__specialty">{{ booking().mechanic.specialty }}</p>
+  </div>
+
+  @if (note(); as moyenne) {
+    <p class="ap-booking__rating">
+      <span aria-hidden="true">★</span>
+      <span>{{ moyenne }}</span>
+      <span class="ap-booking__sr">sur 5 de moyenne</span>
+    </p>
+  }
+</div>
+
+<!--
+  Une liste de définitions : chaque valeur reste rattachée à son intitulé, ce
+  qu'une suite de paragraphes ne dit pas aux lecteurs d'écran.
+-->
+<dl class="ap-booking__facts">
+  <div class="ap-booking__fact">
+    <dt><app-icon name="voiture" size="sm" /> Véhicule</dt>
+    <dd>{{ booking().vehicle }}</dd>
+  </div>
+
+  <div class="ap-booking__fact">
+    <dt><app-icon name="cle" size="sm" /> Panne</dt>
+    <dd>{{ booking().problemLabel }}</dd>
+  </div>
+
+  <div class="ap-booking__fact">
+    <dt><app-icon name="position" size="sm" /> Lieu</dt>
+    <dd>{{ booking().address }}</dd>
+  </div>
+
+  <div class="ap-booking__fact">
+    <dt><app-icon name="liste" size="sm" /> Créneau</dt>
+    <dd>{{ creneau() }}</dd>
+  </div>
+</dl>

@@ -1,0 +1,62 @@
+<div class="ap-pay">
+  @if (resultat(); as issue) {
+    <!-- Second moment : l'issue. Le choix a disparu, il n'a plus d'objet. -->
+    <app-payment-result [result]="issue" [amountXOF]="montant()" (retryRequested)="reessayer()" />
+  } @else {
+    <header class="ap-pay__intro">
+      <h1 class="ap-pay__title">Paiement</h1>
+      <p class="ap-pay__subtitle">Choisissez comment régler votre intervention.</p>
+    </header>
+
+    @if (chargement()) {
+      <p class="ap-pay__state"><app-spinner label="Chargement du paiement" /></p>
+    } @else if (chargementFailed()) {
+      <div class="ap-pay__error" role="alert">
+        <p>Le paiement n'a pas pu être préparé. Vérifiez votre connexion.</p>
+        <button appButton type="button" variant="secondary" size="sm" (click)="rechargerEcran()">
+          Réessayer
+        </button>
+      </div>
+    } @else {
+      <p class="ap-pay__amount">
+        <span class="ap-pay__amount-label">Montant à régler</span>
+        <strong class="ap-pay__amount-value">{{ montantFormate() }} FCFA</strong>
+      </p>
+
+      <app-payment-method-picker
+        [methods]="methodsResource.value()"
+        [selected]="moyenChoisi()"
+        [disabled]="envoiEnCours()"
+        (methodChange)="choisir($event)"
+      />
+
+      @if (erreurReseau(); as message) {
+        <p class="ap-pay__error" role="alert">{{ message }}</p>
+      }
+
+      <div class="ap-pay__actions">
+        <!--
+          Neutralisé tant qu'aucun moyen n'est retenu : proposer « Payer » sans
+          savoir avec quoi mènerait à une erreur que l'écran peut éviter.
+        -->
+        <button
+          appButton
+          type="button"
+          variant="primary"
+          size="lg"
+          [disabled]="moyenChoisi() === null"
+          [loading]="envoiEnCours()"
+          (click)="payer()"
+        >
+          Payer {{ montantFormate() }} FCFA
+        </button>
+
+        <a appButton variant="ghost" routerLink="/reservation">Revenir au récapitulatif</a>
+      </div>
+
+      <p class="ap-pay__legal">
+        Le montant n'est débité qu'après confirmation par votre opérateur.
+      </p>
+    }
+  }
+</div>

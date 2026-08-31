@@ -1,0 +1,47 @@
+<!--
+  `role="status"` et non `alert` : le résultat suit un geste volontaire du
+  client, il est attendu. `alert` interromprait la lecture en cours pour
+  annoncer quelque chose que l'utilisateur vient lui-même de déclencher.
+-->
+<div class="ap-result__box" role="status">
+  <span class="ap-result__badge" aria-hidden="true">
+    <app-icon [name]="reussi() ? 'valide' : 'annule'" size="lg" />
+  </span>
+
+  <h2 class="ap-result__title">
+    {{ reussi() ? 'Paiement confirmé' : "Le paiement n'a pas abouti" }}
+  </h2>
+
+  <p class="ap-result__amount">{{ montant() }} FCFA</p>
+
+  @if (reussi()) {
+    @if (result().reference; as reference) {
+      <p class="ap-result__reference">
+        Référence de transaction
+        <strong>{{ reference }}</strong>
+      </p>
+    }
+
+    <p class="ap-result__note">
+      Votre mécanicien est prévenu. Vous recevrez un SMS de rappel avant le rendez-vous.
+    </p>
+  } @else {
+    @if (result().failureReason; as motif) {
+      <p class="ap-result__note">{{ motif }}</p>
+    }
+
+    <p class="ap-result__note">Aucun montant n'a été débité.</p>
+  }
+
+  <div class="ap-result__actions">
+    @if (reussi()) {
+      <a appButton variant="primary" routerLink="/demandes">Voir ma réservation</a>
+      <a appButton variant="ghost" routerLink="/accueil">Retour à l'accueil</a>
+    } @else {
+      <button appButton type="button" variant="primary" (click)="retryRequested.emit()">
+        Choisir un autre moyen
+      </button>
+      <a appButton variant="ghost" routerLink="/accueil">Abandonner</a>
+    }
+  </div>
+</div>

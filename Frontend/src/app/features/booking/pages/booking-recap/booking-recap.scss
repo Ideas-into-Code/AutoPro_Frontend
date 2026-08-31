@@ -1,0 +1,68 @@
+@use 'index' as ds;
+
+.ap-recap {
+  display: grid;
+  gap: var(--ap-space-5);
+  max-width: 44rem;
+  margin-inline: auto;
+}
+
+.ap-recap__intro {
+  display: grid;
+  gap: var(--ap-space-1);
+}
+
+.ap-recap__title {
+  margin: 0;
+  font-size: var(--ap-font-size-2xl);
+  line-height: var(--ap-line-height-tight);
+}
+
+.ap-recap__subtitle {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+}
+
+.ap-recap__state {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: var(--ap-space-8) 0;
+}
+
+.ap-recap__error {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-3);
+  align-items: center;
+  margin: 0;
+  padding: var(--ap-space-4);
+  color: var(--ap-color-danger);
+  background-color: var(--ap-color-danger-surface);
+  border-radius: var(--ap-radius-lg);
+  font-size: var(--ap-font-size-sm);
+
+  p {
+    margin: 0;
+  }
+}
+
+// Le geste principal occupe toute la largeur sur mobile : c'est la seule
+// action attendue de cet écran, et le pouce l'atteint sans viser.
+.ap-recap__actions {
+  display: grid;
+  gap: var(--ap-space-2);
+
+  @include ds.from(md) {
+    grid-template-columns: 2fr 1fr;
+    align-items: center;
+  }
+}
+
+.ap-recap__legal {
+  margin: 0;
+  color: var(--ap-text-muted);
+  font-size: var(--ap-font-size-xs);
+  text-align: center;
+}

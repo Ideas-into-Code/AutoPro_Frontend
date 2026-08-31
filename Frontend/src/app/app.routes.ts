@@ -103,6 +103,10 @@ export const routes: Routes = [
           import('@features/requests/requests.routes').then((m) => m.requestsRoutes),
       },
       {
+        path: 'reservation',
+        loadChildren: () => import('@features/booking/booking.routes').then((m) => m.bookingRoutes),
+      },
+      {
         path: 'messages',
         loadChildren: () =>
           import('@features/messaging/messaging.routes').then((m) => m.messagingRoutes),

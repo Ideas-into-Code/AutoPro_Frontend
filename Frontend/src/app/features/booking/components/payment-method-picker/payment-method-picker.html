@@ -1,0 +1,32 @@
+<fieldset class="ap-methods__group" [disabled]="disabled()">
+  <legend class="ap-methods__legend">Moyen de paiement</legend>
+
+  @for (moyen of methods(); track moyen.id) {
+    <label
+      class="ap-methods__option"
+      [class.ap-methods__option--selected]="selected() === moyen.id"
+      [class.ap-methods__option--off]="!moyen.available"
+    >
+      <input
+        type="radio"
+        class="ap-methods__input"
+        [name]="groupe"
+        [value]="moyen.id"
+        [checked]="selected() === moyen.id"
+        [disabled]="!moyen.available"
+        (change)="choisir(moyen.id)"
+      />
+
+      <span class="ap-methods__text">
+        <span class="ap-methods__label">{{ moyen.label }}</span>
+        <span class="ap-methods__hint">
+          @if (moyen.available) {
+            {{ moyen.hint }}
+          } @else {
+            Momentanément indisponible.
+          }
+        </span>
+      </span>
+    </label>
+  }
+</fieldset>

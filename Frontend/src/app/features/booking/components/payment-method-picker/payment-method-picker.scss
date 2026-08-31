@@ -1,0 +1,83 @@
+@use 'index' as ds;
+
+:host {
+  display: block;
+}
+
+.ap-methods__group {
+  display: grid;
+  gap: var(--ap-space-3);
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.ap-methods__legend {
+  margin-bottom: var(--ap-space-3);
+  padding: 0;
+  font-weight: var(--ap-font-weight-semibold);
+  font-size: var(--ap-font-size-lg);
+}
+
+.ap-methods__option {
+  display: flex;
+  gap: var(--ap-space-3);
+  align-items: flex-start;
+  padding: var(--ap-space-4);
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-lg);
+  cursor: pointer;
+
+  // Toute l'étiquette est cliquable : viser un rond de 1 rem au doigt, sur un
+  // téléphone tenu d'une main, est une cible inutilement petite.
+  &:hover {
+    border-color: var(--ap-color-primary-300);
+  }
+}
+
+// L'anneau de focus est porté par l'étiquette entière : le bouton radio, lui,
+// n'est qu'un point, et son anneau passerait inaperçu.
+.ap-methods__option:has(.ap-methods__input:focus-visible) {
+  outline: var(--ap-border-width-thick) solid var(--ap-focus-ring);
+  outline-offset: 2px;
+}
+
+.ap-methods__option--selected {
+  border-color: var(--ap-color-primary);
+  box-shadow: inset 0 0 0 1px var(--ap-color-primary);
+}
+
+// Désactivé plutôt que masqué : le client voit que le moyen existe et qu'il
+// reviendra, au lieu de croire qu'il n'est pas accepté.
+.ap-methods__option--off {
+  cursor: not-allowed;
+  opacity: 0.55;
+
+  &:hover {
+    border-color: var(--ap-border-subtle);
+  }
+}
+
+.ap-methods__input {
+  flex: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.15rem;
+  accent-color: var(--ap-color-primary);
+}
+
+.ap-methods__text {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.ap-methods__label {
+  font-weight: var(--ap-font-weight-semibold);
+}
+
+.ap-methods__hint {
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+}

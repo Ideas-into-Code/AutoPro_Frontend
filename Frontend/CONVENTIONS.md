@@ -25,6 +25,7 @@ src/
         ├── onboarding/        parcours de première utilisation
         ├── mechanics/         profils, spécialités, justificatifs
         ├── requests/          demandes d'intervention
+        ├── booking/           récapitulatif de réservation et paiement
         ├── pricing/           grilles tarifaires
         ├── reviews/           notes et avis
         ├── messaging/         messagerie instantanée

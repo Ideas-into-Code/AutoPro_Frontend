@@ -1,0 +1,88 @@
+@use 'index' as ds;
+
+.ap-pay {
+  display: grid;
+  gap: var(--ap-space-5);
+  max-width: 36rem;
+  margin-inline: auto;
+}
+
+.ap-pay__intro {
+  display: grid;
+  gap: var(--ap-space-1);
+}
+
+.ap-pay__title {
+  margin: 0;
+  font-size: var(--ap-font-size-2xl);
+  line-height: var(--ap-line-height-tight);
+}
+
+.ap-pay__subtitle {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+}
+
+// Le montant est rappelé en tête : on ne demande pas de payer une somme qu'il
+// faut remonter d'un écran pour retrouver.
+.ap-pay__amount {
+  display: grid;
+  gap: var(--ap-space-1);
+  margin: 0;
+  padding: var(--ap-space-4);
+  background-color: var(--ap-color-primary-50);
+  border-radius: var(--ap-radius-lg);
+}
+
+.ap-pay__amount-label {
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ap-pay__amount-value {
+  font-size: var(--ap-font-size-2xl);
+}
+
+.ap-pay__state {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: var(--ap-space-8) 0;
+}
+
+.ap-pay__error {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-3);
+  align-items: center;
+  margin: 0;
+  padding: var(--ap-space-4);
+  color: var(--ap-color-danger);
+  background-color: var(--ap-color-danger-surface);
+  border-radius: var(--ap-radius-lg);
+  font-size: var(--ap-font-size-sm);
+
+  p {
+    margin: 0;
+  }
+}
+
+.ap-pay__actions {
+  display: grid;
+  gap: var(--ap-space-2);
+
+  @include ds.from(md) {
+    grid-template-columns: 2fr 1fr;
+    align-items: center;
+  }
+}
+
+.ap-pay__legal {
+  margin: 0;
+  color: var(--ap-text-muted);
+  font-size: var(--ap-font-size-xs);
+  text-align: center;
+}

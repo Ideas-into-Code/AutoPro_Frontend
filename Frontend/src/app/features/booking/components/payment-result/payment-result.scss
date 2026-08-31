@@ -1,0 +1,78 @@
+:host {
+  display: block;
+}
+
+.ap-result__box {
+  display: grid;
+  gap: var(--ap-space-3);
+  justify-items: center;
+  padding: var(--ap-space-8) var(--ap-space-5);
+  text-align: center;
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-xl);
+  box-shadow: var(--ap-shadow-sm);
+}
+
+// La pastille colorée porte l'issue avant même la lecture du titre — mais elle
+// ne la porte pas seule : le titre la dit en toutes lettres, la couleur ne
+// suffit jamais.
+.ap-result__badge {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: var(--ap-radius-full);
+}
+
+:host(.ap-result--ok) .ap-result__badge {
+  color: var(--ap-color-success);
+  background-color: var(--ap-color-success-surface);
+}
+
+:host(.ap-result--ko) .ap-result__badge {
+  color: var(--ap-color-danger);
+  background-color: var(--ap-color-danger-surface);
+}
+
+.ap-result__title {
+  margin: 0;
+  font-size: var(--ap-font-size-xl);
+}
+
+.ap-result__amount {
+  margin: 0;
+  font-weight: var(--ap-font-weight-bold);
+  font-size: var(--ap-font-size-2xl);
+}
+
+.ap-result__reference {
+  display: grid;
+  gap: var(--ap-space-1);
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  strong {
+    color: var(--ap-text-primary);
+    font-size: var(--ap-font-size-base);
+    letter-spacing: normal;
+  }
+}
+
+.ap-result__note {
+  max-width: 32ch;
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+}
+
+.ap-result__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-2);
+  justify-content: center;
+  margin-top: var(--ap-space-3);
+}
