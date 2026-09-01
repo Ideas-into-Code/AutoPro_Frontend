@@ -19,6 +19,11 @@ export type { FormFieldType } from './form-field/form-field';
 export { Icon } from './icon/icon';
 export type { IconName, IconSize } from './icon/icon';
 
+export { PhotoUpload } from './photo-upload/photo-upload';
+
+export { RatingStars } from './rating-stars/rating-stars';
+export type { RatingSize } from './rating-stars/rating-stars';
+
 export { SearchBar } from './search-bar/search-bar';
 
 export { Spinner } from './spinner/spinner';

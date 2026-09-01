@@ -11,14 +11,13 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { Position } from '@core';
-import { Button, FormField, Icon } from '@shared/ui';
+import { Button, FormField, Icon, PhotoUpload } from '@shared/ui';
 import { longueurMax, longueurMin, requis, telephoneSenegalaisValidator } from '@shared/validators';
 import { InterventionRequest, ProblemType } from '../../models/request.model';
 import { PROBLEM_TYPE_LABELS, problemTypeFromCategorySlug } from '../../models/request-draft.model';
 import { RequestRepository } from '../../data/request.repository';
 import { LocationPicker } from '../../components/location-picker/location-picker';
 import { NextSteps } from '../../components/next-steps/next-steps';
-import { PhotoUpload } from '../../components/photo-upload/photo-upload';
 
 /** Longueur en deçà de laquelle une description n'apprend rien au mécanicien. */
 const DESCRIPTION_MIN = 20;

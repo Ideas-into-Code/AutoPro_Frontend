@@ -1,0 +1,175 @@
+@use 'index' as ds;
+
+.ap-review {
+  display: grid;
+  gap: var(--ap-space-5);
+  max-width: 42rem;
+  margin-inline: auto;
+}
+
+.ap-review__intro {
+  display: grid;
+  gap: var(--ap-space-2);
+  justify-items: center;
+  text-align: center;
+}
+
+.ap-review__title {
+  margin: 0;
+  font-size: var(--ap-font-size-2xl);
+  line-height: var(--ap-line-height-tight);
+}
+
+.ap-review__lead {
+  max-width: 40ch;
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+}
+
+// La note est la seule chose exigée : elle est seule sur sa carte, au centre.
+.ap-review__card {
+  display: grid;
+  gap: var(--ap-space-4);
+  justify-items: center;
+  padding: var(--ap-space-6) var(--ap-space-4);
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-xl);
+  box-shadow: var(--ap-shadow-sm);
+}
+
+.ap-review__hint {
+  margin: 0;
+  color: var(--ap-text-muted);
+  font-size: var(--ap-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ap-review__block {
+  display: grid;
+  gap: var(--ap-space-2);
+}
+
+.ap-review__block-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-2);
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.ap-review__label {
+  margin: 0;
+  font-weight: var(--ap-font-weight-semibold);
+  font-size: var(--ap-font-size-lg);
+}
+
+.ap-review__optional {
+  margin: 0;
+  color: var(--ap-text-muted);
+  font-size: var(--ap-font-size-xs);
+  font-style: italic;
+}
+
+.ap-review__field {
+  position: relative;
+}
+
+.ap-review__textarea {
+  width: 100%;
+  padding: var(--ap-space-4);
+  // 3 rem de marge basse : le compteur se pose par-dessus, il ne doit pas
+  // recouvrir la dernière ligne saisie.
+  padding-bottom: var(--ap-space-8);
+  color: inherit;
+  font: inherit;
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-lg);
+  resize: vertical;
+
+  &:focus-visible {
+    outline: var(--ap-border-width-thick) solid var(--ap-focus-ring);
+    outline-offset: 2px;
+    border-color: var(--ap-color-primary);
+  }
+}
+
+.ap-review__counter {
+  position: absolute;
+  right: var(--ap-space-3);
+  bottom: var(--ap-space-3);
+  margin: 0;
+  color: var(--ap-text-muted);
+  font-size: var(--ap-font-size-xs);
+}
+
+.ap-review__state {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: var(--ap-space-8) 0;
+}
+
+.ap-review__error {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-3);
+  align-items: center;
+  margin: 0;
+  padding: var(--ap-space-4);
+  color: var(--ap-color-danger);
+  background-color: var(--ap-color-danger-surface);
+  border-radius: var(--ap-radius-lg);
+  font-size: var(--ap-font-size-sm);
+
+  p {
+    margin: 0;
+  }
+}
+
+.ap-review__legal {
+  margin: 0;
+  color: var(--ap-text-muted);
+  font-size: var(--ap-font-size-xs);
+  text-align: center;
+}
+
+// --- Accusé de réception -----------------------------------------------------
+
+.ap-review__done {
+  display: grid;
+  gap: var(--ap-space-3);
+  justify-items: center;
+  padding: var(--ap-space-10) var(--ap-space-5);
+  text-align: center;
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-xl);
+}
+
+.ap-review__done-badge {
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  margin: 0;
+  color: var(--ap-color-warning);
+  font-size: var(--ap-font-size-2xl);
+  background-color: var(--ap-color-warning-surface);
+  border-radius: var(--ap-radius-full);
+}
+
+.ap-review__done-title {
+  margin: 0;
+  font-size: var(--ap-font-size-xl);
+}
+
+.ap-review__done-note {
+  max-width: 34ch;
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+}

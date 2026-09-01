@@ -9,7 +9,7 @@ import {
   signal,
 } from '@angular/core';
 
-import { Icon } from '@shared/ui';
+import { Icon } from '../icon/icon';
 
 /** Photo retenue, avec l'URL locale qui sert à son aperçu. */
 interface PhotoSelectionnee {
@@ -24,9 +24,15 @@ let prochainId = 0;
 const OCTETS_PAR_MO = 1024 * 1024;
 
 /**
- * Ajout de photos du problème, avec aperçu et retrait.
+ * Ajout de photos, avec aperçu et retrait.
  *
  *   <app-photo-upload [maxPhotos]="3" (photosChange)="photos.set($event)" />
+ *
+ * Remonté de `features/requests/` vers `shared/ui/` : le formulaire d'avis en a
+ * besoin lui aussi, et une feature n'a pas le droit d'en importer une autre
+ * (CONVENTIONS.md §1). Le composant ne sait rien de ce que montrent les photos
+ * — une panne déclarée ou un travail terminé — et n'appartient donc à aucun
+ * des deux domaines.
  *
  * Les fichiers restent **hors du formulaire réactif**, et c'est délibéré : un
  * `FormControl` ne peut pas porter un `File` (on ne peut pas assigner de valeur
