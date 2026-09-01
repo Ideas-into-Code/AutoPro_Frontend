@@ -1,0 +1,109 @@
+<div class="ap-pay">
+  @if (resultat(); as issue) {
+    <!-- Second moment : l'issue. Le choix a disparu, il n'a plus d'objet. -->
+    @if (bookingResource.value(); as reservation) {
+      <app-payment-result
+        [result]="issue"
+        [booking]="reservation"
+        [downloading]="telechargementEnCours()"
+        (invoiceRequested)="telechargerFacture()"
+        (retryRequested)="reessayer()"
+      />
+    }
+
+    @if (erreurReseau(); as message) {
+      <p class="ap-pay__error" role="alert">{{ message }}</p>
+    }
+  } @else {
+    <header class="ap-pay__intro">
+      <h1 class="ap-pay__title">Paiement</h1>
+      <p class="ap-pay__subtitle">Choisissez comment régler votre intervention.</p>
+    </header>
+
+    @if (chargement()) {
+      <p class="ap-pay__state"><app-spinner label="Chargement du paiement" /></p>
+    } @else if (chargementFailed()) {
+      <div class="ap-pay__error" role="alert">
+        <p>Le paiement n'a pas pu être préparé. Vérifiez votre connexion.</p>
+        <button appButton type="button" variant="secondary" size="sm" (click)="rechargerEcran()">
+          Réessayer
+        </button>
+      </div>
+    } @else if (enAttenteDAcceptation()) {
+      <!--
+        Barrière de dernier recours : le récapitulatif ne propose pas de payer
+        avant acceptation, mais l'adresse reste tapable à la main. Un écran de
+        paiement atteint par ce chemin encaisserait pour une intervention que
+        personne n'a acceptée.
+
+        Un garde de route aurait été plus net, mais il s'exécuterait aussi
+        pendant le prérendu et transformerait cette page en redirection figée.
+      -->
+      <div class="ap-pay__blocked" role="status">
+        <p>
+          Cette demande attend encore la réponse du mécanicien. Le paiement s'ouvrira dès qu'il
+          l'aura acceptée.
+        </p>
+
+        <a appButton variant="primary" routerLink="/reservation">Revenir au récapitulatif</a>
+      </div>
+    } @else {
+      <!--
+        Deux colonnes sur grand écran : le choix à gauche, ce qu'on paie à
+        droite. Une colonne centrée laissait les deux tiers de l'écran vides et
+        obligeait à faire défiler pour revoir le montant au moment de valider.
+      -->
+      <div class="ap-pay__columns">
+        <div class="ap-pay__main">
+          <app-payment-method-picker
+            [methods]="methodsResource.value()"
+            [selected]="moyenChoisi()"
+            [disabled]="envoiEnCours()"
+            (methodChange)="choisir($event)"
+          />
+
+          @if (erreurReseau(); as message) {
+            <p class="ap-pay__error" role="alert">{{ message }}</p>
+          }
+
+          <div class="ap-pay__actions">
+            <!--
+              Neutralisé tant qu'aucun moyen n'est retenu : proposer « Payer »
+              sans savoir avec quoi mènerait à une erreur que l'écran peut
+              éviter.
+            -->
+            <button
+              appButton
+              type="button"
+              variant="primary"
+              size="lg"
+              [disabled]="moyenChoisi() === null"
+              [loading]="envoiEnCours()"
+              (click)="payer()"
+            >
+              Payer {{ montantFormate() }} FCFA
+            </button>
+
+            <a appButton variant="ghost" routerLink="/reservation">Revenir au récapitulatif</a>
+          </div>
+
+          <p class="ap-pay__legal">
+            Le montant n'est débité qu'après confirmation par votre opérateur.
+          </p>
+        </div>
+
+        <!-- Reste sous les yeux pendant le choix : c'est ce qu'on engage. -->
+        <aside class="ap-pay__aside">
+          <p class="ap-pay__amount">
+            <span class="ap-pay__amount-label">Montant à régler</span>
+            <strong class="ap-pay__amount-value">{{ montantFormate() }} FCFA</strong>
+          </p>
+
+          @if (bookingResource.value(); as reservation) {
+            <app-price-breakdown [price]="reservation.price" />
+          }
+        </aside>
+      </div>
+    }
+  }
+</div>

@@ -1,0 +1,50 @@
+:host {
+  display: block;
+}
+
+.ap-bstatus__box {
+  display: flex;
+  gap: var(--ap-space-3);
+  align-items: flex-start;
+  padding: var(--ap-space-4);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-lg);
+}
+
+// L'attente emprunte la couleur d'information, le refus celle du danger : le
+// premier n'est pas une mauvaise nouvelle, seulement une nouvelle qui tarde.
+:host(.ap-bstatus--attente) .ap-bstatus__box {
+  background-color: var(--ap-color-info-surface);
+  border-color: var(--ap-color-primary-200);
+}
+
+:host(.ap-bstatus--refusee) .ap-bstatus__box {
+  background-color: var(--ap-color-danger-surface);
+  border-color: var(--ap-color-danger);
+}
+
+.ap-bstatus__badge {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--ap-color-danger);
+}
+
+.ap-bstatus__text {
+  display: grid;
+  gap: var(--ap-space-2);
+  min-width: 0;
+}
+
+.ap-bstatus__title {
+  margin: 0;
+  font-weight: var(--ap-font-weight-semibold);
+}
+
+.ap-bstatus__note {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+}

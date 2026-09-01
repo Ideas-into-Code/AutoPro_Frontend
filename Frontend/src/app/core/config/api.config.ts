@@ -14,6 +14,7 @@ export type MicroserviceName =
   | 'reviews'
   | 'messaging'
   | 'geolocation'
+  | 'payments'
   | 'admin';
 
 /**
@@ -53,6 +54,7 @@ export const DEFAULT_API_CONFIG: ApiConfig = {
     reviews: 'reviews',
     messaging: 'messaging',
     geolocation: 'geolocation',
+    payments: 'payments',
     admin: 'admin',
   },
   // Volontairement généreux : le réseau mobile sénégalais peut être instable

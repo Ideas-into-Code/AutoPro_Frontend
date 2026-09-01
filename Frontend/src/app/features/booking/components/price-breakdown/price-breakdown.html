@@ -1,0 +1,13 @@
+<h2 class="ap-price__title">Détail du prix</h2>
+
+<dl class="ap-price__lines">
+  @for (ligne of price().lines; track ligne.label) {
+    <dt class="ap-price__label">{{ ligne.label }}</dt>
+    <dd class="ap-price__amount">{{ separerMilliers(ligne.amountXOF) }} FCFA</dd>
+  }
+
+  <dt class="ap-price__label ap-price__label--total">{{ totalLabel() }}</dt>
+  <dd class="ap-price__amount ap-price__amount--total">
+    {{ separerMilliers(price().totalXOF) }} FCFA
+  </dd>
+</dl>
