@@ -14,25 +14,52 @@
       </button>
     </div>
   } @else if (bookingResource.value(); as reservation) {
-    <app-booking-details [booking]="reservation" />
-
-    <app-price-breakdown [price]="reservation.price" />
-
     <!--
-      « Payer » est un lien et non un bouton : il change de page. Le clic
-      milieu, l'ouverture dans un onglet et l'annonce du lecteur d'écran
-      restent alors ceux d'une navigation, ce qu'un bouton casserait.
+      Deux colonnes sur grand écran : ce qui est réservé à gauche, ce qu'il en
+      coûte à droite. Une colonne centrée laissait les deux tiers de l'écran
+      vides et repoussait le total sous la ligne de flottaison.
     -->
-    <div class="ap-recap__actions">
-      <a appButton variant="primary" size="lg" routerLink="/reservation/paiement">
-        Payer {{ separerMilliers(reservation.price.totalXOF) }} FCFA
-      </a>
+    <div class="ap-recap__columns">
+      <app-booking-details [booking]="reservation" />
 
-      <a appButton variant="ghost" routerLink="/demandes">Modifier ma demande</a>
+      <aside class="ap-recap__aside">
+        <app-booking-status
+          [status]="reservation.status"
+          [mechanicName]="reservation.mechanic.fullName"
+        />
+
+        <app-price-breakdown
+          [price]="reservation.price"
+          [totalLabel]="reservation.status === 'acceptee' ? 'Total à payer' : 'Estimation'"
+        />
+
+        <!--
+          « Payer » est un lien et non un bouton : il change de page. Le clic
+          milieu, l'ouverture dans un onglet et l'annonce du lecteur d'écran
+          restent alors ceux d'une navigation, ce qu'un bouton casserait.
+        -->
+        <div class="ap-recap__actions">
+          <!--
+            Le paiement n'est proposé qu'une fois la demande acceptée. Un bouton
+            grisé aurait suffi à l'interdire, mais pas à dire pourquoi : c'est
+            le bandeau d'état juste au-dessus qui l'explique, et le bouton
+            n'apparaît que lorsqu'il a un sens.
+          -->
+          @if (reservation.status === 'acceptee') {
+            <a appButton variant="primary" size="lg" fullWidth routerLink="/reservation/paiement">
+              Payer {{ separerMilliers(reservation.price.totalXOF) }} FCFA
+            </a>
+          }
+
+          <a appButton variant="ghost" fullWidth routerLink="/demandes">Modifier ma demande</a>
+        </div>
+
+        @if (reservation.status === 'acceptee') {
+          <p class="ap-recap__legal">
+            Le montant n'est débité qu'une fois le paiement confirmé par votre opérateur.
+          </p>
+        }
+      </aside>
     </div>
-
-    <p class="ap-recap__legal">
-      Le montant n'est débité qu'une fois le paiement confirmé par votre opérateur.
-    </p>
   }
 </div>

@@ -22,17 +22,24 @@
 .ap-methods__option {
   display: flex;
   gap: var(--ap-space-3);
-  align-items: flex-start;
+  align-items: center;
   padding: var(--ap-space-4);
   background-color: var(--ap-surface-raised);
   border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
   border-radius: var(--ap-radius-lg);
   cursor: pointer;
+  transition:
+    border-color var(--ap-duration-fast) var(--ap-easing-standard),
+    box-shadow var(--ap-duration-fast) var(--ap-easing-standard);
 
   // Toute l'étiquette est cliquable : viser un rond de 1 rem au doigt, sur un
   // téléphone tenu d'une main, est une cible inutilement petite.
   &:hover {
     border-color: var(--ap-color-primary-300);
+  }
+
+  @include ds.respect-reduced-motion {
+    transition: none;
   }
 }
 
@@ -63,13 +70,67 @@
   flex: none;
   width: 1.15rem;
   height: 1.15rem;
-  margin-top: 0.15rem;
   accent-color: var(--ap-color-primary);
+}
+
+// --- Marques des opérateurs --------------------------------------------------
+
+.ap-methods__logo {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  overflow: hidden;
+  border-radius: var(--ap-radius-lg);
+}
+
+.ap-methods__image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+// Le logotype officiel porte déjà son propre fond : lui en ajouter un
+// deuxième dessinerait un cadre coloré autour d'un carré coloré.
+.ap-methods__logo--asset {
+  background-color: transparent;
+}
+
+.ap-methods__mark {
+  width: 2rem;
+  height: 2rem;
+}
+
+// Minuscules et sans espacement : c'est ainsi que l'opérateur écrit son nom.
+.ap-methods__wordmark {
+  font-weight: var(--ap-font-weight-bold);
+  font-size: var(--ap-font-size-xs);
+  letter-spacing: -0.02em;
+}
+
+// Teintes des opérateurs : elles leur appartiennent, et ne suivent donc pas le
+// thème. Les jetons `--ap-brand-*` existent pour qu'aucun hexadécimal ne
+// traîne ici. Fond plein et marque blanche, comme sur leurs supports.
+.ap-methods__logo--wave {
+  color: var(--ap-text-on-primary);
+  background-color: var(--ap-brand-wave);
+}
+
+.ap-methods__logo--maxit {
+  color: var(--ap-text-on-primary);
+  background-color: var(--ap-brand-max-it);
+}
+
+.ap-methods__logo--carte {
+  color: var(--ap-text-secondary);
+  background-color: var(--ap-surface-sunken);
 }
 
 .ap-methods__text {
   display: grid;
   gap: 0.15rem;
+  flex: 1;
   min-width: 0;
 }
 
@@ -80,4 +141,15 @@
 .ap-methods__hint {
   color: var(--ap-text-secondary);
   font-size: var(--ap-font-size-sm);
+}
+
+.ap-methods__check {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--ap-text-on-primary);
+  background-color: var(--ap-color-primary);
+  border-radius: var(--ap-radius-full);
 }

@@ -17,6 +17,50 @@
         (change)="choisir(moyen.id)"
       />
 
+      <!--
+        Marque de l'opérateur, à ses couleurs. Décorative : le libellé la
+        répète juste à côté, et une image sans texte ne dirait rien à qui ne
+        voit pas l'écran.
+
+        Tracée ici, et non chargée depuis un fichier : le logotype officiel de
+        chaque opérateur devra remplacer ces marques, mais un fichier manquant
+        laisserait un carré vide au milieu du tunnel de paiement. Le composant
+        affiche `logoUrl` dès qu'elle est renseignée, et retombe sur le tracé
+        sinon.
+      -->
+      <span
+        class="ap-methods__logo"
+        [class.ap-methods__logo--asset]="!!moyen.logoUrl"
+        [class.ap-methods__logo--wave]="moyen.id === 'wave'"
+        [class.ap-methods__logo--maxit]="moyen.id === 'max-it'"
+        [class.ap-methods__logo--carte]="moyen.id === 'carte'"
+        aria-hidden="true"
+      >
+        @if (moyen.logoUrl; as logo) {
+          <img class="ap-methods__image" [src]="logo" alt="" />
+        } @else {
+          @switch (moyen.id) {
+            @case ('wave') {
+              <svg viewBox="0 0 40 40" class="ap-methods__mark">
+                <path
+                  d="M5 25c3.75 0 3.75-9 7.5-9s3.75 9 7.5 9 3.75-9 7.5-9 3.75 9 7.5 9"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="4"
+                  stroke-linecap="round"
+                />
+              </svg>
+            }
+            @case ('max-it') {
+              <span class="ap-methods__wordmark">Max it</span>
+            }
+            @default {
+              <app-icon name="paiement" />
+            }
+          }
+        }
+      </span>
+
       <span class="ap-methods__text">
         <span class="ap-methods__label">{{ moyen.label }}</span>
         <span class="ap-methods__hint">
@@ -27,6 +71,13 @@
           }
         </span>
       </span>
+
+      <!-- Coche de confirmation : le rond seul se voit mal en bout de ligne. -->
+      @if (selected() === moyen.id) {
+        <span class="ap-methods__check" aria-hidden="true">
+          <app-icon name="valide" size="sm" />
+        </span>
+      }
     </label>
   }
 </fieldset>

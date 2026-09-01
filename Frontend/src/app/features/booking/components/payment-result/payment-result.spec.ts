@@ -6,6 +6,7 @@ import { PaymentResultCard } from './payment-result';
 
 const RESERVATION: BookingSummary = {
   id: 'bk-2026-0412',
+  status: 'acceptee',
   mechanic: {
     id: 'mec-014',
     fullName: 'Samba Fall',

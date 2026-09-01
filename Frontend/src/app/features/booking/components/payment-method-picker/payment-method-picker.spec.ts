@@ -5,7 +5,7 @@ import { PaymentMethodPicker } from './payment-method-picker';
 
 const MOYENS: readonly PaymentMethod[] = [
   { id: 'wave', label: 'Wave', hint: 'Via l’application Wave.', available: true },
-  { id: 'orange-money', label: 'Orange Money', hint: 'Code par SMS.', available: true },
+  { id: 'max-it', label: 'Max it', hint: 'Code par SMS.', available: true },
   { id: 'carte', label: 'Carte bancaire', hint: 'Visa et Mastercard.', available: false },
 ];
 
@@ -61,7 +61,7 @@ describe('PaymentMethodPicker', () => {
 
     radios()[1].click();
 
-    expect(emis).toEqual(['orange-money']);
+    expect(emis).toEqual(['max-it']);
   });
 
   it('coche celui que lui donne l’écran', async () => {

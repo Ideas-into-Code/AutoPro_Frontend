@@ -18,6 +18,7 @@ import { PaymentPage } from './payment';
 
 const RESERVATION: BookingSummary = {
   id: 'bk-2026-0412',
+  status: 'acceptee',
   mechanic: {
     id: 'mec-014',
     fullName: 'Samba Fall',
@@ -42,8 +43,11 @@ const MOYENS: readonly PaymentMethod[] = [
 ];
 
 class FauxBooking extends BookingRepository {
+  /** Modifiable par le test, pour éprouver l'attente d'acceptation. */
+  reservation: BookingSummary = RESERVATION;
+
   current(): Observable<BookingSummary> {
-    return of(RESERVATION);
+    return of(this.reservation);
   }
 }
 
@@ -85,6 +89,7 @@ describe('PaymentPage', () => {
   let fixture: ComponentFixture<PaymentPage>;
   let paiement: FauxPaiement;
   let factures: FausseFacture;
+  let reservations: FauxBooking;
 
   const hote = (): HTMLElement => fixture.nativeElement as HTMLElement;
 
@@ -109,12 +114,13 @@ describe('PaymentPage', () => {
   beforeEach(async () => {
     paiement = new FauxPaiement();
     factures = new FausseFacture();
+    reservations = new FauxBooking();
 
     await TestBed.configureTestingModule({
       imports: [PaymentPage],
       providers: [
         provideRouter([]),
-        { provide: BookingRepository, useClass: FauxBooking },
+        { provide: BookingRepository, useValue: reservations },
         { provide: PaymentMethodRepository, useClass: FauxMoyens },
         { provide: PaymentRepository, useValue: paiement },
         { provide: InvoiceRepository, useValue: factures },
@@ -220,5 +226,24 @@ describe('PaymentPage', () => {
 
     creer.mockRestore();
     liberer.mockRestore();
+  });
+
+  it('refuse le paiement tant que le mécanicien n’a pas accepté', async () => {
+    reservations.reservation = { ...RESERVATION, status: 'en_attente' };
+
+    await rendre();
+
+    // L'adresse reste tapable à la main : sans cette barrière, on encaisserait
+    // pour une intervention que personne n'a acceptée.
+    expect(hote().querySelector('app-payment-method-picker')).toBeNull();
+    expect(hote().textContent).toContain('attend encore la réponse du mécanicien');
+  });
+
+  it('refuse aussi le paiement d’une demande refusée', async () => {
+    reservations.reservation = { ...RESERVATION, status: 'refusee' };
+
+    await rendre();
+
+    expect(hote().querySelector('app-payment-method-picker')).toBeNull();
   });
 });

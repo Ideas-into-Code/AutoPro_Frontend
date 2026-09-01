@@ -3,8 +3,30 @@
 .ap-recap {
   display: grid;
   gap: var(--ap-space-5);
-  max-width: 44rem;
+  max-width: 64rem;
   margin-inline: auto;
+}
+
+.ap-recap__columns {
+  display: grid;
+  gap: var(--ap-space-5);
+
+  @include ds.from(lg) {
+    grid-template-columns: minmax(0, 1fr) 21rem;
+    align-items: start;
+  }
+}
+
+.ap-recap__aside {
+  display: grid;
+  gap: var(--ap-space-4);
+  min-width: 0;
+
+  @include ds.from(lg) {
+    position: sticky;
+    // Sous la barre collante, qui mesure 4 rem.
+    top: calc(4rem + var(--ap-space-4));
+  }
 }
 
 .ap-recap__intro {
@@ -48,16 +70,11 @@
   }
 }
 
-// Le geste principal occupe toute la largeur sur mobile : c'est la seule
-// action attendue de cet écran, et le pouce l'atteint sans viser.
+// Le geste principal occupe toute la largeur : c'est la seule action attendue
+// de cet écran, et le pouce l'atteint sans viser.
 .ap-recap__actions {
   display: grid;
   gap: var(--ap-space-2);
-
-  @include ds.from(md) {
-    grid-template-columns: 2fr 1fr;
-    align-items: center;
-  }
 }
 
 .ap-recap__legal {

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
+import { Icon } from '@shared/ui';
 import { PaymentMethod, PaymentMethodId } from '../../models/booking.model';
 
 /** Compteur de module : garantit un nom de groupe unique par sélecteur affiché. */
@@ -25,6 +26,7 @@ let prochainId = 0;
  */
 @Component({
   selector: 'app-payment-method-picker',
+  imports: [Icon],
   templateUrl: './payment-method-picker.html',
   styleUrl: './payment-method-picker.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

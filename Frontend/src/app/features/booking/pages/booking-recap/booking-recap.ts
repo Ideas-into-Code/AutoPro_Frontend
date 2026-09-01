@@ -7,6 +7,7 @@ import { separerMilliers } from '@shared/utils/format-number';
 import { BookingRepository } from '../../data/booking.repository';
 import { BookingSummary } from '../../models/booking.model';
 import { BookingDetails } from '../../components/booking-details/booking-details';
+import { BookingStatusPanel } from '../../components/booking-status/booking-status';
 import { PriceBreakdownCard } from '../../components/price-breakdown/price-breakdown';
 
 /**
@@ -21,7 +22,7 @@ import { PriceBreakdownCard } from '../../components/price-breakdown/price-break
  */
 @Component({
   selector: 'app-booking-recap',
-  imports: [Button, Spinner, RouterLink, BookingDetails, PriceBreakdownCard],
+  imports: [Button, Spinner, RouterLink, BookingDetails, BookingStatusPanel, PriceBreakdownCard],
   templateUrl: './booking-recap.html',
   styleUrl: './booking-recap.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

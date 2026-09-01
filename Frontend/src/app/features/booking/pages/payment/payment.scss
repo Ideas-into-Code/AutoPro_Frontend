@@ -3,8 +3,45 @@
 .ap-pay {
   display: grid;
   gap: var(--ap-space-5);
-  max-width: 36rem;
+  max-width: 64rem;
   margin-inline: auto;
+}
+
+// Le choix à gauche, ce qu'on paie à droite. Sous `lg`, tout s'empile et le
+// montant repasse en tête : sur un téléphone, il doit se lire avant la liste.
+.ap-pay__columns {
+  display: grid;
+  gap: var(--ap-space-5);
+
+  @include ds.from(lg) {
+    grid-template-columns: minmax(0, 1fr) 21rem;
+    align-items: start;
+  }
+}
+
+.ap-pay__main {
+  display: grid;
+  gap: var(--ap-space-5);
+  min-width: 0;
+  order: 2;
+
+  @include ds.from(lg) {
+    order: 0;
+  }
+}
+
+.ap-pay__aside {
+  display: grid;
+  gap: var(--ap-space-4);
+  min-width: 0;
+  order: 1;
+
+  @include ds.from(lg) {
+    position: sticky;
+    // Sous la barre collante, qui mesure 4 rem.
+    top: calc(4rem + var(--ap-space-4));
+    order: 0;
+  }
 }
 
 .ap-pay__intro {
@@ -25,25 +62,34 @@
 }
 
 // Le montant est rappelé en tête : on ne demande pas de payer une somme qu'il
-// faut remonter d'un écran pour retrouver.
+// faut remonter d'un écran pour retrouver. Il est traité comme la carte la
+// plus lourde de l'écran, parce que c'est la seule information que le client
+// doit vérifier avant de choisir.
 .ap-pay__amount {
   display: grid;
   gap: var(--ap-space-1);
   margin: 0;
-  padding: var(--ap-space-4);
-  background-color: var(--ap-color-primary-50);
-  border-radius: var(--ap-radius-lg);
+  padding: var(--ap-space-5);
+  color: var(--ap-text-on-primary);
+  background-image: linear-gradient(
+    135deg,
+    var(--ap-color-primary) 0%,
+    var(--ap-color-primary-800) 100%
+  );
+  border-radius: var(--ap-radius-xl);
+  box-shadow: var(--ap-shadow-md);
 }
 
 .ap-pay__amount-label {
-  color: var(--ap-text-secondary);
   font-size: var(--ap-font-size-xs);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
 }
 
 .ap-pay__amount-value {
-  font-size: var(--ap-font-size-2xl);
+  font-size: var(--ap-font-size-3xl);
+  letter-spacing: -0.02em;
 }
 
 .ap-pay__state {
@@ -80,9 +126,33 @@
   }
 }
 
+// Le résultat, lui, reste centré : un reçu se lit en colonne, et l'étaler sur
+// toute la largeur en rendrait la capture d'écran illisible.
+.ap-pay > app-payment-result {
+  width: min(100%, 36rem);
+  margin-inline: auto;
+}
+
 .ap-pay__legal {
   margin: 0;
   color: var(--ap-text-muted);
   font-size: var(--ap-font-size-xs);
   text-align: center;
+}
+
+.ap-pay__blocked {
+  display: grid;
+  gap: var(--ap-space-4);
+  justify-items: center;
+  padding: var(--ap-space-8) var(--ap-space-5);
+  text-align: center;
+  background-color: var(--ap-color-info-surface);
+  border: var(--ap-border-width-thin) solid var(--ap-color-primary-200);
+  border-radius: var(--ap-radius-xl);
+
+  p {
+    max-width: 40ch;
+    margin: 0;
+    color: var(--ap-text-secondary);
+  }
 }

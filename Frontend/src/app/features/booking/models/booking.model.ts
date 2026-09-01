@@ -46,9 +46,21 @@ export interface PriceBreakdown {
   readonly totalXOF: number;
 }
 
+/**
+ * Suite donnée par le mécanicien à la demande.
+ *
+ * Le paiement n'a lieu **qu'après acceptation** : demander de l'argent pour
+ * une intervention que personne n'a encore acceptée obligerait à rembourser
+ * chaque refus, et donnerait au client le sentiment d'avoir payé dans le vide.
+ */
+export type BookingStatus = 'en_attente' | 'acceptee' | 'refusee';
+
 /** Ce que le client s'apprête à payer. */
 export interface BookingSummary {
   readonly id: string;
+
+  readonly status: BookingStatus;
+
   readonly mechanic: BookedMechanic;
 
   /** Véhicule concerné (« Toyota Corolla 2015 »). */
@@ -81,8 +93,12 @@ export interface BookingSummary {
 /**
  * Moyens de paiement. Liste fermée : un identifiant inconnu doit être une
  * erreur de compilation, pas un bouton muet à l'écran.
+ *
+ * `max-it` et non `orange-money` : Orange a fondu Orange Money dans son
+ * application Max it. Garder l'ancien nom dans le code aurait entretenu une
+ * confusion à chaque relecture, pour aucun gain.
  */
-export type PaymentMethodId = 'wave' | 'orange-money' | 'carte';
+export type PaymentMethodId = 'wave' | 'max-it' | 'carte';
 
 /**
  * Un moyen de paiement proposé.
@@ -97,6 +113,16 @@ export interface PaymentMethod {
 
   /** Précision affichée sous le libellé (« Paiement via l'application Wave »). */
   readonly hint: string;
+
+  /**
+   * Logotype officiel de l'opérateur, servi par le backend ou déposé dans
+   * `public/images/`.
+   *
+   * Facultatif à dessein : tant qu'il manque, l'écran retombe sur une marque
+   * tracée. Un fichier absent laisserait sinon un carré vide au milieu du
+   * tunnel de paiement, ce qui est pire qu'un logotype approché.
+   */
+  readonly logoUrl?: string;
 
   /** `false` quand l'opérateur est momentanément indisponible. */
   readonly available: boolean;

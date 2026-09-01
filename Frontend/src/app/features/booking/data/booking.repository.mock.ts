@@ -1,6 +1,8 @@
 import { PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Observable, delay, of } from 'rxjs';
+
+import { separerMilliers } from '@shared/utils/format-number';
+import { Observable, concat, delay, of } from 'rxjs';
 
 import {
   BookingSummary,
@@ -14,10 +16,12 @@ import {
   PaymentMethodRepository,
   PaymentRepository,
 } from './booking.repository';
+import { composerPdf } from './invoice-pdf';
 
-/** Réservation de démonstration. */
+/** Réservation de démonstration, telle qu'elle attend la réponse du mécanicien. */
 const RESERVATION: BookingSummary = {
   id: 'bk-2026-0412',
+  status: 'en_attente',
   mechanic: {
     id: 'mec-014',
     fullName: 'Samba Fall',
@@ -46,12 +50,14 @@ const MOYENS: readonly PaymentMethod[] = [
     id: 'wave',
     label: 'Wave',
     hint: "Vous serez redirigé vers l'application Wave.",
+    logoUrl: '/images/paiement/wave.png',
     available: true,
   },
   {
-    id: 'orange-money',
-    label: 'Orange Money',
-    hint: 'Un code de confirmation vous sera envoyé par SMS.',
+    id: 'max-it',
+    label: 'Max it',
+    hint: "L'application Orange. Un code de confirmation vous sera envoyé par SMS.",
+    logoUrl: '/images/paiement/max-it.png',
     available: true,
   },
   {
@@ -73,11 +79,33 @@ function simuler<T>(valeur: T, platformId: object, ms = 400): Observable<T> {
   return isPlatformBrowser(platformId) ? reponse.pipe(delay(ms)) : reponse;
 }
 
+/** Délai au bout duquel le mécanicien simulé accepte la demande. */
+const DELAI_ACCEPTATION = 6000;
+
 export class MockBookingRepository extends BookingRepository {
   private readonly platformId = inject(PLATFORM_ID);
 
+  /**
+   * Émet **deux fois** : la demande en attente, puis la même une fois acceptée.
+   *
+   * C'est le comportement du vrai service, qui poussera l'acceptation au fil de
+   * l'eau. Un unique état figé aurait laissé croire que l'écran doit être
+   * rechargé à la main, et l'attente — le moment où le client ne sait pas
+   * encore s'il sera dépanné — n'aurait jamais été éprouvée.
+   */
   current(): Observable<BookingSummary> {
-    return simuler(RESERVATION, this.platformId);
+    const enAttente = of(RESERVATION);
+
+    if (!isPlatformBrowser(this.platformId)) {
+      // Le rendu serveur ne reçoit que le premier état : attendre la suite
+      // figerait la génération de la page pendant six secondes.
+      return enAttente;
+    }
+
+    return concat(
+      enAttente.pipe(delay(400)),
+      of({ ...RESERVATION, status: 'acceptee' as const }).pipe(delay(DELAI_ACCEPTATION)),
+    );
   }
 }
 
@@ -123,29 +151,31 @@ export class MockPaymentRepository extends PaymentRepository {
 /**
  * Facture simulée.
  *
- * Un fichier texte et non un PDF : composer un vrai PDF demanderait une
- * bibliothèque de plusieurs centaines de kilo-octets pour un document que le
- * **serveur** produira. Le format changera sans que l'écran bouge, puisqu'il
- * ne manipule qu'un `Blob`.
+ * Compose un vrai PDF, et non un texte renommé : le fichier doit s'ouvrir
+ * dans un lecteur, sans quoi le bouton de téléchargement n'est pas vraiment
+ * éprouvé. Voir `invoice-pdf.ts` pour la raison du format écrit à la main.
  */
 export class MockInvoiceRepository extends InvoiceRepository {
   private readonly platformId = inject(PLATFORM_ID);
 
   download(bookingId: string): Observable<Blob> {
-    const lignes = RESERVATION.price.lines.map(
-      (ligne) => `${ligne.label} : ${ligne.amountXOF} FCFA`,
-    );
-
-    const contenu = [
-      'AutoPro — Facture',
-      `Réservation ${bookingId}`,
-      `Mécanicien : ${RESERVATION.mechanic.fullName}`,
-      `Prestation : ${RESERVATION.serviceLabel}`,
+    const lignes = [
+      'AutoPro - Facture',
       '',
-      ...lignes,
-      `Total : ${RESERVATION.price.totalXOF} FCFA`,
-    ].join('\n');
+      `Reference : ${bookingId}`,
+      `Mecanicien : ${RESERVATION.mechanic.fullName}`,
+      `Prestation : ${RESERVATION.serviceLabel}`,
+      `Vehicule : ${RESERVATION.vehicle}`,
+      `Duree : ${RESERVATION.durationLabel}`,
+      '',
+      'Detail du prix',
+      ...RESERVATION.price.lines.map(
+        (ligne) => `  ${ligne.label} : ${separerMilliers(ligne.amountXOF)} FCFA`,
+      ),
+      '',
+      `Total paye : ${separerMilliers(RESERVATION.price.totalXOF)} FCFA`,
+    ];
 
-    return simuler(new Blob([contenu], { type: 'text/plain' }), this.platformId, 600);
+    return simuler(composerPdf(lignes), this.platformId, 600);
   }
 }

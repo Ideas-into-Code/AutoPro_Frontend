@@ -88,6 +88,19 @@ $color-info: #0f62fe;
 $color-info-surface: #f3f6fd;
 
 // -----------------------------------------------------------------------------
+// Couleurs de marques tierces
+// -----------------------------------------------------------------------------
+// Les teintes des opérateurs de paiement. Ce ne sont PAS des couleurs du design
+// system : elles ne se réaffectent pas au gré du thème, puisqu'elles
+// appartiennent à Wave et à Orange (Max it). Elles sont déclarées ici pour la même
+// raison que les autres — ne jamais laisser un hexadécimal traîner dans un
+// composant — mais ne servent qu'à identifier un moyen de paiement.
+$brand-wave: #1dc8ff;
+$brand-wave-surface: #e6f9ff;
+$brand-max-it: #ff7900;
+$brand-max-it-surface: #fff0e2;
+
+// -----------------------------------------------------------------------------
 // Typographie
 // -----------------------------------------------------------------------------
 // Pile de polices système volontairement : aucun téléchargement de fonte.

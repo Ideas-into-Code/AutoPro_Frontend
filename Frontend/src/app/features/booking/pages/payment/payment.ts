@@ -26,6 +26,24 @@ import {
 } from '../../models/booking.model';
 import { PaymentMethodPicker } from '../../components/payment-method-picker/payment-method-picker';
 import { PaymentResultCard } from '../../components/payment-result/payment-result';
+import { PriceBreakdownCard } from '../../components/price-breakdown/price-breakdown';
+
+/** Extensions connues, par type MIME renvoyé par le serveur. */
+const EXTENSIONS: Readonly<Record<string, string>> = {
+  'application/pdf': 'pdf',
+  'text/plain': 'txt',
+};
+
+/**
+ * Extension du fichier à enregistrer, déduite de son type.
+ *
+ * Repli sur `bin` plutôt que sur une extension inventée : mieux vaut un nom
+ * neutre qu'un nom qui ment sur le contenu, ce que le système d'exploitation
+ * rejetterait à l'ouverture.
+ */
+function extensionDe(fichier: Blob): string {
+  return EXTENSIONS[fichier.type] ?? 'bin';
+}
 
 /**
  * Confirmation de paiement — tâche 2 du ticket #25.
@@ -41,7 +59,14 @@ import { PaymentResultCard } from '../../components/payment-result/payment-resul
  */
 @Component({
   selector: 'app-payment',
-  imports: [Button, Spinner, RouterLink, PaymentMethodPicker, PaymentResultCard],
+  imports: [
+    Button,
+    Spinner,
+    RouterLink,
+    PaymentMethodPicker,
+    PaymentResultCard,
+    PriceBreakdownCard,
+  ],
   templateUrl: './payment.html',
   styleUrl: './payment.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -69,6 +94,16 @@ export class PaymentPage {
 
   protected readonly chargement = computed(
     () => this.bookingResource.isLoading() || this.methodsResource.isLoading(),
+  );
+
+  /**
+   * `true` tant que le mécanicien n'a pas accepté.
+   *
+   * Le paiement n'a lieu qu'après son accord : encaisser avant obligerait à
+   * rembourser chaque refus.
+   */
+  protected readonly enAttenteDAcceptation = computed(
+    () => this.bookingResource.value()?.status !== 'acceptee',
   );
 
   /** Moyen retenu par le client, `null` tant qu'il n'a pas choisi. */
@@ -153,7 +188,10 @@ export class PaymentPage {
         const lien = document.createElement('a');
 
         lien.href = url;
-        lien.download = `facture-${reservation.id}.pdf`;
+        // L'extension est déduite du type reçu, jamais écrite en dur : nommer
+        // « .pdf » un fichier texte fait échouer l'ouverture avec « fichier
+        // endommagé », alors que le contenu est intact.
+        lien.download = `facture-${reservation.id}.${extensionDe(fichier)}`;
         lien.click();
 
         URL.revokeObjectURL(url);
