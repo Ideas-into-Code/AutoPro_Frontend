@@ -41,3 +41,18 @@ export abstract class PaymentMethodRepository {
 export abstract class PaymentRepository {
   abstract pay(bookingId: string, method: PaymentMethodId): Observable<PaymentResult>;
 }
+
+/**
+ * Téléchargement de la facture.
+ *
+ * Renvoie un `Blob` et non une URL : le document est nominatif, donc servi
+ * derrière l'authentification. Une URL nue serait ouverte par le navigateur
+ * dans un onglet neuf, sans les en-têtes de session, et le serveur la
+ * refuserait.
+ *
+ * Contrat à part, comme les trois autres : un écran qui affiche une facture
+ * n'a aucune raison de pouvoir en déclencher le paiement.
+ */
+export abstract class InvoiceRepository {
+  abstract download(bookingId: string): Observable<Blob>;
+}

@@ -6,7 +6,7 @@
     <dd class="ap-price__amount">{{ separerMilliers(ligne.amountXOF) }} FCFA</dd>
   }
 
-  <dt class="ap-price__label ap-price__label--total">Total à payer</dt>
+  <dt class="ap-price__label ap-price__label--total">{{ totalLabel() }}</dt>
   <dd class="ap-price__amount ap-price__amount--total">
     {{ separerMilliers(price().totalXOF) }} FCFA
   </dd>

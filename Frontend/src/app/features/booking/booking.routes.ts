@@ -2,11 +2,13 @@ import { Routes } from '@angular/router';
 
 import {
   BookingRepository,
+  InvoiceRepository,
   PaymentMethodRepository,
   PaymentRepository,
 } from './data/booking.repository';
 import {
   MockBookingRepository,
+  MockInvoiceRepository,
   MockPaymentMethodRepository,
   MockPaymentRepository,
 } from './data/booking.repository.mock';
@@ -24,12 +26,13 @@ export const bookingRoutes: Routes = [
     /**
      * POINT DE BASCULE DU TUNNEL DE RÉSERVATION.
      *
-     * Le jour où les microservices répondent, ces trois lignes deviennent leurs
+     * Le jour où les microservices répondent, ces quatre lignes deviennent leurs
      * équivalents `Http…`, déjà écrits dans `data/booking.repository.http.ts` :
      *
      *   { provide: BookingRepository, useClass: HttpBookingRepository },
      *   { provide: PaymentMethodRepository, useClass: HttpPaymentMethodRepository },
      *   { provide: PaymentRepository, useClass: HttpPaymentRepository },
+     *   { provide: InvoiceRepository, useClass: HttpInvoiceRepository },
      *
      * Aucun composant ne bouge.
      *
@@ -40,6 +43,7 @@ export const bookingRoutes: Routes = [
       { provide: BookingRepository, useClass: MockBookingRepository },
       { provide: PaymentMethodRepository, useClass: MockPaymentMethodRepository },
       { provide: PaymentRepository, useClass: MockPaymentRepository },
+      { provide: InvoiceRepository, useClass: MockInvoiceRepository },
     ],
 
     children: [

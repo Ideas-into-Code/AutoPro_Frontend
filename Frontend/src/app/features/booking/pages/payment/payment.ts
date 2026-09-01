@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  PLATFORM_ID,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
@@ -6,6 +14,7 @@ import { Button, Spinner } from '@shared/ui';
 import { separerMilliers } from '@shared/utils/format-number';
 import {
   BookingRepository,
+  InvoiceRepository,
   PaymentMethodRepository,
   PaymentRepository,
 } from '../../data/booking.repository';
@@ -41,6 +50,8 @@ export class PaymentPage {
   private readonly bookings = inject(BookingRepository);
   private readonly methods = inject(PaymentMethodRepository);
   private readonly payments = inject(PaymentRepository);
+  private readonly invoices = inject(InvoiceRepository);
+  private readonly platformId = inject(PLATFORM_ID);
 
   protected readonly bookingResource = rxResource<BookingSummary | null, unknown>({
     stream: () => this.bookings.current(),
@@ -108,6 +119,49 @@ export class PaymentPage {
         this.envoiEnCours.set(false);
         this.erreurReseau.set(
           "Le paiement n'a pas pu être lancé. Vérifiez votre connexion, aucun montant n'a été débité.",
+        );
+      },
+    });
+  }
+
+  protected readonly telechargementEnCours = signal(false);
+
+  /**
+   * Enregistre la facture renvoyée par le serveur.
+   *
+   * Passe par une URL objet et un lien cliqué par le code : c'est le seul
+   * moyen de déclencher un enregistrement à partir d'un `Blob` déjà reçu, sans
+   * relancer une requête que le serveur refuserait faute d'en-têtes de session.
+   * L'URL est libérée aussitôt, sinon le fichier resterait en mémoire jusqu'à
+   * la fermeture de l'onglet.
+   */
+  protected telechargerFacture(): void {
+    const reservation = this.bookingResource.value();
+
+    if (reservation === null || !isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    this.telechargementEnCours.set(true);
+    this.erreurReseau.set(null);
+
+    this.invoices.download(reservation.id).subscribe({
+      next: (fichier) => {
+        this.telechargementEnCours.set(false);
+
+        const url = URL.createObjectURL(fichier);
+        const lien = document.createElement('a');
+
+        lien.href = url;
+        lien.download = `facture-${reservation.id}.pdf`;
+        lien.click();
+
+        URL.revokeObjectURL(url);
+      },
+      error: () => {
+        this.telechargementEnCours.set(false);
+        this.erreurReseau.set(
+          "La facture n'a pas pu être téléchargée. Votre paiement, lui, est bien enregistré.",
         );
       },
     });

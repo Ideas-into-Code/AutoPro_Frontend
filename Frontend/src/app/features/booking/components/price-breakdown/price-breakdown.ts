@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, booleanAttribute, input } from '@angular/core';
 
 import { separerMilliers } from '@shared/utils/format-number';
 import { PriceBreakdown } from '../../models/booking.model';
@@ -22,10 +22,25 @@ import { PriceBreakdown } from '../../models/booking.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ap-price',
+    '[class.ap-price--flat]': 'flat()',
   },
 })
 export class PriceBreakdownCard {
   readonly price = input.required<PriceBreakdown>();
+
+  /**
+   * Intitulé de la dernière ligne.
+   *
+   * « Total à payer » avant le paiement, « Total payé » après : le même
+   * composant sert les deux écrans, et seul le temps du verbe change.
+   */
+  readonly totalLabel = input('Total à payer');
+
+  /**
+   * Retire le cadre et l'ombre, pour une insertion dans une carte existante.
+   * Deux cartes emboîtées donnent une bordure doublée et un décrochement.
+   */
+  readonly flat = input(false, { transform: booleanAttribute });
 
   /** Réexposé au gabarit : la mise en forme est commune à tout le projet. */
   protected readonly separerMilliers = separerMilliers;

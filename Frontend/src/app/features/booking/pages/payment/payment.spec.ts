@@ -10,6 +10,7 @@ import {
 } from '../../models/booking.model';
 import {
   BookingRepository,
+  InvoiceRepository,
   PaymentMethodRepository,
   PaymentRepository,
 } from '../../data/booking.repository';
@@ -25,6 +26,8 @@ const RESERVATION: BookingSummary = {
   },
   vehicle: 'Toyota Corolla 2015',
   problemLabel: 'Batterie déchargée',
+  serviceLabel: 'Diagnostic et remplacement de batterie',
+  durationLabel: '1 h 45',
   address: 'Rue 10 x Corniche, Dakar Plateau',
   scheduledAt: '2026-09-02T09:30:00',
   price: {
@@ -56,7 +59,8 @@ class FauxPaiement extends PaymentRepository {
   /** Réponse que le service est censé renvoyer, ou `null` pour simuler une panne. */
   reponse: PaymentResult | null = {
     status: 'reussi',
-    reference: 'WV-2026-0412-7731',
+    reference: 'AP-2026-0412-7731',
+    paidAt: '2026-09-02T09:30:00',
     failureReason: null,
   };
 
@@ -67,9 +71,20 @@ class FauxPaiement extends PaymentRepository {
   }
 }
 
+class FausseFacture extends InvoiceRepository {
+  demandes: string[] = [];
+
+  download(bookingId: string): Observable<Blob> {
+    this.demandes.push(bookingId);
+
+    return of(new Blob(['facture'], { type: 'text/plain' }));
+  }
+}
+
 describe('PaymentPage', () => {
   let fixture: ComponentFixture<PaymentPage>;
   let paiement: FauxPaiement;
+  let factures: FausseFacture;
 
   const hote = (): HTMLElement => fixture.nativeElement as HTMLElement;
 
@@ -93,6 +108,7 @@ describe('PaymentPage', () => {
 
   beforeEach(async () => {
     paiement = new FauxPaiement();
+    factures = new FausseFacture();
 
     await TestBed.configureTestingModule({
       imports: [PaymentPage],
@@ -101,6 +117,7 @@ describe('PaymentPage', () => {
         { provide: BookingRepository, useClass: FauxBooking },
         { provide: PaymentMethodRepository, useClass: FauxMoyens },
         { provide: PaymentRepository, useValue: paiement },
+        { provide: InvoiceRepository, useValue: factures },
       ],
     }).compileComponents();
   });
@@ -131,7 +148,7 @@ describe('PaymentPage', () => {
 
     await payerAvec(0);
 
-    expect(hote().textContent).toContain('Paiement confirmé');
+    expect(hote().textContent).toContain('Paiement réussi');
     // Le choix a disparu : il n'a plus d'objet.
     expect(hote().querySelector('app-payment-method-picker')).toBeNull();
   });
@@ -140,6 +157,7 @@ describe('PaymentPage', () => {
     paiement.reponse = {
       status: 'echoue',
       reference: null,
+      paidAt: null,
       failureReason: 'Solde insuffisant.',
     };
     await rendre();
@@ -164,7 +182,12 @@ describe('PaymentPage', () => {
   });
 
   it('ramène au choix après un refus', async () => {
-    paiement.reponse = { status: 'echoue', reference: null, failureReason: 'Refus.' };
+    paiement.reponse = {
+      status: 'echoue',
+      reference: null,
+      paidAt: null,
+      failureReason: 'Refus.',
+    };
     await rendre();
     await payerAvec(1);
 
@@ -175,5 +198,27 @@ describe('PaymentPage', () => {
     // Le moyen refusé n'est plus présélectionné : le reproposer d'un clic
     // conduirait au même refus.
     expect(radio(1).checked).toBe(false);
+  });
+
+  it('télécharge la facture de la bonne réservation', async () => {
+    // `URL.createObjectURL` n'existe pas dans l'environnement de test : on
+    // l'espionne au lieu de remplacer `URL` en entier, ce qui casserait le
+    // constructeur pour tous les autres fichiers de test.
+    const creer = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:facture');
+    const liberer = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
+
+    await rendre();
+    await payerAvec(0);
+
+    bouton('Télécharger la facture')?.click();
+    await fixture.whenStable();
+
+    expect(factures.demandes).toEqual(['bk-2026-0412']);
+    // L'URL objet est libérée : sans cela le fichier resterait en mémoire
+    // jusqu'à la fermeture de l'onglet.
+    expect(liberer).toHaveBeenCalledWith('blob:facture');
+
+    creer.mockRestore();
+    liberer.mockRestore();
   });
 });

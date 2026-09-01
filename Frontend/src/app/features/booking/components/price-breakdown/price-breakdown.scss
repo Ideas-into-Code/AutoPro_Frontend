@@ -44,3 +44,12 @@
   font-size: var(--ap-font-size-lg);
   border-top: var(--ap-border-width-thin) solid var(--ap-border-subtle);
 }
+
+// Version encastrée : le cadre est celui de la carte qui l'accueille. Un liseré
+// discontinu suffit à détacher le bloc sans redoubler la bordure.
+:host(.ap-price--flat) {
+  padding: var(--ap-space-4);
+  background-color: var(--ap-surface-page);
+  border-style: dashed;
+  box-shadow: none;
+}

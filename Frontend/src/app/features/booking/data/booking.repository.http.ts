@@ -11,6 +11,7 @@ import {
 } from '../models/booking.model';
 import {
   BookingRepository,
+  InvoiceRepository,
   PaymentMethodRepository,
   PaymentRepository,
 } from './booking.repository';
@@ -57,6 +58,19 @@ export class HttpPaymentRepository extends PaymentRepository {
     return this.http.post<PaymentResult>(buildServiceUrl(this.config, 'payments', 'charges'), {
       bookingId,
       method,
+    });
+  }
+}
+
+export class HttpInvoiceRepository extends InvoiceRepository {
+  private readonly http = inject(HttpClient);
+  private readonly config = inject(API_CONFIG);
+
+  download(bookingId: string): Observable<Blob> {
+    // `responseType: 'blob'` est indispensable : sans lui, Angular tenterait
+    // d'analyser le PDF comme du JSON et échouerait sur le premier octet.
+    return this.http.get(buildServiceUrl(this.config, 'payments', `invoices/${bookingId}`), {
+      responseType: 'blob',
     });
   }
 }

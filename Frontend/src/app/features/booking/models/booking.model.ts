@@ -57,6 +57,18 @@ export interface BookingSummary {
   /** Panne déclarée, déjà libellée (« Batterie déchargée »). */
   readonly problemLabel: string;
 
+  /** Prestation retenue, telle qu'elle figurera sur la facture. */
+  readonly serviceLabel: string;
+
+  /**
+   * Durée annoncée, déjà mise en forme (« 1 h 45 »).
+   *
+   * Un libellé et non un nombre de minutes : la durée d'une intervention est
+   * une estimation que l'atelier formule à sa façon (« environ 2 h », « une
+   * demi-journée »), et l'arrondir à un entier lui ferait perdre ce sens.
+   */
+  readonly durationLabel: string;
+
   /** Adresse d'intervention, telle que le client l'a confirmée. */
   readonly address: string;
 
@@ -105,6 +117,14 @@ export interface PaymentResult {
 
   /** Référence de transaction, présente uniquement en cas de succès. */
   readonly reference: string | null;
+
+  /**
+   * Horodatage du paiement au format ISO, présent uniquement en cas de succès.
+   *
+   * Fourni par le **serveur** et non lu sur l'horloge du navigateur : c'est la
+   * date qui figure sur la facture, et celle du téléphone peut être fausse.
+   */
+  readonly paidAt: string | null;
 
   /** Motif de l'échec, présent uniquement en cas d'échec. */
   readonly failureReason: string | null;

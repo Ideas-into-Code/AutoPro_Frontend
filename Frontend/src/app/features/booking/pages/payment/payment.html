@@ -1,7 +1,19 @@
 <div class="ap-pay">
   @if (resultat(); as issue) {
     <!-- Second moment : l'issue. Le choix a disparu, il n'a plus d'objet. -->
-    <app-payment-result [result]="issue" [amountXOF]="montant()" (retryRequested)="reessayer()" />
+    @if (bookingResource.value(); as reservation) {
+      <app-payment-result
+        [result]="issue"
+        [booking]="reservation"
+        [downloading]="telechargementEnCours()"
+        (invoiceRequested)="telechargerFacture()"
+        (retryRequested)="reessayer()"
+      />
+    }
+
+    @if (erreurReseau(); as message) {
+      <p class="ap-pay__error" role="alert">{{ message }}</p>
+    }
   } @else {
     <header class="ap-pay__intro">
       <h1 class="ap-pay__title">Paiement</h1>

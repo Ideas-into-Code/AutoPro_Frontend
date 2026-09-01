@@ -10,6 +10,7 @@ import {
 } from '../models/booking.model';
 import {
   BookingRepository,
+  InvoiceRepository,
   PaymentMethodRepository,
   PaymentRepository,
 } from './booking.repository';
@@ -25,6 +26,8 @@ const RESERVATION: BookingSummary = {
   },
   vehicle: 'Toyota Corolla 2015',
   problemLabel: 'Batterie déchargée',
+  serviceLabel: 'Diagnostic et remplacement de batterie',
+  durationLabel: '1 h 45',
   address: 'Rue 10 x Corniche, Dakar Plateau',
   scheduledAt: '2026-09-02T09:30:00',
   price: {
@@ -32,8 +35,9 @@ const RESERVATION: BookingSummary = {
       { label: 'Diagnostic et remplacement', amountXOF: 18000 },
       { label: 'Déplacement (4,2 km)', amountXOF: 3500 },
       { label: 'Frais de service', amountXOF: 1000 },
+      { label: 'TVA (18 %)', amountXOF: 4050 },
     ],
-    totalXOF: 22500,
+    totalXOF: 26550,
   },
 };
 
@@ -99,17 +103,49 @@ export class MockPaymentRepository extends PaymentRepository {
     const echec: PaymentResult = {
       status: 'echoue',
       reference: null,
+      paidAt: null,
       failureReason: "Votre banque a refusé l'opération. Essayez Wave ou Orange Money.",
     };
 
     const succes: PaymentResult = {
       status: 'reussi',
-      reference: 'WV-2026-0412-7731',
+      reference: 'AP-2026-0412-7731',
+      paidAt: RESERVATION.scheduledAt,
       failureReason: null,
     };
 
     // 1,2 s : un paiement instantané n'inspire pas confiance, et l'attente
     // rend l'état de chargement visible au lieu de le faire clignoter.
     return simuler(method === 'carte' ? echec : succes, this.platformId, 1200);
+  }
+}
+
+/**
+ * Facture simulée.
+ *
+ * Un fichier texte et non un PDF : composer un vrai PDF demanderait une
+ * bibliothèque de plusieurs centaines de kilo-octets pour un document que le
+ * **serveur** produira. Le format changera sans que l'écran bouge, puisqu'il
+ * ne manipule qu'un `Blob`.
+ */
+export class MockInvoiceRepository extends InvoiceRepository {
+  private readonly platformId = inject(PLATFORM_ID);
+
+  download(bookingId: string): Observable<Blob> {
+    const lignes = RESERVATION.price.lines.map(
+      (ligne) => `${ligne.label} : ${ligne.amountXOF} FCFA`,
+    );
+
+    const contenu = [
+      'AutoPro — Facture',
+      `Réservation ${bookingId}`,
+      `Mécanicien : ${RESERVATION.mechanic.fullName}`,
+      `Prestation : ${RESERVATION.serviceLabel}`,
+      '',
+      ...lignes,
+      `Total : ${RESERVATION.price.totalXOF} FCFA`,
+    ].join('\n');
+
+    return simuler(new Blob([contenu], { type: 'text/plain' }), this.platformId, 600);
   }
 }
