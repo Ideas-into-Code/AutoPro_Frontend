@@ -1,0 +1,42 @@
+@if (readOnly()) {
+  <!--
+    Aucun contrôle de formulaire : une note qu'on ne peut pas changer n'a rien
+    à faire dans l'ordre de tabulation. Les étoiles sont décoratives, la note
+    est annoncée en toutes lettres juste après.
+  -->
+  <span class="ap-rating__stars" aria-hidden="true">
+    @for (echelon of echelons(); track echelon) {
+      <span class="ap-rating__star">
+        <span class="ap-rating__star-fill" [style.width.%]="remplissage(echelon)">★</span>
+        <span class="ap-rating__star-empty">★</span>
+      </span>
+    }
+  </span>
+
+  <span class="ap-rating__sr">{{ annonce() }}</span>
+} @else {
+  <fieldset class="ap-rating__group">
+    <legend class="ap-rating__sr">{{ legend() }}</legend>
+
+    @for (echelon of echelons(); track echelon) {
+      <label class="ap-rating__choice" [class.ap-rating__choice--on]="echelon <= value()">
+        <input
+          type="radio"
+          class="ap-rating__input"
+          [name]="groupe"
+          [value]="echelon"
+          [checked]="echelon === value()"
+          (change)="noter(echelon)"
+        />
+        <span class="ap-rating__star" aria-hidden="true">★</span>
+        <span class="ap-rating__sr">
+          {{ labels()[echelon - 1] || echelon + ' sur ' + max() }}
+        </span>
+      </label>
+    }
+  </fieldset>
+
+  <!-- Réservé même vide : sans cela, la ligne apparaît au premier clic et
+       pousse tout le contenu vers le bas. -->
+  <p class="ap-rating__label" aria-live="polite">{{ libelleCourant() }}</p>
+}

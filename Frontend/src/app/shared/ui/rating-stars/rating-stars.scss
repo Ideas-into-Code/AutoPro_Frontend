@@ -1,0 +1,104 @@
+@use 'index' as ds;
+
+:host {
+  display: grid;
+  gap: var(--ap-space-2);
+  justify-items: center;
+}
+
+.ap-rating__group {
+  display: flex;
+  gap: var(--ap-space-1);
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.ap-rating__stars {
+  display: inline-flex;
+  gap: 0.1em;
+}
+
+.ap-rating__choice {
+  display: grid;
+  place-items: center;
+  padding: var(--ap-space-1);
+  color: var(--ap-border-subtle);
+  cursor: pointer;
+  transition: transform var(--ap-duration-fast) var(--ap-easing-standard);
+
+  &:hover {
+    transform: scale(1.12);
+  }
+
+  @include ds.respect-reduced-motion {
+    transition: none;
+  }
+}
+
+// Allumée : toutes les étoiles jusqu'à la note, et pas seulement celle qu'on a
+// cliquée — c'est ainsi qu'une échelle se lit.
+.ap-rating__choice--on {
+  color: var(--ap-color-warning);
+}
+
+// Le bouton radio est masqué mais reste focusable : c'est lui qui porte le
+// clavier. `display: none` le retirerait de l'ordre de tabulation.
+.ap-rating__input {
+  @include ds.visually-hidden;
+}
+
+.ap-rating__choice:has(.ap-rating__input:focus-visible) {
+  outline: var(--ap-border-width-thick) solid var(--ap-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--ap-radius-sm);
+}
+
+// Étoile en lecture seule : une pleine recouvre une vide sur une largeur
+// proportionnelle, ce qui permet d'afficher les demi-étoiles d'une moyenne.
+.ap-rating__star {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+}
+
+.ap-rating__star-empty {
+  color: var(--ap-border-subtle);
+}
+
+.ap-rating__star-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  color: var(--ap-color-warning);
+  white-space: nowrap;
+}
+
+.ap-rating__label {
+  min-height: 1.5rem;
+  margin: 0;
+  color: var(--ap-color-primary);
+  font-weight: var(--ap-font-weight-semibold);
+}
+
+.ap-rating__sr {
+  @include ds.visually-hidden;
+}
+
+// --- Tailles -----------------------------------------------------------------
+
+:host(.ap-rating--sm) .ap-rating__star,
+:host(.ap-rating--sm) .ap-rating__choice {
+  font-size: var(--ap-font-size-base);
+}
+
+:host(.ap-rating--md) .ap-rating__star,
+:host(.ap-rating--md) .ap-rating__choice {
+  font-size: var(--ap-font-size-2xl);
+}
+
+:host(.ap-rating--lg) .ap-rating__star,
+:host(.ap-rating--lg) .ap-rating__choice {
+  font-size: 2.75rem;
+}
