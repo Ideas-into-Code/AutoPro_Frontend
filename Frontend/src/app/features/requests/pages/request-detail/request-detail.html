@@ -1,0 +1,73 @@
+<section class="ap-req-detail">
+  <a routerLink="/demandes" class="ap-req-detail__back">← Mes demandes</a>
+
+  @if (demande.isLoading()) {
+    <app-spinner />
+  } @else if (demande.error()) {
+    <p class="ap-req-detail__error" role="alert">
+      Demande introuvable ou inaccessible.
+      <button type="button" (click)="demande.reload()">Réessayer</button>
+    </p>
+  } @else if (demande.value(); as d) {
+    <header class="ap-req-detail__head">
+      <h1>{{ PROBLEM_LABELS[d.problemType] }}</h1>
+      <span [class]="'ap-req-status ap-req-status--' + d.status">{{ STATUS_LABELS[d.status] }}</span>
+    </header>
+
+    @if (d.isEmergency) {
+      <p class="ap-req-detail__urgent">Demande signalée comme urgente (véhicule immobilisé).</p>
+    }
+
+    <dl class="ap-req-detail__facts">
+      <dt>Description</dt>
+      <dd>{{ d.description }}</dd>
+
+      <dt>Lieu</dt>
+      <dd>{{ d.locationAddress || 'Non précisé' }}</dd>
+
+      <dt>Téléphone de rappel</dt>
+      <dd>{{ d.clientPhone || 'Non précisé' }}</dd>
+
+      @if (d.vehicleLabel) {
+        <dt>Véhicule</dt>
+        <dd>{{ d.vehicleLabel }}</dd>
+      }
+
+      <dt>Mécanicien</dt>
+      <dd>{{ d.mechanicName || 'En attente d\'attribution' }}</dd>
+
+      <dt>Prix convenu</dt>
+      <dd>
+        @if (d.priceXOF !== null) {
+          {{ d.priceXOF | number: '1.0-0' }} FCFA
+        } @else {
+          Sera fixé par le mécanicien après diagnostic
+        }
+      </dd>
+
+      <dt>Paiement</dt>
+      <dd>
+        @if (d.paymentStatus !== null) {
+          {{ PAYMENT_LABELS[d.paymentStatus] }}
+        } @else {
+          En espèces, à la fin de l'intervention
+        }
+      </dd>
+    </dl>
+
+    @if (annulable()) {
+      @if (erreurAnnulation()) {
+        <p class="ap-req-detail__error" role="alert">{{ erreurAnnulation() }}</p>
+      }
+      <button
+        appButton
+        variant="ghost"
+        type="button"
+        [disabled]="annulationEnCours()"
+        (click)="annuler()"
+      >
+        {{ annulationEnCours() ? 'Annulation…' : 'Annuler la demande' }}
+      </button>
+    }
+  }
+</section>

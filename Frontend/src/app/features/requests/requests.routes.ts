@@ -1,42 +1,23 @@
 import { Routes } from '@angular/router';
 
 import { BrowserPositionProvider, PositionProvider } from '@core';
+import { authGuard } from '@core/guards/auth.guard';
 import { RequestRepository } from './data/request.repository';
-import { MockRequestRepository } from './data/request.repository.mock';
+import { HttpRequestRepository } from './data/request.repository.http';
 
 /**
- * Routes du domaine « Demandes ».
- * Demandes d'intervention : envoi, acceptation, refus.
+ * Routes du domaine « Demandes » : envoi, liste, suivi, annulation.
  *
- * Structure de ce dossier (CONVENTIONS.md §1) :
- *   data/        dépôts d'accès au microservice « requests »
- *   models/      types propres au domaine
- *   components/  composants réutilisés dans cette feature uniquement
- *   pages/       composants routés, déclarés ci-dessous
- *
- * La consultation et l'annulation d'une demande restent à écrire.
+ * Les demandes appartiennent à l'utilisateur connecté — d'où `authGuard` sur
+ * tout le domaine. Le dépôt s'adresse au vrai backend (`/api/service-requests`).
  */
 export const requestsRoutes: Routes = [
   {
     path: '',
+    canMatch: [authGuard],
 
-    /**
-     * POINT DE BASCULE DU DOMAINE « DEMANDES ».
-     *
-     * Le jour où le microservice répond, cette ligne devient :
-     *
-     *   { provide: RequestRepository, useClass: HttpRequestRepository }
-     *
-     * `HttpRequestRepository` est déjà écrit, envoi des photos en
-     * `multipart/form-data` compris. Le formulaire ne change pas d'une ligne.
-     *
-     * `PositionProvider` est fourni ici plutôt que globalement : seul ce
-     * domaine s'en sert pour l'instant. Quand la carte interactive (#7)
-     * arrivera, il remontera dans `provideCore()` — les deux features en
-     * auront besoin, et une feature n'importe jamais une autre feature.
-     */
     providers: [
-      { provide: RequestRepository, useClass: MockRequestRepository },
+      { provide: RequestRepository, useClass: HttpRequestRepository },
       { provide: PositionProvider, useClass: BrowserPositionProvider },
     ],
 
@@ -49,13 +30,14 @@ export const requestsRoutes: Routes = [
       },
       {
         path: '',
-        // La liste des demandes reste à écrire. Rediriger vers « signaler »
-        // serait trompeur : le menu annonce « Mes demandes », l'utilisateur
-        // s'attend à voir les siennes, pas à en créer une nouvelle.
-        loadComponent: () =>
-          import('@shared/pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
-        data: { fonctionnalite: 'Le suivi de vos demandes' },
+        loadComponent: () => import('./pages/my-requests/my-requests').then((m) => m.MyRequestsPage),
         title: 'Mes demandes — AutoPro',
+      },
+      {
+        path: ':id',
+        loadComponent: () =>
+          import('./pages/request-detail/request-detail').then((m) => m.RequestDetailPage),
+        title: 'Suivi de la demande — AutoPro',
       },
     ],
   },

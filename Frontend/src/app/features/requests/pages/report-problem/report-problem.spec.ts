@@ -21,6 +21,18 @@ class DepotDeTest extends RequestRepository {
 
     return this.reponse();
   }
+
+  list(): Observable<readonly InterventionRequest[]> {
+    return of([]);
+  }
+
+  findById(): Observable<InterventionRequest> {
+    return this.reponse();
+  }
+
+  cancel(): Observable<InterventionRequest> {
+    return this.reponse();
+  }
 }
 
 class PositionsDeTest extends PositionProvider {
@@ -41,7 +53,9 @@ const ENREGISTREE: InterventionRequest = {
   problemType: 'batterie',
   description: 'La voiture ne démarre plus depuis ce matin.',
   status: 'en_attente',
-  estimatedPriceXOF: 15000,
+  isEmergency: false,
+  priceXOF: null,
+  paymentStatus: null,
   locationAddress: 'Les Almadies, Dakar',
   createdAt: '2026-07-31T10:00:00Z',
   updatedAt: '2026-07-31T10:00:00Z',
@@ -205,14 +219,14 @@ describe('ReportProblemPage', () => {
     });
   });
 
-  it("affiche un accusé de réception avec le numéro et l'estimation", async () => {
+  it('affiche un accusé de réception avec le numéro de demande', async () => {
     await rendre({});
     await remplirValide();
     await soumettre();
 
     expect(hote().textContent).toContain('Votre demande est partie');
     expect(hote().textContent).toContain('req-2026-001');
-    expect(hote().textContent).toContain('15000');
+    expect(hote().textContent).toContain("En attente d'un mécanicien");
     expect(hote().querySelector('form')).toBeNull();
   });
 
