@@ -16,6 +16,7 @@ export interface BackendServiceRequest {
   clientId: number;
   clientName: string;
   mechanicId: number | null;
+  mechanicUserId: number | null;
   mechanicName: string | null;
   vehicleId: number | null;
   vehicleLabel: string | null;
@@ -89,6 +90,7 @@ export function toInterventionRequest(b: BackendServiceRequest): InterventionReq
     latitude: b.latitude ?? undefined,
     longitude: b.longitude ?? undefined,
     mechanicId: b.mechanicId != null ? String(b.mechanicId) : undefined,
+    mechanicUserId: b.mechanicUserId != null ? String(b.mechanicUserId) : undefined,
     mechanicName: b.mechanicName ?? undefined,
     vehicleLabel: b.vehicleLabel ?? undefined,
     createdAt: b.createdAt,

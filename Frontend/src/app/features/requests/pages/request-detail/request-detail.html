@@ -34,7 +34,12 @@
       }
 
       <dt>Mécanicien</dt>
-      <dd>{{ d.mechanicName || 'En attente d\'attribution' }}</dd>
+      <dd>
+        {{ d.mechanicName || 'En attente d\'attribution' }}
+        @if (d.mechanicUserId) {
+          · <a [routerLink]="['/messages']" [queryParams]="{ peer: d.mechanicUserId }">Contacter</a>
+        }
+      </dd>
 
       <dt>Prix convenu</dt>
       <dd>
