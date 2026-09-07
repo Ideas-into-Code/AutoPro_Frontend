@@ -18,6 +18,10 @@ export type {
 export { provideHttpRepositories, provideMockRepositories } from './data/repositories.providers';
 export { ServiceCategoryRepository } from './data/service-category.repository';
 
+export { VehicleRepository } from './data/vehicle.repository';
+export { vehicleLabel } from './models/vehicle.model';
+export type { Vehicle, VehicleDraft } from './models/vehicle.model';
+
 export { toApiError } from './http/api-error';
 export type { ApiError, ApiErrorKind } from './http/api-error';
 export { apiErrorInterceptor } from './http/api-error.interceptor';

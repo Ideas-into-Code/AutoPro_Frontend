@@ -8,6 +8,7 @@ import { InjectionToken } from '@angular/core';
 export type MicroserviceName =
   | 'auth'
   | 'users'
+  | 'vehicles'
   | 'mechanics'
   | 'requests'
   | 'pricing'
@@ -50,6 +51,7 @@ export const DEFAULT_API_CONFIG: ApiConfig = {
   services: {
     auth: 'auth',
     users: 'users',
+    vehicles: 'vehicles',
     mechanics: 'mechanics',
     requests: 'service-requests',
     pricing: 'pricing',

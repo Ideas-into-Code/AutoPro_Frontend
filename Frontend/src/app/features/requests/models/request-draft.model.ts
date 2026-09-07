@@ -34,6 +34,9 @@ export interface InterventionRequestDraft {
   /** Signale une immobilisation : le serveur priorise la mise en relation. */
   readonly isEmergency: boolean;
 
+  /** Véhicule concerné, choisi parmi le parc du client. Facultatif. */
+  readonly vehicleId?: string;
+
   /**
    * Photos du problème. Des `File`, pas des chaînes encodées : un envoi en
    * `multipart/form-data` évite les 33 % de surpoids du base64, ce qui compte
