@@ -71,15 +71,18 @@ export function toApiError(response: HttpErrorResponse): ApiError {
 
   // Le backend peut préciser un message et des erreurs par champ ; on préfère
   // toujours son message s'il est exploitable, sinon on retombe sur le nôtre.
-  // `'message' in body` suffit à restreindre le type : pas besoin d'assertion.
-  const detail =
-    typeof body === 'object' && body !== null && 'message' in body
-      ? String(body.message)
-      : undefined;
+  // Le backend AutoPro renvoie `{ error, fields }` ; on tolère aussi
+  // `{ message, errors }` pour rester robuste à une évolution du contrat.
+  const record =
+    typeof body === 'object' && body !== null ? (body as Record<string, unknown>) : undefined;
 
+  const rawDetail = record?.['error'] ?? record?.['message'];
+  const detail = typeof rawDetail === 'string' ? rawDetail : undefined;
+
+  const rawFields = record?.['fields'] ?? record?.['errors'];
   const fieldErrors =
-    typeof body === 'object' && body !== null && 'errors' in body
-      ? (body as { errors?: Readonly<Record<string, string>> }).errors
+    typeof rawFields === 'object' && rawFields !== null
+      ? (rawFields as Readonly<Record<string, string>>)
       : undefined;
 
   return {

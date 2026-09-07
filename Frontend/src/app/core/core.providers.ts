@@ -3,6 +3,7 @@ import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 
 import { API_CONFIG, ApiConfig, DEFAULT_API_CONFIG } from './config/api.config';
 import { apiErrorInterceptor } from './http/api-error.interceptor';
+import { authInterceptor } from './http/auth.interceptor';
 
 /**
  * Racine de composition des dépendances transverses.
@@ -21,6 +22,8 @@ import { apiErrorInterceptor } from './http/api-error.interceptor';
 export function provideCore(config: ApiConfig = DEFAULT_API_CONFIG): EnvironmentProviders {
   return makeEnvironmentProviders([
     { provide: API_CONFIG, useValue: config },
-    provideHttpClient(withFetch(), withInterceptors([apiErrorInterceptor])),
+    // `authInterceptor` d'abord : il pose le token et gère le 401 avant que
+    // `apiErrorInterceptor` ne transforme l'erreur en `ApiError`.
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor, apiErrorInterceptor])),
   ]);
 }

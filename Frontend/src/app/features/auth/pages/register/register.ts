@@ -14,6 +14,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
 import { UserRole } from '../role-selection/role-selection';
 
 @Component({
@@ -28,6 +29,7 @@ export class RegisterComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly authService = inject(AuthService);
 
   protected readonly userRole = signal<UserRole>('client');
   protected readonly showPassword = signal(false);
@@ -108,10 +110,29 @@ export class RegisterComponent implements OnInit {
 
     this.isLoading.set(true);
 
-    setTimeout(() => {
-      this.isLoading.set(false);
-      void this.router.navigate(['/compte/connexion']);
-    }, 800);
+    const v = this.registerForm.value;
+    this.authService
+      .register({
+        fullName: v.fullName!,
+        email: v.email!,
+        password: v.password!,
+        phone: v.phoneNumber ?? undefined,
+        role: this.userRole(),
+        workshopName: v.workshopName ?? undefined,
+      })
+      .subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          // L'utilisateur est connecté dès l'inscription : on l'amène directement
+          // dans son espace plutôt que de le renvoyer vers la page de connexion.
+          const target = this.userRole() === 'mecanicien' ? '/mecanicien' : '/accueil';
+          void this.router.navigate([target]);
+        },
+        error: (err: { message?: string }) => {
+          this.isLoading.set(false);
+          this.errorMessage.set(err?.message ?? "Échec de l'inscription.");
+        },
+      });
   }
 
   onLogin(): void {

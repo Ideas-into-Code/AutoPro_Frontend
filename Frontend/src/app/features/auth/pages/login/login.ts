@@ -36,6 +36,7 @@ export class LoginComponent {
   // Loading & Error States
   protected readonly isLoading = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+  protected readonly infoMessage = signal<string | null>(null);
 
   // Form Definitions with typed AbstractControl
   protected readonly emailForm = this.fb.group({
@@ -87,20 +88,23 @@ export class LoginComponent {
       }
     }
 
+    // Le backend n'accepte que la connexion par e-mail pour l'instant.
+    if (this.activeTab() !== 'email') {
+      this.errorMessage.set(
+        'La connexion par téléphone arrive bientôt. Utilisez votre adresse e-mail.',
+      );
+      return;
+    }
+
     this.isLoading.set(true);
 
-    const identifier =
-      this.activeTab() === 'email'
-        ? this.emailForm.value.email!
-        : `${this.phoneForm.value.countryCode}${this.phoneForm.value.phoneNumber}`;
+    const email = this.emailForm.value.email!;
+    const password = this.emailForm.value.password!;
 
-    const password = this.emailForm.value.password ?? 'password123';
-
-    // Appel du service d'authentification mock
-    this.authService.login(identifier, password).subscribe({
+    this.authService.login(email, password).subscribe({
       next: () => {
         this.isLoading.set(false);
-        void this.router.navigate([ECRAN_APRES_CONNEXION]);
+        void this.router.navigate([this.destinationParRole()]);
       },
       error: (err: { message?: string }) => {
         this.isLoading.set(false);
@@ -109,17 +113,38 @@ export class LoginComponent {
     });
   }
 
+  /** Écran d'arrivée selon le rôle renvoyé par le backend. */
+  private destinationParRole(): string {
+    switch (this.authService.userRole()) {
+      case 'admin':
+        return '/admin';
+      case 'mecanicien':
+        return '/mecanicien';
+      default:
+        return ECRAN_APRES_CONNEXION;
+    }
+  }
+
   onSocialLogin(_provider: 'google' | 'apple'): void {
-    this.isLoading.set(true);
-    this.authService.login('moussa@example.sn', 'social-auth').subscribe({
-      next: () => {
-        this.isLoading.set(false);
-        void this.router.navigate([ECRAN_APRES_CONNEXION]);
-      },
-    });
+    this.errorMessage.set("La connexion via un réseau social n'est pas encore disponible.");
   }
 
   onForgotPassword(): void {
-    alert('Un lien de réinitialisation sera envoyé à votre adresse e-mail.');
+    const email = this.emailForm.value.email;
+    if (!email) {
+      this.errorMessage.set('Saisissez votre adresse e-mail puis cliquez sur « mot de passe oublié ».');
+      return;
+    }
+    this.errorMessage.set(null);
+    this.authService.requestPasswordReset(email).subscribe({
+      next: () =>
+        this.infoMessage.set(
+          'Si un compte existe pour cette adresse, un lien de réinitialisation a été envoyé.',
+        ),
+      error: () =>
+        this.infoMessage.set(
+          'Si un compte existe pour cette adresse, un lien de réinitialisation a été envoyé.',
+        ),
+    });
   }
 }
