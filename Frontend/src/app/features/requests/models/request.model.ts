@@ -49,6 +49,8 @@ export interface InterventionRequest {
   latitude?: number;
   longitude?: number;
   mechanicId?: string;
+  /** Id de l'utilisateur (compte) du mécanicien — pour ouvrir une conversation. */
+  mechanicUserId?: string;
   mechanicName?: string;
   vehicleLabel?: string;
   createdAt: string;

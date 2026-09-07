@@ -10,6 +10,7 @@ type BackendPayment = 'PENDING' | 'COLLECTED' | 'CANCELLED';
 
 export interface BackendServiceRequest {
   id: number;
+  clientId: number;
   clientName: string;
   mechanicId: number | null;
   description: string;
@@ -52,6 +53,7 @@ export function toMechanicRequest(
 ): MechanicRequest {
   return {
     id: String(b.id),
+    clientId: String(b.clientId),
     clientName: b.clientName,
     clientPhone: b.contactPhone ?? '',
     problemLabel: PROBLEM_LABELS[b.problemType] ?? 'Autre problème',

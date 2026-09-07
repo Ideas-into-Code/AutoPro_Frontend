@@ -51,6 +51,11 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
+    // Messagerie : conversations du compte connecté + WebSocket (navigateur).
+    path: 'messages',
+    renderMode: RenderMode.Server,
+  },
+  {
     /**
      * Tout l'espace mécanicien dépend du compte connecté et de l'API :
      * rendu à la demande.

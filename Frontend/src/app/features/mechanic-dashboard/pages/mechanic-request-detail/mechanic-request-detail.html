@@ -20,7 +20,10 @@
 
     <dl class="ap-mrd__facts">
       <dt>Client</dt>
-      <dd>{{ d.clientName }}</dd>
+      <dd>
+        {{ d.clientName }}
+        · <a [routerLink]="['/messages']" [queryParams]="{ peer: d.clientId }">Contacter</a>
+      </dd>
       <dt>Téléphone</dt>
       <dd>{{ d.clientPhone || 'Non précisé' }}</dd>
       <dt>Description</dt>

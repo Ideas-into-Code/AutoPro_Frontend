@@ -17,6 +17,7 @@ export type MechanicPaymentStatus = 'en_attente' | 'encaisse' | 'annule';
 
 export interface MechanicRequest {
   readonly id: string;
+  readonly clientId: string;
   readonly clientName: string;
   readonly clientPhone: string;
   readonly problemLabel: string;
