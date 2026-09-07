@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { MechanicRepository } from './data/mechanic.repository';
-import { MockMechanicRepository } from './data/mechanic.repository.mock';
+import { HttpMechanicRepository } from './data/mechanic.repository.http';
 
 /**
  * Routes du domaine « Mécaniciens ».
@@ -33,7 +33,7 @@ export const mechanicsRoutes: Routes = [
      * seul ce domaine s'en sert, et le déclarer globalement ferait entrer les
      * données simulées dans le bundle initial de tous les utilisateurs.
      */
-    providers: [{ provide: MechanicRepository, useClass: MockMechanicRepository }],
+    providers: [{ provide: MechanicRepository, useClass: HttpMechanicRepository }],
 
     children: [
       {

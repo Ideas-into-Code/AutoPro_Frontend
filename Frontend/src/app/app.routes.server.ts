@@ -22,6 +22,14 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     /**
+     * La liste des mécaniciens vient de l'API : rendue à la demande plutôt que
+     * prérendue au build, où le backend n'est pas joignable.
+     */
+    path: 'mecaniciens',
+    renderMode: RenderMode.Server,
+  },
+  {
+    /**
      * L'espace « Mes demandes » dépend de l'utilisateur connecté (session en
      * `localStorage`, appels API authentifiés) : rien à prérendre au build,
      * tout est rendu à la demande.
