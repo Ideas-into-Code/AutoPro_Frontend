@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 
+import { roleGuard } from '@core/guards/auth.guard';
+
 import {
   MechanicAvailabilityRepository,
   MechanicDashboardRepository,
@@ -22,6 +24,9 @@ import {
 export const mechanicDashboardRoutes: Routes = [
   {
     path: '',
+
+    // Espace réservé aux mécaniciens authentifiés.
+    canMatch: [roleGuard('mecanicien')],
 
     /**
      * POINT DE BASCULE DE L'ESPACE MÉCANICIEN.

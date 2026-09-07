@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 
+import { roleGuard } from '@core/guards/auth.guard';
+
 import {
   AccountDirectoryRepository,
   AccountModerationRepository,
@@ -15,6 +17,9 @@ import { MockAdminBackend } from './data/admin-dashboard.repository.mock';
 export const adminRoutes: Routes = [
   {
     path: '',
+
+    // Back-office réservé aux administrateurs authentifiés.
+    canMatch: [roleGuard('admin')],
 
     /**
      * POINT DE BASCULE DU BACK-OFFICE.

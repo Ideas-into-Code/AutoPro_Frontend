@@ -44,6 +44,18 @@
         </button>
       </div>
 
+      <!-- Messages globaux (erreur d'authentification, info réinitialisation) -->
+      @if (errorMessage()) {
+        <p class="ap-login-card__alert ap-login-card__alert--error" role="alert">
+          {{ errorMessage() }}
+        </p>
+      }
+      @if (infoMessage()) {
+        <p class="ap-login-card__alert ap-login-card__alert--info" role="status">
+          {{ infoMessage() }}
+        </p>
+      }
+
       <!-- Form Content -->
       @if (activeTab() === 'email') {
         <form [formGroup]="emailForm" (ngSubmit)="onSubmit()" class="ap-login-card__form">

@@ -26,6 +26,10 @@
         </p>
       </div>
 
+      @if (errorMessage()) {
+        <p class="ap-register-card__alert" role="alert">{{ errorMessage() }}</p>
+      }
+
       <!-- Registration Form -->
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="ap-register-card__form">
         <!-- Full Name Field -->
