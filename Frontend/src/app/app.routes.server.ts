@@ -46,6 +46,18 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
+    /**
+     * Tout l'espace mécanicien dépend du compte connecté et de l'API :
+     * rendu à la demande.
+     */
+    path: 'mecanicien',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'mecanicien/**',
+    renderMode: RenderMode.Server,
+  },
+  {
     // Tout le reste est statique : prérendu au build, donc servi sans calcul
     // et affiché dès la première requête, même sur un réseau lent.
     path: '**',

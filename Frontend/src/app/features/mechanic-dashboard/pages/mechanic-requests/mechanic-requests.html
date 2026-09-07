@@ -1,0 +1,81 @@
+<section class="ap-mr">
+  <h1>Demandes reçues</h1>
+
+  @if (demandes.isLoading()) {
+    <app-spinner />
+  } @else if (demandes.error()) {
+    <p class="ap-mr__error" role="alert">
+      Impossible de charger les demandes.
+      <button type="button" (click)="demandes.reload()">Réessayer</button>
+    </p>
+  } @else {
+    <h2>Nouvelles demandes</h2>
+    @if (nouvelles().length === 0) {
+      <p class="ap-mr__empty">Aucune nouvelle demande pour le moment.</p>
+    } @else {
+      <ul class="ap-mr__list">
+        @for (d of nouvelles(); track d.id) {
+          <li>
+            <a [routerLink]="['/mecanicien/demandes', d.id]" class="ap-mr-card">
+              <div>
+                <span class="ap-mr-card__title">
+                  {{ d.problemLabel }}
+                  @if (d.isEmergency) { <span class="ap-mr-card__urgent">Urgent</span> }
+                </span>
+                <span class="ap-mr-card__desc">{{ d.description }}</span>
+                <span class="ap-mr-card__meta">{{ d.clientName }} · {{ d.address || 'lieu non précisé' }}</span>
+              </div>
+              <span [class]="classe(d.status)">{{ STATUS_LABELS[d.status] }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    }
+
+    <h2>Mes interventions</h2>
+    @if (enCours().length === 0) {
+      <p class="ap-mr__empty">Aucune intervention en cours.</p>
+    } @else {
+      <ul class="ap-mr__list">
+        @for (d of enCours(); track d.id) {
+          <li>
+            <a [routerLink]="['/mecanicien/demandes', d.id]" class="ap-mr-card">
+              <div>
+                <span class="ap-mr-card__title">{{ d.problemLabel }}</span>
+                <span class="ap-mr-card__meta">{{ d.clientName }} · {{ d.clientPhone }}</span>
+              </div>
+              <div class="ap-mr-card__side">
+                <span [class]="classe(d.status)">{{ STATUS_LABELS[d.status] }}</span>
+                @if (d.priceXOF !== null) {
+                  <span class="ap-mr-card__price">{{ d.priceXOF | number: '1.0-0' }} FCFA</span>
+                }
+              </div>
+            </a>
+          </li>
+        }
+      </ul>
+    }
+
+    @if (terminees().length > 0) {
+      <h2>Terminées</h2>
+      <ul class="ap-mr__list">
+        @for (d of terminees(); track d.id) {
+          <li>
+            <a [routerLink]="['/mecanicien/demandes', d.id]" class="ap-mr-card">
+              <div>
+                <span class="ap-mr-card__title">{{ d.problemLabel }}</span>
+                <span class="ap-mr-card__meta">{{ d.clientName }}</span>
+              </div>
+              <div class="ap-mr-card__side">
+                <span [class]="classe(d.status)">{{ STATUS_LABELS[d.status] }}</span>
+                <span class="ap-mr-card__price">
+                  {{ d.paymentStatus === 'encaisse' ? 'Payé' : 'À encaisser' }}
+                </span>
+              </div>
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  }
+</section>

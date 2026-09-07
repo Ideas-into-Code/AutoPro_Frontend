@@ -12,6 +12,10 @@ import {
   MockMechanicDashboardRepository,
   MockRequestDecisionRepository,
 } from './data/mechanic-dashboard.repository.mock';
+import {
+  HttpMechanicRequestRepository,
+  MechanicRequestRepository,
+} from './data/mechanic-request.repository';
 
 /**
  * Routes de l'espace mécanicien.
@@ -42,6 +46,7 @@ export const mechanicDashboardRoutes: Routes = [
       { provide: MechanicDashboardRepository, useClass: MockMechanicDashboardRepository },
       { provide: MechanicAvailabilityRepository, useClass: MockMechanicAvailabilityRepository },
       { provide: RequestDecisionRepository, useClass: MockRequestDecisionRepository },
+      { provide: MechanicRequestRepository, useClass: HttpMechanicRequestRepository },
     ],
 
     children: [
@@ -72,9 +77,16 @@ export const mechanicDashboardRoutes: Routes = [
       {
         path: 'demandes',
         loadComponent: () =>
-          import('@shared/pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
-        data: { fonctionnalite: 'Vos demandes reçues' },
-        title: 'Mes demandes — AutoPro',
+          import('./pages/mechanic-requests/mechanic-requests').then((m) => m.MechanicRequestsPage),
+        title: 'Demandes reçues — AutoPro',
+      },
+      {
+        path: 'demandes/:id',
+        loadComponent: () =>
+          import('./pages/mechanic-request-detail/mechanic-request-detail').then(
+            (m) => m.MechanicRequestDetailPage,
+          ),
+        title: 'Suivi de l\'intervention — AutoPro',
       },
       {
         path: 'profil',

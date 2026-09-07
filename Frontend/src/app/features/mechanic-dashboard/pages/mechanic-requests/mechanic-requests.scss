@@ -1,0 +1,139 @@
+.ap-mr {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 3rem;
+
+  h1 {
+    margin: 0 0 1rem;
+    font-size: 1.4rem;
+  }
+
+  h2 {
+    margin: 1.75rem 0 0.75rem;
+    font-size: 1rem;
+    color: #3c4652;
+  }
+
+  &__error,
+  &__empty {
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    background: #f4f6f8;
+    font-size: 0.9rem;
+
+    button {
+      margin-left: 0.5rem;
+      border: 0;
+      background: transparent;
+      color: #1d76db;
+      font: inherit;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+
+  &__error {
+    background: #fdecec;
+    color: #b3261e;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+.ap-mr-card {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.875rem 1rem;
+  border: 1px solid #e5e8ec;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  background: #fff;
+
+  &:hover {
+    border-color: #c5cdd6;
+  }
+
+  &__title {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  &__urgent {
+    margin-left: 0.5rem;
+    padding: 0.05rem 0.4rem;
+    border-radius: 999px;
+    background: #fdecec;
+    color: #b3261e;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  &__desc {
+    display: block;
+    font-size: 0.875rem;
+    color: #3c4652;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 46ch;
+  }
+
+  &__meta {
+    display: block;
+    font-size: 0.8rem;
+    color: #78838f;
+  }
+
+  &__side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.35rem;
+    white-space: nowrap;
+  }
+
+  &__price {
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+}
+
+.ap-mr-status {
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #eef1f4;
+  color: #3c4652;
+  white-space: nowrap;
+
+  &--en_attente {
+    background: #fff4e5;
+    color: #a15c00;
+  }
+  &--acceptee,
+  &--en_cours {
+    background: #e8f0fe;
+    color: #1a56c4;
+  }
+  &--terminee {
+    background: #e6f4ea;
+    color: #1e7e34;
+  }
+  &--annulee {
+    background: #f4f6f8;
+    color: #78838f;
+  }
+}

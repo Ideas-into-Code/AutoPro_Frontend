@@ -59,6 +59,7 @@ export function toUser(backend: BackendUser): User {
     email: backend.email,
     phone: backend.phone ?? '',
     role: ROLE_FROM_BACKEND[backend.role],
+    ...(backend.mechanicId != null ? { mechanicId: String(backend.mechanicId) } : {}),
     createdAt: backend.createdAt,
   };
 }

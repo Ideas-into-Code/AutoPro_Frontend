@@ -1,0 +1,102 @@
+<section class="ap-mrd">
+  <a routerLink="/mecanicien/demandes" class="ap-mrd__back">← Demandes reçues</a>
+
+  @if (demande.isLoading()) {
+    <app-spinner />
+  } @else if (demande.error()) {
+    <p class="ap-mrd__error" role="alert">
+      Demande introuvable ou inaccessible.
+      <button type="button" (click)="demande.reload()">Réessayer</button>
+    </p>
+  } @else if (demande.value(); as d) {
+    <header class="ap-mrd__head">
+      <h1>{{ d.problemLabel }}</h1>
+      <span [class]="'ap-mr-status ap-mr-status--' + d.status">{{ STATUS_LABELS[d.status] }}</span>
+    </header>
+
+    @if (d.isEmergency) {
+      <p class="ap-mrd__urgent">Véhicule immobilisé — demande urgente.</p>
+    }
+
+    <dl class="ap-mrd__facts">
+      <dt>Client</dt>
+      <dd>{{ d.clientName }}</dd>
+      <dt>Téléphone</dt>
+      <dd>{{ d.clientPhone || 'Non précisé' }}</dd>
+      <dt>Description</dt>
+      <dd>{{ d.description }}</dd>
+      <dt>Lieu</dt>
+      <dd>{{ d.address || 'Non précisé' }}</dd>
+      <dt>Prix convenu</dt>
+      <dd>
+        @if (d.priceXOF !== null) {
+          {{ d.priceXOF | number: '1.0-0' }} FCFA
+        } @else {
+          Non fixé
+        }
+      </dd>
+      <dt>Paiement</dt>
+      <dd>
+        @switch (d.paymentStatus) {
+          @case ('encaisse') { Encaissé en espèces }
+          @case ('en_attente') { En attente d'encaissement (espèces) }
+          @case ('annule') { Annulé }
+          @default { — }
+        }
+      </dd>
+    </dl>
+
+    @if (erreur()) {
+      <p class="ap-mrd__error" role="alert">{{ erreur() }}</p>
+    }
+
+    @if (saisiePrix()) {
+      <div class="ap-mrd__price-form">
+        <label for="ap-mrd-prix">Montant de l'intervention (FCFA)</label>
+        <input
+          id="ap-mrd-prix"
+          type="number"
+          min="1"
+          step="500"
+          [value]="prix() ?? ''"
+          (input)="majPrix($any($event.target).value)"
+        />
+        <button appButton variant="primary" type="button" [disabled]="busy()" (click)="validerPrix()">
+          Enregistrer le prix
+        </button>
+      </div>
+    }
+
+    <div class="ap-mrd__actions">
+      @for (a of actions(); track a) {
+        @switch (a) {
+          @case ('accepter') {
+            <button appButton variant="primary" type="button" [disabled]="busy()" (click)="accepter()">
+              Accepter la demande
+            </button>
+          }
+          @case ('fixer_prix') {
+            <button appButton variant="ghost" type="button" [disabled]="busy()" (click)="ouvrirPrix()">
+              {{ d.priceXOF === null ? 'Fixer le prix' : 'Modifier le prix' }}
+            </button>
+          }
+          @case ('demarrer') {
+            <button appButton variant="primary" type="button" [disabled]="busy()" (click)="demarrer()">
+              Démarrer l'intervention
+            </button>
+          }
+          @case ('terminer') {
+            <button appButton variant="primary" type="button" [disabled]="busy()" (click)="terminer()">
+              Marquer terminée
+            </button>
+          }
+          @case ('encaisser') {
+            <button appButton variant="primary" type="button" [disabled]="busy()" (click)="encaisser()">
+              J'ai reçu le paiement en espèces
+            </button>
+          }
+        }
+      }
+    </div>
+  }
+</section>

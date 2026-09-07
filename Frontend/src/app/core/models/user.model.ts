@@ -8,6 +8,10 @@ export interface User {
   role: UserRole;
   avatarUrl?: string;
   workshopName?: string; // Spécifique aux mécaniciens
+
+  /** Id du profil mécanicien, présent uniquement si `role === 'mecanicien'`. */
+  mechanicId?: string;
+
   createdAt: string;
 }
 
