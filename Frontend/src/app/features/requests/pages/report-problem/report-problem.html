@@ -21,13 +21,13 @@
         <dt>Lieu indiqué</dt>
         <dd>{{ demande.locationAddress }}</dd>
 
-        <dt>Estimation indicative</dt>
-        <dd>{{ demande.estimatedPriceXOF }} FCFA</dd>
+        <dt>Statut</dt>
+        <dd>En attente d'un mécanicien</dd>
       </dl>
 
       <p class="ap-report__done-note">
-        L'estimation reste indicative : le tarif définitif est confirmé par le mécanicien après
-        diagnostic.
+        Le tarif est fixé par le mécanicien après diagnostic. Le règlement se fait
+        <strong>en espèces</strong> à la fin de l'intervention.
       </p>
 
       <!--
@@ -37,7 +37,7 @@
         savoir ce qui se passait ensuite.
       -->
       <div class="ap-report__done-actions">
-        <a appButton variant="primary" routerLink="/reservation">Suivre ma réservation</a>
+        <a appButton variant="primary" [routerLink]="['/demandes', demande.id]">Suivre ma demande</a>
 
         <button appButton type="button" variant="ghost" (click)="retourAccueil()">
           Retour à l'accueil

@@ -45,16 +45,18 @@ export const API_CONFIG = new InjectionToken<ApiConfig>('AutoPro.ApiConfig');
  */
 export const DEFAULT_API_CONFIG: ApiConfig = {
   gateway: '/api',
+  // Le backend est un monolithe : chaque « service » correspond en fait à un
+  // préfixe de route Spring, pas à un microservice distinct.
   services: {
     auth: 'auth',
     users: 'users',
     mechanics: 'mechanics',
-    requests: 'requests',
+    requests: 'service-requests',
     pricing: 'pricing',
     reviews: 'reviews',
-    messaging: 'messaging',
-    geolocation: 'geolocation',
-    payments: 'payments',
+    messaging: 'chat',
+    geolocation: 'mechanics',
+    payments: 'service-requests',
     admin: 'admin',
   },
   // Volontairement généreux : le réseau mobile sénégalais peut être instable

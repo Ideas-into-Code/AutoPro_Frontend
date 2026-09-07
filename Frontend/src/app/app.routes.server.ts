@@ -21,6 +21,31 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
+    /**
+     * La liste des mécaniciens vient de l'API : rendue à la demande plutôt que
+     * prérendue au build, où le backend n'est pas joignable.
+     */
+    path: 'mecaniciens',
+    renderMode: RenderMode.Server,
+  },
+  {
+    /**
+     * L'espace « Mes demandes » dépend de l'utilisateur connecté (session en
+     * `localStorage`, appels API authentifiés) : rien à prérendre au build,
+     * tout est rendu à la demande.
+     */
+    path: 'demandes',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'demandes/signaler',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'demandes/:id',
+    renderMode: RenderMode.Server,
+  },
+  {
     // Tout le reste est statique : prérendu au build, donc servi sans calcul
     // et affiché dès la première requête, même sur un réseau lent.
     path: '**',
