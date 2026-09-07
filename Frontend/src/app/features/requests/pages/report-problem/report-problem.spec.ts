@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
 
-import { Position, PositionError, PositionProvider } from '@core';
+import { Position, PositionError, PositionProvider, Vehicle, VehicleRepository } from '@core';
 import { InterventionRequest } from '../../models/request.model';
 import { InterventionRequestDraft } from '../../models/request-draft.model';
 import { RequestRepository } from '../../data/request.repository';
@@ -32,6 +32,21 @@ class DepotDeTest extends RequestRepository {
 
   cancel(): Observable<InterventionRequest> {
     return this.reponse();
+  }
+}
+
+class DepotVehiculesDeTest extends VehicleRepository {
+  list(): Observable<readonly Vehicle[]> {
+    return of([]);
+  }
+  create(): Observable<Vehicle> {
+    return throwError(() => new Error('non utilisé'));
+  }
+  update(): Observable<Vehicle> {
+    return throwError(() => new Error('non utilisé'));
+  }
+  remove(): Observable<void> {
+    return of(undefined);
   }
 }
 
@@ -79,6 +94,7 @@ describe('ReportProblemPage', () => {
       providers: [
         provideRouter([]),
         { provide: RequestRepository, useValue: depot },
+        { provide: VehicleRepository, useClass: DepotVehiculesDeTest },
         {
           provide: PositionProvider,
           useValue: new PositionsDeTest(

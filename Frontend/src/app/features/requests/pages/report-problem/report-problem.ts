@@ -7,10 +7,11 @@ import {
   input,
   signal,
 } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { Position } from '@core';
+import { Position, Vehicle, VehicleRepository } from '@core';
 import { Button, FormField, Icon, PhotoUpload } from '@shared/ui';
 import { longueurMax, longueurMin, requis, telephoneSenegalaisValidator } from '@shared/validators';
 import { InterventionRequest, ProblemType } from '../../models/request.model';
@@ -66,6 +67,13 @@ export class ReportProblemPage {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly requests = inject(RequestRepository);
+  private readonly vehicles = inject(VehicleRepository);
+
+  /** Parc du client, proposé en option dans le formulaire. */
+  protected readonly vehicules = rxResource<readonly Vehicle[], unknown>({
+    stream: () => this.vehicles.list(),
+    defaultValue: [],
+  });
 
   /** `slug` de catégorie choisi sur l'accueil, s'il y en a un. */
   readonly categorie = input('', { transform: versChaine });
@@ -87,6 +95,7 @@ export class ReportProblemPage {
     ]),
     adresse: this.fb.nonNullable.control('', requis),
     telephone: this.fb.nonNullable.control('', [requis, telephoneSenegalaisValidator]),
+    vehicleId: this.fb.nonNullable.control(''),
   });
 
   /** Photos et position vivent hors du formulaire : voir `PhotoUpload`. */
@@ -149,6 +158,7 @@ export class ReportProblemPage {
         description: valeurs.description.trim(),
         contactPhone: valeurs.telephone.trim(),
         isEmergency: this.urgence(),
+        vehicleId: valeurs.vehicleId || undefined,
         location: {
           address: valeurs.adresse.trim(),
           coordinates:

@@ -41,6 +41,7 @@ export interface CreateServiceRequestPayload {
   address: string;
   latitude?: number;
   longitude?: number;
+  vehicleId?: number;
 }
 
 const PROBLEM_TO_BACKEND: Record<ProblemType, BackendProblemType> = {
@@ -104,5 +105,6 @@ export function toCreatePayload(draft: InterventionRequestDraft): CreateServiceR
     isEmergency: draft.isEmergency,
     address: draft.location.address,
     ...(coords ? { latitude: coords.latitude, longitude: coords.longitude } : {}),
+    ...(draft.vehicleId ? { vehicleId: Number(draft.vehicleId) } : {}),
   };
 }

@@ -72,6 +72,18 @@
           }
         </select>
 
+        @if (vehicules.value().length > 0) {
+          <label class="ap-report__field-label" for="ap-report-vehicle">
+            Véhicule concerné (facultatif)
+          </label>
+          <select class="ap-report__select" id="ap-report-vehicle" formControlName="vehicleId">
+            <option value="">Non précisé</option>
+            @for (v of vehicules.value(); track v.id) {
+              <option [value]="v.id">{{ v.brand }} {{ v.model }} · {{ v.licensePlate }}</option>
+            }
+          </select>
+        }
+
         <label class="ap-report__field-label" for="ap-report-description">
           Décrivez ce qui se passe
         </label>

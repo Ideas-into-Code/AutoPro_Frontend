@@ -1,0 +1,88 @@
+<section class="ap-veh">
+  <header class="ap-veh__header">
+    <h1>Mes véhicules</h1>
+    @if (edition() === null) {
+      <button appButton variant="primary" type="button" (click)="ouvrirAjout()">
+        Ajouter un véhicule
+      </button>
+    }
+  </header>
+
+  @if (erreur()) {
+    <p class="ap-veh__error" role="alert">{{ erreur() }}</p>
+  }
+
+  @if (edition() !== null) {
+    <form [formGroup]="form" (ngSubmit)="enregistrer()" class="ap-veh__form">
+      <h2>{{ edition() === 'new' ? 'Nouveau véhicule' : 'Modifier le véhicule' }}</h2>
+
+      <div class="ap-veh__grid">
+        <label>
+          Marque
+          <input formControlName="brand" placeholder="Toyota" />
+        </label>
+        <label>
+          Modèle
+          <input formControlName="model" placeholder="Corolla" />
+        </label>
+        <label>
+          Année
+          <input type="number" formControlName="year" min="1886" [max]="anneeMax" />
+        </label>
+        <label>
+          Immatriculation
+          <input formControlName="licensePlate" placeholder="DK 1234 AB" />
+        </label>
+        <label>
+          Couleur (facultatif)
+          <input formControlName="color" placeholder="Gris" />
+        </label>
+        <label>
+          Kilométrage (facultatif)
+          <input type="number" formControlName="mileage" min="0" />
+        </label>
+      </div>
+
+      <div class="ap-veh__form-actions">
+        <button appButton variant="primary" type="submit" [disabled]="enCours()">
+          {{ enCours() ? 'Enregistrement…' : 'Enregistrer' }}
+        </button>
+        <button appButton variant="ghost" type="button" [disabled]="enCours()" (click)="annuler()">
+          Annuler
+        </button>
+      </div>
+    </form>
+  }
+
+  @if (vehicules.isLoading()) {
+    <app-spinner />
+  } @else if (vehicules.error()) {
+    <p class="ap-veh__error" role="alert">
+      Impossible de charger vos véhicules.
+      <button type="button" (click)="vehicules.reload()">Réessayer</button>
+    </p>
+  } @else if (vehicules.value().length === 0) {
+    <p class="ap-veh__empty">Vous n'avez pas encore enregistré de véhicule.</p>
+  } @else {
+    <ul class="ap-veh__list">
+      @for (v of vehicules.value(); track v.id) {
+        <li class="ap-veh-card">
+          <div>
+            <span class="ap-veh-card__title">{{ v.brand }} {{ v.model }} · {{ v.year }}</span>
+            <span class="ap-veh-card__meta">
+              {{ v.licensePlate }}
+              @if (v.color) { · {{ v.color }} }
+              @if (v.mileage != null) { · {{ v.mileage }} km }
+            </span>
+          </div>
+          <div class="ap-veh-card__actions">
+            <button appButton variant="ghost" type="button" (click)="ouvrirEdition(v)">Modifier</button>
+            <button appButton variant="ghost" type="button" [disabled]="enCours()" (click)="supprimer(v)">
+              Supprimer
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

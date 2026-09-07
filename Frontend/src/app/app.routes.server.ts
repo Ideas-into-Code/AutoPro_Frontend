@@ -46,6 +46,11 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
+    // Parc de véhicules : données de l'utilisateur connecté, via l'API.
+    path: 'vehicules',
+    renderMode: RenderMode.Server,
+  },
+  {
     /**
      * Tout l'espace mécanicien dépend du compte connecté et de l'API :
      * rendu à la demande.
