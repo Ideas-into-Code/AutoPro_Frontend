@@ -1,0 +1,29 @@
+<section class="ap-track">
+  <header class="ap-track__head">
+    <h2 class="ap-track__title">Suivi du mécanicien</h2>
+    @if (distanceKm() !== null) {
+      <span class="ap-track__distance" aria-live="polite">
+        À environ {{ distanceKm() }} km
+      </span>
+    }
+  </header>
+
+  @if (enAttente()) {
+    <p class="ap-track__wait">
+      En attente de la position du mécanicien. Elle s'affichera dès qu'il aura
+      démarré son trajet.
+    </p>
+  } @else {
+    <app-interactive-map
+      class="ap-track__map"
+      [markers]="markers()"
+      [userLocation]="clientLocation()"
+      [selectedMarkerId]="'mecano'"
+    />
+    @if (derniereMaj(); as maj) {
+      <p class="ap-track__maj">
+        Position mise à jour à {{ maj | date: 'HH:mm:ss' }}
+      </p>
+    }
+  }
+</section>

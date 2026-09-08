@@ -8,12 +8,13 @@ import { AuthService } from './auth.service';
 /**
  * Connexion STOMP temps réel vers le backend (`/ws`, WebSocket natif).
  *
- * - une seule connexion partagée pour toute l'application ;
+ * - une seule connexion partagée pour toute l'application (messagerie,
+ *   notifications, suivi de position…) ;
  * - authentifiée par le token JWT courant (en-tête `Authorization` sur CONNECT) ;
  * - strictement navigateur : rien ne se connecte pendant le rendu serveur.
  */
 @Injectable({ providedIn: 'root' })
-export class ChatSocketService {
+export class RealtimeSocketService {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly auth = inject(AuthService);
   private client: Client | null = null;

@@ -3,7 +3,8 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { rxResource } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 
-import { Button, Spinner } from '@shared/ui';
+import { Button, MapCoordinates, Spinner } from '@shared/ui';
+import { LiveTrackingCard } from '../../components/live-tracking-card/live-tracking-card';
 import { PROBLEM_TYPE_LABELS } from '../../models/request-draft.model';
 import {
   InterventionRequest,
@@ -20,7 +21,7 @@ import { RequestRepository } from '../../data/request.repository';
  */
 @Component({
   selector: 'app-request-detail',
-  imports: [RouterLink, DecimalPipe, Button, Spinner],
+  imports: [RouterLink, DecimalPipe, Button, Spinner, LiveTrackingCard],
   templateUrl: './request-detail.html',
   styleUrl: './request-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,6 +49,21 @@ export class RequestDetailPage {
   protected readonly annulable = computed(() => {
     const d = this.demande.value();
     return d !== undefined && peutEtreAnnulee(d.status);
+  });
+
+  /** Le suivi n'a de sens qu'une fois le mécanicien assigné et en route. */
+  protected readonly suitLeMecanicien = computed(() => {
+    const d = this.demande.value();
+    return d !== undefined && (d.status === 'acceptee' || d.status === 'en_cours');
+  });
+
+  /** Lieu de l'intervention, s'il a été géolocalisé à la création. */
+  protected readonly lieuIntervention = computed<MapCoordinates | null>(() => {
+    const d = this.demande.value();
+    if (d?.latitude == null || d?.longitude == null) {
+      return null;
+    }
+    return { latitude: d.latitude, longitude: d.longitude };
   });
 
   protected annuler(): void {
