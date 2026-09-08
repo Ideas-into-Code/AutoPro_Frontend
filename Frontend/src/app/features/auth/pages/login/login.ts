@@ -48,7 +48,7 @@ export class LoginComponent {
       '',
       [
         (c: AbstractControl) => Validators.required(c),
-        (c: AbstractControl) => Validators.minLength(6)(c),
+        (c: AbstractControl) => Validators.minLength(8)(c),
       ],
     ],
   });
