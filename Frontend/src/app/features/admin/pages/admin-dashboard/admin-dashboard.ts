@@ -95,6 +95,8 @@ export class AdminDashboardPage {
         // On relit plutôt que de modifier la liste sur place : le serveur fait
         // autorité sur le statut enregistré, et lui seul sait ce qu'il a retenu.
         this.accountsResource.reload();
+        // Les indicateurs comptent les comptes actifs : une suspension les périme.
+        this.metricsResource.reload();
       },
       error: () => {
         this.compteEnCours.set(null);
@@ -116,6 +118,8 @@ export class AdminDashboardPage {
         // La table est relue aussi : une validation fait passer le compte du
         // mécanicien à « actif », et les deux blocs doivent dire la même chose.
         this.accountsResource.reload();
+        // Et les indicateurs : « validés » et « en attente » viennent de bouger.
+        this.metricsResource.reload();
       },
       error: () => {
         // Le dossier reste dans la file : il n'est pas perdu, et

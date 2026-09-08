@@ -50,6 +50,7 @@ class FauxBackend
 {
   lecturesComptes = 0;
   lecturesFile = 0;
+  lecturesMetrics = 0;
   statuts: { accountId: string; status: AccountStatus }[] = [];
   decisions: { mechanicId: string; decision: ApprovalDecision }[] = [];
 
@@ -57,6 +58,8 @@ class FauxBackend
   echoueEnEcriture = false;
 
   metrics(): Observable<readonly SystemMetric[]> {
+    this.lecturesMetrics += 1;
+
     return of([INDICATEUR]);
   }
 
@@ -163,6 +166,18 @@ describe('AdminDashboardPage', () => {
     // la file doivent dire la même chose.
     expect(backend.decisions).toEqual([{ mechanicId: 'acc-008', decision: 'validee' }]);
     expect(backend.lecturesComptes).toBeGreaterThan(avant);
+  });
+
+  it('relit les indicateurs après une écriture réussie', async () => {
+    await rendre();
+    const avant = backend.lecturesMetrics;
+
+    bouton('Valider').click();
+    await fixture.whenStable();
+
+    // « Validés » et « en attente » viennent de bouger : les cartes seraient
+    // sinon en contradiction avec la file juste en dessous.
+    expect(backend.lecturesMetrics).toBeGreaterThan(avant);
   });
 
   it('signale un échec d’écriture sans vider l’écran', async () => {

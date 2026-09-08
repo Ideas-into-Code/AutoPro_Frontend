@@ -68,6 +68,16 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
+    // Back-office : indicateurs, comptes et file de validation, tous tirés de
+    // l'API sous session administrateur. Rendu à la demande.
+    path: 'admin',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'admin/**',
+    renderMode: RenderMode.Server,
+  },
+  {
     // Tout le reste est statique : prérendu au build, donc servi sans calcul
     // et affiché dès la première requête, même sur un réseau lent.
     path: '**',

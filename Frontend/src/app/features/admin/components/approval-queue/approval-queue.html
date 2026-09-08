@@ -13,9 +13,11 @@
           <p class="ap-queue__name">{{ dossier.fullName }}</p>
           <p class="ap-queue__specialty">{{ dossier.specialty }}</p>
           <p class="ap-queue__meta">
-            <app-icon name="position" size="sm" />
-            {{ dossier.city }}
-            <span class="ap-queue__dot" aria-hidden="true">·</span>
+            @if (dossier.city) {
+              <app-icon name="position" size="sm" />
+              {{ dossier.city }}
+              <span class="ap-queue__dot" aria-hidden="true">·</span>
+            }
             <span>déposé le {{ dateCourte(dossier.submittedAt) }}</span>
           </p>
         </div>

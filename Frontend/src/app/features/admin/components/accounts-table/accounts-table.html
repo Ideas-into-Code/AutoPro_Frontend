@@ -64,7 +64,7 @@
           </th>
 
           <td>{{ libelleRole(compte.role) }}</td>
-          <td>{{ compte.city }}</td>
+          <td>{{ compte.city || '—' }}</td>
           <td>{{ dateCourte(compte.registeredAt) }}</td>
 
           <td>
