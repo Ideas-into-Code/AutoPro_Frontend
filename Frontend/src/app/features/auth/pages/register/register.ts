@@ -59,7 +59,9 @@ export class RegisterComponent implements OnInit {
         '',
         [
           (c: AbstractControl) => Validators.required(c),
-          (c: AbstractControl) => Validators.minLength(6)(c),
+          // Le backend exige 8 caractères minimum : on aligne pour éviter un
+          // « Requête invalide » incompréhensible après envoi.
+          (c: AbstractControl) => Validators.minLength(8)(c),
         ],
       ],
       confirmPassword: ['', [(c: AbstractControl) => Validators.required(c)]],
@@ -128,11 +130,21 @@ export class RegisterComponent implements OnInit {
           const target = this.userRole() === 'mecanicien' ? '/mecanicien' : '/accueil';
           void this.router.navigate([target]);
         },
-        error: (err: { message?: string }) => {
+        error: (err: { message?: string; fieldErrors?: Record<string, string> }) => {
           this.isLoading.set(false);
-          this.errorMessage.set(err?.message ?? "Échec de l'inscription.");
+          this.errorMessage.set(this.messageErreur(err, "Échec de l'inscription."));
         },
       });
+  }
+
+  /** Combine le message d'erreur et le détail par champ renvoyés par le backend. */
+  private messageErreur(
+    err: { message?: string; fieldErrors?: Record<string, string> },
+    fallback: string,
+  ): string {
+    const base = err?.message ?? fallback;
+    const details = err?.fieldErrors ? Object.values(err.fieldErrors) : [];
+    return details.length > 0 ? `${base} : ${details.join(' · ')}` : base;
   }
 
   onLogin(): void {
