@@ -8,7 +8,12 @@ import {
   MechanicApprovalRepository,
   SystemOverviewRepository,
 } from './data/admin-dashboard.repository';
-import { MockAdminBackend } from './data/admin-dashboard.repository.mock';
+import {
+  HttpAccountDirectoryRepository,
+  HttpAccountModerationRepository,
+  HttpMechanicApprovalRepository,
+  HttpSystemOverviewRepository,
+} from './data/admin-dashboard.repository.http';
 
 /**
  * Routes du back-office : supervision, gestion des comptes, validation des
@@ -22,33 +27,23 @@ export const adminRoutes: Routes = [
     canMatch: [roleGuard('admin')],
 
     /**
-     * POINT DE BASCULE DU BACK-OFFICE.
-     *
-     * Le jour où les microservices répondent, ces quatre lignes deviennent
-     * leurs équivalents `Http…`, déjà écrits dans
-     * `data/admin-dashboard.repository.http.ts` :
-     *
-     *   { provide: SystemOverviewRepository, useClass: HttpSystemOverviewRepository },
-     *   { provide: AccountDirectoryRepository, useClass: HttpAccountDirectoryRepository },
-     *   { provide: AccountModerationRepository, useClass: HttpAccountModerationRepository },
-     *   { provide: MechanicApprovalRepository, useClass: HttpMechanicApprovalRepository },
-     *
-     * Aucun composant ne bouge.
+     * Dépôts du back-office, tous branchés sur `/api/admin/**` :
+     * indicateurs (`/stats`), comptes (`/users` + `/mechanics`), modération
+     * (`PATCH /users/{id}/status`), validation (`/mechanics/pending`,
+     * `PATCH /mechanics/{id}/validate`).
      *
      * Fournis sur la route et non globalement : seul ce domaine s'en sert, et
-     * les données simulées restent ainsi hors du bundle initial.
+     * le code du back-office reste hors du bundle initial.
      *
-     * `useExisting` et non `useClass` : les quatre contrats sont servis par une
-     * seule et même instance simulée, faute de quoi valider une candidature ne
-     * changerait rien au statut affiché dans la table. Les contrats, eux,
-     * restent bien distincts — c'est le serveur qui est unique.
+     * Quatre contrats, quatre classes — chacune sans état : c'est le backend
+     * qui fait autorité sur le statut d'un compte, et l'écran relit après
+     * chaque écriture.
      */
     providers: [
-      MockAdminBackend,
-      { provide: SystemOverviewRepository, useExisting: MockAdminBackend },
-      { provide: AccountDirectoryRepository, useExisting: MockAdminBackend },
-      { provide: AccountModerationRepository, useExisting: MockAdminBackend },
-      { provide: MechanicApprovalRepository, useExisting: MockAdminBackend },
+      { provide: SystemOverviewRepository, useClass: HttpSystemOverviewRepository },
+      { provide: AccountDirectoryRepository, useClass: HttpAccountDirectoryRepository },
+      { provide: AccountModerationRepository, useClass: HttpAccountModerationRepository },
+      { provide: MechanicApprovalRepository, useClass: HttpMechanicApprovalRepository },
     ],
 
     children: [
