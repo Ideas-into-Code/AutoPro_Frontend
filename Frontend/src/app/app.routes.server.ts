@@ -56,6 +56,11 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
+    // Carte interactive : mécaniciens proches via l'API + géoloc navigateur.
+    path: 'carte',
+    renderMode: RenderMode.Server,
+  },
+  {
     /**
      * Tout l'espace mécanicien dépend du compte connecté et de l'API :
      * rendu à la demande.

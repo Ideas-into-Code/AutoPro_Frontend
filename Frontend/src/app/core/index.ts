@@ -22,6 +22,9 @@ export { VehicleRepository } from './data/vehicle.repository';
 export { vehicleLabel } from './models/vehicle.model';
 export type { Vehicle, VehicleDraft } from './models/vehicle.model';
 
+export { NearbyMechanicRepository } from './data/nearby-mechanic.repository';
+export type { NearbyMechanic, NearbyMechanicQuery } from './models/nearby-mechanic.model';
+
 export { toApiError } from './http/api-error';
 export type { ApiError, ApiErrorKind } from './http/api-error';
 export { apiErrorInterceptor } from './http/api-error.interceptor';
