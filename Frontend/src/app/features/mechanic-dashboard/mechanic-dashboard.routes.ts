@@ -8,10 +8,10 @@ import {
   RequestDecisionRepository,
 } from './data/mechanic-dashboard.repository';
 import {
-  MockMechanicAvailabilityRepository,
-  MockMechanicDashboardRepository,
-  MockRequestDecisionRepository,
-} from './data/mechanic-dashboard.repository.mock';
+  HttpMechanicAvailabilityRepository,
+  HttpMechanicDashboardRepository,
+  HttpRequestDecisionRepository,
+} from './data/mechanic-dashboard.repository.http';
 import {
   HttpMechanicRequestRepository,
   MechanicRequestRepository,
@@ -33,19 +33,15 @@ export const mechanicDashboardRoutes: Routes = [
     canMatch: [roleGuard('mecanicien')],
 
     /**
-     * POINT DE BASCULE DE L'ESPACE MÉCANICIEN.
-     *
-     * Le jour où les microservices répondent, ces trois lignes deviennent
-     * leurs équivalents `Http…`, déjà écrits dans
-     * `data/mechanic-dashboard.repository.http.ts`. Aucun composant ne bouge.
-     *
-     * Fournis sur la route et non globalement : seul ce domaine s'en sert, et
-     * les données simulées restent ainsi hors du bundle initial.
+     * Dépôts de l'espace mécanicien, tous branchés sur le backend :
+     * gains (`/api/mechanic/earnings/{id}`), disponibilité
+     * (`/api/mechanics/me/availability`), demande entrante et décision
+     * (`/api/service-requests`).
      */
     providers: [
-      { provide: MechanicDashboardRepository, useClass: MockMechanicDashboardRepository },
-      { provide: MechanicAvailabilityRepository, useClass: MockMechanicAvailabilityRepository },
-      { provide: RequestDecisionRepository, useClass: MockRequestDecisionRepository },
+      { provide: MechanicDashboardRepository, useClass: HttpMechanicDashboardRepository },
+      { provide: MechanicAvailabilityRepository, useClass: HttpMechanicAvailabilityRepository },
+      { provide: RequestDecisionRepository, useClass: HttpRequestDecisionRepository },
       { provide: MechanicRequestRepository, useClass: HttpMechanicRequestRepository },
     ],
 
