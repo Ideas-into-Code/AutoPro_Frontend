@@ -40,9 +40,20 @@
       connecté, et la barre reste dégagée. Le nom complet n'est pas affiché,
       seulement annoncé aux lecteurs d'écran par l'avatar lui-même.
     -->
-    <a actions class="ap-mecano-shell__account" routerLink="/mecanicien/profil">
-      <app-avatar [name]="nomAffiche()" size="sm" />
-    </a>
+    <div actions class="ap-mecano-shell__actions">
+      <app-notification-bell />
+      <a class="ap-mecano-shell__account" routerLink="/mecanicien/profil">
+        <app-avatar [name]="nomAffiche()" size="sm" />
+      </a>
+      <button
+        type="button"
+        class="ap-mecano-shell__logout"
+        (click)="deconnexion()"
+        aria-label="Déconnexion"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+      </button>
+    </div>
   </app-header>
 
   <router-outlet />

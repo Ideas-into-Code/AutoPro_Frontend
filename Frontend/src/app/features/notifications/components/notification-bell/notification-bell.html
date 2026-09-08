@@ -1,0 +1,48 @@
+<div class="ap-bell">
+  <button
+    type="button"
+    class="ap-bell__trigger"
+    [attr.aria-label]="'Notifications' + (unread() > 0 ? ' (' + unread() + ' non lues)' : '')"
+    [attr.aria-expanded]="open()"
+    (click)="toggle($event)"
+  >
+    <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
+    @if (unread() > 0) {
+      <span class="ap-bell__badge">{{ unread() > 9 ? '9+' : unread() }}</span>
+    }
+  </button>
+
+  @if (open()) {
+    <div class="ap-bell__panel" (click)="onPanelClick($event)">
+      <header class="ap-bell__panel-head">
+        <strong>Notifications</strong>
+        @if (unread() > 0) {
+          <button type="button" (click)="markAll()">Tout marquer comme lu</button>
+        }
+      </header>
+
+      @if (items().length === 0) {
+        <p class="ap-bell__empty">Aucune notification.</p>
+      } @else {
+        <ul class="ap-bell__list">
+          @for (n of items(); track n.id) {
+            <li>
+              <button
+                type="button"
+                class="ap-bell__item"
+                [class.ap-bell__item--unread]="!n.read"
+                (click)="activate(n)"
+              >
+                <span class="ap-bell__item-title">{{ n.title }}</span>
+                @if (n.body) {
+                  <span class="ap-bell__item-body">{{ n.body }}</span>
+                }
+                <span class="ap-bell__item-age">{{ age(n.createdAt) }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  }
+</div>

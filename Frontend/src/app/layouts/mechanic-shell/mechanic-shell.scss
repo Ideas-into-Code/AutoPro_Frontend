@@ -40,3 +40,30 @@
 
   @include ds.focus-ring;
 }
+
+.ap-mecano-shell__logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  .material-symbols-outlined {
+    font-size: 20px;
+  }
+}
+
+.ap-mecano-shell__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}

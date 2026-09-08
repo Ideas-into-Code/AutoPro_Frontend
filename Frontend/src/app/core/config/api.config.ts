@@ -14,6 +14,7 @@ export type MicroserviceName =
   | 'pricing'
   | 'reviews'
   | 'messaging'
+  | 'notifications'
   | 'geolocation'
   | 'payments'
   | 'admin';
@@ -57,6 +58,7 @@ export const DEFAULT_API_CONFIG: ApiConfig = {
     pricing: 'pricing',
     reviews: 'reviews',
     messaging: 'chat',
+    notifications: 'notifications',
     geolocation: 'mechanics',
     payments: 'service-requests',
     admin: 'admin',
