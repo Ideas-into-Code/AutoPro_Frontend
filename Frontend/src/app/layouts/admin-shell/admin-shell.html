@@ -25,9 +25,19 @@
       connecté, et la barre reste dégagée. Le nom complet n'est pas affiché,
       seulement annoncé aux lecteurs d'écran par l'avatar lui-même.
     -->
-    <span actions class="ap-admin-shell__account">
-      <app-avatar [name]="nomAffiche()" size="sm" />
-    </span>
+    <div actions class="ap-admin-shell__actions">
+      <span class="ap-admin-shell__account">
+        <app-avatar [name]="nomAffiche()" size="sm" />
+      </span>
+      <button
+        type="button"
+        class="ap-admin-shell__logout"
+        (click)="deconnexion()"
+        aria-label="Déconnexion"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+      </button>
+    </div>
   </app-header>
 
   <router-outlet />

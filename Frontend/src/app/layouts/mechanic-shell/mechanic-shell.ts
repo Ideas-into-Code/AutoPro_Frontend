@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { AuthService } from '@core/services/auth.service';
+import { NotificationBell } from '@features/notifications/components/notification-bell/notification-bell';
 import { BottomNav, BottomNavItem, Footer, Header, PageShell } from '@shared/layout';
 import { Avatar } from '@shared/ui';
 
@@ -34,6 +35,7 @@ import { Avatar } from '@shared/ui';
     Footer,
     BottomNav,
     Avatar,
+    NotificationBell,
   ],
   templateUrl: './mechanic-shell.html',
   styleUrl: './mechanic-shell.scss',
@@ -41,6 +43,12 @@ import { Avatar } from '@shared/ui';
 })
 export class MechanicShell {
   private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+
+  protected deconnexion(): void {
+    this.auth.logout();
+    void this.router.navigate(['/compte/connexion']);
+  }
 
   /**
    * Nom du mécanicien connecté, affiché à la place d'une mention générique.

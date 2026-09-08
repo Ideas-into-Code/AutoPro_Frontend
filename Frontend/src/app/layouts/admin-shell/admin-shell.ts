@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { AuthService } from '@core/services/auth.service';
 import { Footer, Header, PageShell } from '@shared/layout';
@@ -33,6 +33,12 @@ import { Avatar } from '@shared/ui';
 })
 export class AdminShell {
   private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+
+  protected deconnexion(): void {
+    this.auth.logout();
+    void this.router.navigate(['/compte/connexion']);
+  }
 
   /**
    * Nom de l'administrateur connecté.

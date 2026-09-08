@@ -53,7 +53,16 @@
       Messages
     </a>
 
-    <a actions appButton variant="ghost" size="sm" routerLink="/compte/connexion">Se connecter</a>
+    <div actions class="ap-client-shell__actions">
+      @if (auth.isAuthenticated()) {
+        <app-notification-bell />
+        <button appButton variant="ghost" size="sm" type="button" (click)="deconnexion()">
+          Déconnexion
+        </button>
+      } @else {
+        <a appButton variant="ghost" size="sm" routerLink="/compte/connexion">Se connecter</a>
+      }
+    </div>
   </app-header>
 
   <router-outlet />
