@@ -84,13 +84,6 @@ export const mechanicDashboardRoutes: Routes = [
           ),
         title: 'Suivi de l\'intervention — AutoPro',
       },
-      {
-        path: 'profil',
-        loadComponent: () =>
-          import('@shared/pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
-        data: { fonctionnalite: 'Votre profil professionnel' },
-        title: 'Mon profil — AutoPro',
-      },
     ],
   },
 ];

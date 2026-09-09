@@ -53,6 +53,13 @@ export const routes: Routes = [
       import('./layouts/mechanic-shell/mechanic-shell').then((m) => m.MechanicShell),
     children: [
       {
+        // Profil professionnel du mécanicien. Feature à part, montée aussi sous
+        // `/profil` (coquille client) : un seul écran pour les deux personas.
+        path: 'profil',
+        loadChildren: () =>
+          import('@features/profile/profile.routes').then((m) => m.profileRoutes),
+      },
+      {
         path: '',
         loadChildren: () =>
           import('@features/mechanic-dashboard/mechanic-dashboard.routes').then(
@@ -111,6 +118,11 @@ export const routes: Routes = [
         path: 'messages',
         loadChildren: () =>
           import('@features/messaging/messaging.routes').then((m) => m.messagingRoutes),
+      },
+      {
+        path: 'profil',
+        loadChildren: () =>
+          import('@features/profile/profile.routes').then((m) => m.profileRoutes),
       },
       {
         path: 'avis',
