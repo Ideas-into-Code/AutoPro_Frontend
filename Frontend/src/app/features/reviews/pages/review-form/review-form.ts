@@ -1,27 +1,29 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { LowerCasePipe } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { of } from 'rxjs';
 
-import { Avatar, Button, PhotoUpload, RatingStars, Spinner } from '@shared/ui';
+import { ApiError } from '@core';
+import { Avatar, Button, RatingStars, Spinner } from '@shared/ui';
 import { ReviewSubmissionRepository, ReviewTargetRepository } from '../../data/review.repository';
 import { COMMENTAIRE_MAX, LIBELLES_NOTE, ReviewTarget } from '../../models/review.model';
 
 /**
- * Formulaire d'avis post-service — ticket #26.
+ * Formulaire d'avis — ticket #26, aligné sur le backend.
  *
- * Les deux tâches du ticket sont ici : la note commentée, et les photos en
- * preuve du travail.
+ * On note **un mécanicien** (pas une intervention), une note et un commentaire
+ * facultatif. Le mécanicien visé arrive par l'URL :
+ * `/avis/nouveau?mecanicien=<id>` — depuis le suivi d'une demande terminée ou
+ * depuis la fiche du mécanicien.
  *
- * **Pas de formulaire réactif**, contrairement au reste du projet, et c'est
- * délibéré : deux champs dont un seul contraint, plus une liste de fichiers
- * qu'un `FormControl` ne peut de toute façon pas porter. Un `FormGroup` ici
- * n'apporterait que de la cérémonie — la règle « note obligatoire » tient en
- * une ligne, et le bouton la traduit en s'activant.
+ * **Pas de formulaire réactif** : un seul champ contraint (la note), le bouton
+ * traduit la règle en s'activant. Un `FormGroup` n'ajouterait que de la
+ * cérémonie.
  */
 @Component({
   selector: 'app-review-form',
-  imports: [Avatar, Button, PhotoUpload, RatingStars, Spinner, RouterLink, LowerCasePipe],
+  imports: [Avatar, Button, RatingStars, Spinner, RouterLink, LowerCasePipe],
   templateUrl: './review-form.html',
   styleUrl: './review-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,33 +32,35 @@ export class ReviewFormPage {
   private readonly cibles = inject(ReviewTargetRepository);
   private readonly envois = inject(ReviewSubmissionRepository);
 
+  /**
+   * Id du mécanicien à noter, issu du paramètre d'URL `mecanicien`.
+   *
+   * `withComponentInputBinding()` écrit `undefined` quand le paramètre est
+   * absent de l'URL — la valeur par défaut d'`input()` ne joue qu'avant la
+   * première liaison. On normalise donc en chaîne vide.
+   */
+  readonly mecanicien = input('', { transform: (v: string | undefined) => v ?? '' });
+
   protected readonly libelles = LIBELLES_NOTE;
   protected readonly commentaireMax = COMMENTAIRE_MAX;
 
-  // Le paramètre générique est explicite : sans lui, `defaultValue: null`
-  // serait confronté au seul type `ReviewTarget` et refusé.
-  protected readonly cibleResource = rxResource<ReviewTarget | null, unknown>({
-    stream: () => this.cibles.pending(),
+  protected readonly cibleResource = rxResource<ReviewTarget | null, string>({
+    params: () => this.mecanicien(),
+    stream: ({ params }) => (params ? this.cibles.forMechanic(params) : of(null)),
     defaultValue: null,
   });
 
-  protected readonly chargementFailed = computed(() => this.cibleResource.error() !== undefined);
+  protected readonly chargementFailed = computed(
+    () => this.mecanicien() === '' || this.cibleResource.error() !== undefined,
+  );
 
-  // --- Saisie ---------------------------------------------------------------
+  // --- Saisie -----------------------------------------------------------
 
   protected readonly note = signal(0);
   protected readonly commentaire = signal('');
-  protected readonly photos = signal<readonly File[]>([]);
 
   protected readonly caracteres = computed(() => this.commentaire().length);
 
-  /**
-   * Seule la note est exigée.
-   *
-   * Un commentaire obligatoire ferait écrire n'importe quoi à qui veut
-   * simplement mettre cinq étoiles, et une étoile sans mot reste une
-   * information exploitable.
-   */
   protected readonly peutEnvoyer = computed(() => this.note() > 0 && !this.envoiEnCours());
 
   protected readonly envoiEnCours = signal(false);
@@ -71,20 +75,11 @@ export class ReviewFormPage {
   }
 
   protected saisirCommentaire(texte: string): void {
-    // Coupé à la source plutôt que refusé après coup : le compteur ne peut
-    // alors jamais afficher un dépassement, et le serveur ne reçoit rien
-    // qu'il devrait rejeter.
     this.commentaire.set(texte.slice(0, COMMENTAIRE_MAX));
-  }
-
-  protected changerPhotos(photos: readonly File[]): void {
-    this.photos.set(photos);
   }
 
   protected envoyer(): void {
     const cible = this.cibleResource.value();
-
-    // Garde de sûreté : le bouton est déjà neutralisé dans ces deux cas.
     if (cible === null || !this.peutEnvoyer()) {
       return;
     }
@@ -94,21 +89,22 @@ export class ReviewFormPage {
 
     this.envois
       .submit({
-        interventionId: cible.interventionId,
+        mechanicId: cible.mechanicId,
         rating: this.note(),
         comment: this.commentaire().trim(),
-        photos: this.photos(),
       })
       .subscribe({
         next: () => {
           this.envoiEnCours.set(false);
           this.envoye.set(true);
         },
-        error: () => {
-          // La saisie est conservée : refaire une note et un commentaire perdus
-          // par une coupure réseau est le meilleur moyen de n'avoir aucun avis.
+        error: (err: ApiError) => {
           this.envoiEnCours.set(false);
-          this.erreur.set("Votre avis n'a pas pu être envoyé. Vérifiez votre connexion.");
+          // Le backend renvoie un message clair (« Vous avez déjà laissé un
+          // avis… ») : on le montre tel quel plutôt que de le masquer.
+          this.erreur.set(
+            err?.message ?? "Votre avis n'a pas pu être envoyé. Vérifiez votre connexion.",
+          );
         },
       });
   }

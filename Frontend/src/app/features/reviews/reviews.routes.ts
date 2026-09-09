@@ -1,32 +1,27 @@
 import { Routes } from '@angular/router';
 
+import { authGuard } from '@core/guards/auth.guard';
+
 import { ReviewSubmissionRepository, ReviewTargetRepository } from './data/review.repository';
 import {
-  MockReviewSubmissionRepository,
-  MockReviewTargetRepository,
-} from './data/review.repository.mock';
+  HttpReviewSubmissionRepository,
+  HttpReviewTargetRepository,
+} from './data/review.repository.http';
 
 /**
- * Routes du domaine « Avis » : notation et commentaires post-intervention.
+ * Routes du domaine « Avis » : notation d'un mécanicien après intervention.
+ *
+ * Dépôts branchés sur `/api/mechanics/{id}` (fiche du mécanicien à noter) et
+ * `POST /api/mechanics/{id}/reviews` (envoi). Déposer un avis suppose d'être
+ * connecté — d'où `authGuard`.
  */
 export const reviewsRoutes: Routes = [
   {
     path: '',
-
-    /**
-     * POINT DE BASCULE DU DOMAINE « AVIS ».
-     *
-     * Le jour où le microservice répond, ces deux lignes deviennent leurs
-     * équivalents `Http…`, déjà écrits dans `data/review.repository.http.ts` :
-     *
-     *   { provide: ReviewTargetRepository, useClass: HttpReviewTargetRepository },
-     *   { provide: ReviewSubmissionRepository, useClass: HttpReviewSubmissionRepository },
-     *
-     * Aucun composant ne bouge.
-     */
+    canMatch: [authGuard],
     providers: [
-      { provide: ReviewTargetRepository, useClass: MockReviewTargetRepository },
-      { provide: ReviewSubmissionRepository, useClass: MockReviewSubmissionRepository },
+      { provide: ReviewTargetRepository, useClass: HttpReviewTargetRepository },
+      { provide: ReviewSubmissionRepository, useClass: HttpReviewSubmissionRepository },
     ],
 
     children: [
