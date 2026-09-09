@@ -60,6 +60,14 @@
       </dd>
     </dl>
 
+    @if (suitLeMecanicien() && d.mechanicId) {
+      <app-live-tracking-card
+        [mechanicId]="d.mechanicId"
+        [mechanicName]="d.mechanicName"
+        [clientLocation]="lieuIntervention()"
+      />
+    }
+
     @if (annulable()) {
       @if (erreurAnnulation()) {
         <p class="ap-req-detail__error" role="alert">{{ erreurAnnulation() }}</p>

@@ -4,7 +4,7 @@ import { Observable, map } from 'rxjs';
 
 import { API_CONFIG, buildServiceUrl } from '@core';
 import { AuthService } from '@core/services/auth.service';
-import { ChatSocketService } from '@core/services/chat-socket.service';
+import { RealtimeSocketService } from '@core/services/realtime-socket.service';
 import { Conversation, Message, TypingSignal } from './messaging.model';
 import {
   BackendChatMessage,
@@ -37,7 +37,7 @@ export class HttpMessagingRepository extends MessagingRepository {
   private readonly http = inject(HttpClient);
   private readonly config = inject(API_CONFIG);
   private readonly auth = inject(AuthService);
-  private readonly socket = inject(ChatSocketService);
+  private readonly socket = inject(RealtimeSocketService);
 
   private get myId(): string {
     return this.auth.currentUser()?.id ?? '';

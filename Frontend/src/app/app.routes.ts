@@ -115,10 +115,6 @@ export const routes: Routes = [
           import('@features/vehicles/vehicles.routes').then((m) => m.vehiclesRoutes),
       },
       {
-        path: 'reservation',
-        loadChildren: () => import('@features/booking/booking.routes').then((m) => m.bookingRoutes),
-      },
-      {
         path: 'messages',
         loadChildren: () =>
           import('@features/messaging/messaging.routes').then((m) => m.messagingRoutes),
