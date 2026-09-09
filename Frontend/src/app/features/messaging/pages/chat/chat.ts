@@ -10,9 +10,10 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 
+import { ApiError } from '@core';
 import { AuthService } from '@core/services/auth.service';
 import { Spinner } from '@shared/ui';
 import { Conversation, Message } from '../../data/messaging.model';
@@ -24,7 +25,7 @@ import { HttpMessagingRepository, MessagingRepository } from '../../data/messagi
  */
 @Component({
   selector: 'app-chat-page',
-  imports: [Spinner],
+  imports: [Spinner, RouterLink],
   providers: [{ provide: MessagingRepository, useClass: HttpMessagingRepository }],
   templateUrl: './chat.html',
   styleUrl: './chat.scss',
@@ -37,9 +38,13 @@ export class ChatPage {
   private readonly destroyRef = inject(DestroyRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
+  /** Retour vers l'espace du rôle courant — la messagerie n'a pas de coquille. */
+  protected readonly retour = this.auth.homeRoute;
+
   protected readonly conversations = signal<readonly Conversation[]>([]);
   protected readonly loadingList = signal(true);
   protected readonly listError = signal(false);
+  protected readonly ouvertureError = signal<string | null>(null);
 
   protected readonly selectedId = signal<string | null>(null);
   protected readonly messages = signal<readonly Message[]>([]);
@@ -107,14 +112,30 @@ export class ChatPage {
   }
 
   protected openWithPeer(peerUserId: string): void {
+    if (peerUserId === this.auth.currentUser()?.id) {
+      // Arrive quand deux onglets d'un même navigateur partagent la session :
+      // le « correspondant » est en fait le compte connecté.
+      this.ouvertureError.set(
+        'Vous ne pouvez pas ouvrir une conversation avec vous-même. Pour tester les deux rôles, utilisez deux navigateurs distincts.',
+      );
+      return;
+    }
+    this.ouvertureError.set(null);
     this.repo
       .openDirect(peerUserId)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((conv) => {
-        this.conversations.update((list) =>
-          list.some((c) => c.id === conv.id) ? list : [conv, ...list],
-        );
-        this.select(conv.id);
+      .subscribe({
+        next: (conv) => {
+          this.conversations.update((list) =>
+            list.some((c) => c.id === conv.id) ? list : [conv, ...list],
+          );
+          this.select(conv.id);
+        },
+        error: (err: ApiError) => {
+          this.ouvertureError.set(
+            err?.message ?? "La conversation n'a pas pu être ouverte.",
+          );
+        },
       });
   }
 

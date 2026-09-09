@@ -44,6 +44,31 @@ export function roleGuard(...roles: UserRole[]): CanMatchFn {
     if (role === null) {
       return router.parseUrl('/compte/connexion');
     }
-    return roles.includes(role) ? true : router.parseUrl('/accueil');
+    // Renvoi vers l'espace du rôle courant, pas vers l'accueil client : un
+    // mécanicien qui tombe sur une route admin doit revenir à SON tableau de
+    // bord, pas dans la coquille cliente.
+    return roles.includes(role) ? true : router.parseUrl(auth.homeRoute());
   };
 }
+
+/**
+ * Garde de la coquille cliente.
+ *
+ * L'accueil, la carte et la liste des mécaniciens restent publics : un visiteur
+ * non connecté passe. Mais un mécanicien ou un administrateur connecté n'a rien
+ * à faire dans l'espace client — on le renvoie vers le sien. Sans cette garde,
+ * un lien mal ciblé ou une vieille notification fait « basculer » un mécanicien
+ * dans l'interface client.
+ */
+export const clientAreaGuard: CanMatchFn = (): boolean | UrlTree => {
+  if (serverPass()) {
+    return true;
+  }
+  const auth = inject(AuthService);
+  const router = inject(Router);
+  const role = auth.userRole();
+  if (role === 'mecanicien' || role === 'admin') {
+    return router.parseUrl(auth.homeRoute());
+  }
+  return true;
+};

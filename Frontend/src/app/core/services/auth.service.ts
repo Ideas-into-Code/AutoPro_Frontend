@@ -41,6 +41,33 @@ export class AuthService {
   public readonly isAuthenticated = computed(() => this._session() !== null);
   public readonly userRole = computed(() => this._session()?.user.role ?? null);
 
+  /** Écran d'accueil propre au rôle : chaque persona a son espace. */
+  public readonly homeRoute = computed(() => {
+    switch (this.userRole()) {
+      case 'admin':
+        return '/admin';
+      case 'mecanicien':
+        return '/mecanicien';
+      default:
+        return '/accueil';
+    }
+  });
+
+  constructor() {
+    // Les onglets d'un même navigateur partagent `localStorage`. Sans cette
+    // synchronisation, un onglet resté sur un ancien compte affiche des données
+    // qui ne sont plus celles de la session active — on croit « changer de
+    // rôle tout seul ». On recharge donc la session dès qu'un autre onglet la
+    // modifie. (Deux rôles en parallèle => deux navigateurs distincts.)
+    if (isPlatformBrowser(this.platformId)) {
+      window.addEventListener('storage', (e) => {
+        if (e.key === STORAGE_KEY) {
+          this._session.set(this.loadSavedSession());
+        }
+      });
+    }
+  }
+
   /** Token JWT courant, ou `null`. Utilisé par l'intercepteur HTTP. */
   token(): string | null {
     return this._session()?.token ?? null;
