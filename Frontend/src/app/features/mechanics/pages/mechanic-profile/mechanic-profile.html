@@ -26,7 +26,11 @@
         <!-- En-tête -->
         <section class="ap-mpr__hero" aria-labelledby="profile-title">
           <div class="ap-mpr__media">
-            <span class="ap-mpr__avatar" aria-hidden="true">{{ initiale() }}</span>
+            @if (mec.avatarUrl) {
+              <img class="ap-mpr__avatar-img" [src]="mec.avatarUrl" [alt]="'Photo de ' + mec.fullName" />
+            } @else {
+              <span class="ap-mpr__avatar" aria-hidden="true">{{ initiale() }}</span>
+            }
 
             @if (mec.isVerified) {
               <div class="ap-mpr__verified">
@@ -102,6 +106,17 @@
                 </li>
               }
             </ul>
+          </section>
+        }
+
+        <!-- Horaires -->
+        @if (mec.openingHours) {
+          <section class="ap-mpr__section">
+            <h2 class="ap-mpr__section-title-text">
+              <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+              Horaires
+            </h2>
+            <p class="ap-mpr__hours">{{ mec.openingHours }}</p>
           </section>
         }
       </div>

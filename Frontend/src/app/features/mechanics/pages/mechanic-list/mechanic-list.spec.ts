@@ -64,6 +64,7 @@ const MECANICIEN: Mechanic = {
   avatarUrl: '',
   specialties: ['Freinage'],
   experienceYears: 8,
+  openingHours: '',
   rating: 4.9,
   reviewCount: 42,
   isAvailable: true,

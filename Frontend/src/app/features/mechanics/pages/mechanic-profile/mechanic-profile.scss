@@ -5,17 +5,32 @@
 // Compléments aux styles globaux (`src/styles/_mechanic-profile.scss`) pour les
 // éléments introduits après le retrait des sections simulées.
 
+.ap-mpr__avatar,
+.ap-mpr__avatar-img {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
 .ap-mpr__avatar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
   background: #1d4ed8;
   color: #fff;
   font-size: 2rem;
   font-weight: 700;
+}
+
+.ap-mpr__avatar-img {
+  object-fit: cover;
+}
+
+.ap-mpr__hours {
+  margin: 0;
+  color: #374151;
+  white-space: pre-line;
 }
 
 .ap-mpr__media {

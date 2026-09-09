@@ -33,6 +33,12 @@ export interface MechanicProfile {
 
   readonly latitude: number | null;
   readonly longitude: number | null;
+
+  /** URL de la photo de profil, ou `null`. */
+  readonly photoUrl: string | null;
+
+  /** Horaires d'ouverture, texte libre (`''` si non renseignés). */
+  readonly openingHours: string;
 }
 
 export interface Profile {
@@ -55,4 +61,6 @@ export interface MechanicPatch {
   readonly isAvailable: boolean;
   readonly latitude: number | null;
   readonly longitude: number | null;
+  readonly photoUrl: string | null;
+  readonly openingHours: string;
 }

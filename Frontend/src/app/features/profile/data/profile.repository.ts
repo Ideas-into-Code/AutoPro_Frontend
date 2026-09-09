@@ -21,4 +21,10 @@ export abstract class ProfileRepository {
 
   /** Met à jour la fiche mécanicien (`PUT /api/mechanics/me`). */
   abstract saveMechanic(patch: MechanicPatch): Observable<Profile>;
+
+  /**
+   * Téléverse une photo de profil (`POST /api/files/profile-picture`) et
+   * renvoie son URL. À sauvegarder ensuite via `saveMechanic({ photoUrl })`.
+   */
+  abstract uploadPhoto(file: File): Observable<string>;
 }

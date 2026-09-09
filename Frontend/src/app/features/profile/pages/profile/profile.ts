@@ -61,6 +61,7 @@ export class ProfilePage {
     specialization: this.fb.nonNullable.control('', [longueurMax(255)]),
     experienceYears: this.fb.control<number | null>(null),
     bio: this.fb.nonNullable.control('', [longueurMax(1000)]),
+    openingHours: this.fb.nonNullable.control('', [longueurMax(500)]),
     isAvailable: this.fb.nonNullable.control(false),
     latitude: this.fb.control<number | null>(null),
     longitude: this.fb.control<number | null>(null),
@@ -68,6 +69,13 @@ export class ProfilePage {
 
   protected readonly mecanoState = signal<SaveState>('idle');
   protected readonly positionState = signal<'idle' | 'loading' | 'error'>('idle');
+
+  /**
+   * Photo de profil : téléversée à part (asynchrone), pas dans le formulaire.
+   * `null` = pas de photo ; l'enregistrement de la fiche la persiste.
+   */
+  protected readonly photoUrl = signal<string | null>(null);
+  protected readonly photoState = signal<'idle' | 'uploading' | 'error'>('idle');
 
   /**
    * Miroir signal des coordonnées du formulaire.
@@ -105,11 +113,13 @@ export class ProfilePage {
           specialization: p.mechanic.specialization,
           experienceYears: p.mechanic.experienceYears,
           bio: p.mechanic.bio,
+          openingHours: p.mechanic.openingHours,
           isAvailable: p.mechanic.isAvailable,
           latitude: p.mechanic.latitude,
           longitude: p.mechanic.longitude,
         });
         this.coords.set({ lat: p.mechanic.latitude, lng: p.mechanic.longitude });
+        this.photoUrl.set(p.mechanic.photoUrl);
       }
     });
   }
@@ -143,10 +153,12 @@ export class ProfilePage {
       specialization: v.specialization,
       experienceYears: v.experienceYears,
       bio: v.bio,
+      openingHours: v.openingHours,
       // Garde-fou : le backend refuse `isAvailable=true` sans dossier validé.
       isAvailable: v.isAvailable && this.peutBasculerDispo(),
       latitude: v.latitude,
       longitude: v.longitude,
+      photoUrl: this.photoUrl(),
     };
 
     this.repo.saveMechanic(patch).subscribe({
@@ -179,5 +191,31 @@ export class ProfilePage {
     this.mecanoForm.controls.longitude.setValue(null);
     this.mecanoForm.markAsDirty();
     this.coords.set({ lat: null, lng: null });
+  }
+
+  protected choisirPhoto(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = ''; // permet de re-sélectionner le même fichier
+    if (!file) {
+      return;
+    }
+    this.photoState.set('uploading');
+    this.repo
+      .uploadPhoto(file)
+      .pipe(take(1))
+      .subscribe({
+        next: (url) => {
+          this.photoUrl.set(url);
+          this.mecanoForm.markAsDirty();
+          this.photoState.set('idle');
+        },
+        error: () => this.photoState.set('error'),
+      });
+  }
+
+  protected retirerPhoto(): void {
+    this.photoUrl.set(null);
+    this.mecanoForm.markAsDirty();
   }
 }

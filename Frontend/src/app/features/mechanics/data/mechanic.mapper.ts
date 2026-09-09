@@ -17,6 +17,8 @@ export interface BackendMechanic {
   specialization: string | null;
   experienceYears: number | null;
   bio: string | null;
+  photoUrl: string | null;
+  openingHours: string | null;
   isAvailable: boolean;
   validationStatus: 'PENDING' | 'APPROVED' | 'REJECTED' | null;
   averageRating: number | string | null;
@@ -55,9 +57,10 @@ export function toMechanic(b: BackendMechanic, reviews: readonly MechanicReview[
     workshopName: b.bio ?? '',
     phone: b.phone ?? '',
     email: b.email,
-    avatarUrl: '',
+    avatarUrl: b.photoUrl ?? '',
     specialties: splitSpecialties(b.specialization),
     experienceYears: b.experienceYears ?? null,
+    openingHours: b.openingHours ?? '',
     rating: Number(b.averageRating ?? 0),
     reviewCount: b.reviewCount ?? 0,
     isAvailable: b.isAvailable,
