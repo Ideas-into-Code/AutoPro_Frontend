@@ -3,7 +3,18 @@ import { Router, provideRouter } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
 
 import { Page, PageRequest, ServiceCategory, ServiceCategoryRepository, emptyPage } from '@core';
+import { HomeHighlightsRepository } from '../../data/home-highlights.repository';
+import { NearbyMechanic, RecentRequest } from '../../models/home-cards.model';
 import { HomePage } from './home';
+
+class HighlightsVides extends HomeHighlightsRepository {
+  nearbyMechanics(): Observable<readonly NearbyMechanic[]> {
+    return of([]);
+  }
+  recentRequests(): Observable<readonly RecentRequest[]> {
+    return of([]);
+  }
+}
 
 /**
  * Dépôt de substitution : aucun `HttpTestingController`, aucune URL simulée.
@@ -61,6 +72,7 @@ describe('HomePage', () => {
       providers: [
         provideRouter([]),
         { provide: ServiceCategoryRepository, useValue: new DepotDeTest(reponse) },
+        { provide: HomeHighlightsRepository, useClass: HighlightsVides },
       ],
     });
 
