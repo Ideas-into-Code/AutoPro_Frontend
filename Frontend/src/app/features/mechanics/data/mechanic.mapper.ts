@@ -50,20 +50,22 @@ function splitSpecialties(specialization: string | null): string[] {
 export function toMechanic(b: BackendMechanic, reviews: readonly MechanicReview[] = []): Mechanic {
   return {
     id: String(b.id),
+    userId: String(b.userId),
     fullName: b.fullName || `${b.firstName} ${b.lastName}`.trim(),
     workshopName: b.bio ?? '',
     phone: b.phone ?? '',
     email: b.email,
     avatarUrl: '',
     specialties: splitSpecialties(b.specialization),
+    experienceYears: b.experienceYears ?? null,
     rating: Number(b.averageRating ?? 0),
     reviewCount: b.reviewCount ?? 0,
     isAvailable: b.isAvailable,
     isVerified: b.validationStatus === 'APPROVED',
-    address:
-      b.latitude != null && b.longitude != null
-        ? `${b.latitude.toFixed(4)}, ${b.longitude.toFixed(4)}`
-        : '',
+    // Le backend ne stocke pas d'adresse lisible, seulement la position GPS.
+    // Afficher des coordonnées brutes n'aide personne : on laisse vide, la
+    // carte utilise `location`.
+    address: '',
     location: { latitude: b.latitude ?? 0, longitude: b.longitude ?? 0 },
     reviews: [...reviews],
   };

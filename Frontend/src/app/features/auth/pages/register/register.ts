@@ -39,7 +39,8 @@ export class RegisterComponent implements OnInit {
 
   protected readonly registerForm = this.fb.group(
     {
-      fullName: ['', [(c: AbstractControl) => Validators.required(c)]],
+      firstName: ['', [(c: AbstractControl) => Validators.required(c)]],
+      lastName: ['', [(c: AbstractControl) => Validators.required(c)]],
       email: [
         '',
         [
@@ -115,7 +116,8 @@ export class RegisterComponent implements OnInit {
     const v = this.registerForm.value;
     this.authService
       .register({
-        fullName: v.fullName!,
+        firstName: v.firstName!,
+        lastName: v.lastName!,
         email: v.email!,
         password: v.password!,
         phone: v.phoneNumber ?? undefined,

@@ -6,49 +6,15 @@ import { defer } from 'rxjs';
 import { Button, Icon, IconName, Spinner } from '@shared/ui';
 import { MechanicRepository } from '../../data/mechanic.repository';
 
-interface ProfileDetails {
-  readonly experience: string;
-  readonly certificate: string;
-  readonly brands: readonly string[];
-  readonly hours: readonly WorkingHour[];
-}
-
-interface WorkingHour {
-  readonly day: string;
-  readonly value: string;
-  readonly isMuted?: boolean;
-}
-
-const DEFAULT_DETAILS: ProfileDetails = {
-  experience: '8+ ans',
-  certificate: 'Expert AutoPro',
-  brands: ['Toyota', 'Mercedes', 'BMW', 'Renault'],
-  hours: [
-    { day: 'Lundi - Vendredi', value: '08:00 - 18:00' },
-    { day: 'Samedi', value: '09:00 - 14:00' },
-    { day: 'Dimanche', value: 'Fermé', isMuted: true },
-  ],
-};
-
-const PROFILE_DETAILS: Readonly<Record<string, ProfileDetails>> = {
-  'mec-001': {
-    experience: '12+ ans',
-    certificate: 'Diagnostic Gold',
-    brands: ['Mercedes', 'Toyota', 'BMW', 'Range Rover'],
-    hours: DEFAULT_DETAILS.hours,
-  },
-  'mec-002': {
-    experience: '9+ ans',
-    certificate: 'Dépannage certifié',
-    brands: ['Toyota', 'Peugeot', 'Renault', 'Hyundai'],
-    hours: [
-      { day: 'Lundi - Vendredi', value: '07:30 - 20:00' },
-      { day: 'Samedi', value: '08:30 - 16:00' },
-      { day: 'Dimanche', value: 'Urgences uniquement' },
-    ],
-  },
-};
-
+/**
+ * Fiche publique d'un mécanicien.
+ *
+ * N'affiche **que des données réelles** renvoyées par `/api/mechanics/{id}` :
+ * nom, présentation, spécialités, années d'expérience, note et avis,
+ * disponibilité, validation. Les sections « marques », « horaires » et la photo
+ * d'atelier ont été retirées : le backend ne les fournit pas et le mécanicien
+ * ne peut pas les renseigner — les inventer serait du « faux fonctionnel ».
+ */
 @Component({
   selector: 'app-mechanic-profile',
   imports: [Button, Icon, RouterLink, Spinner],
@@ -69,12 +35,17 @@ export class MechanicProfilePage {
   protected readonly mechanic = computed(() => this.mechanicResource.value());
   protected readonly hasFailed = computed(() => this.mechanicResource.error() !== undefined);
 
-  protected readonly details = computed(() => {
-    const mechanic = this.mechanic();
-    return mechanic ? (PROFILE_DETAILS[mechanic.id] ?? DEFAULT_DETAILS) : DEFAULT_DETAILS;
+  protected readonly stars = [1, 2, 3, 4, 5] as const;
+
+  /** « 6 ans d'expérience », ou `null` si non renseigné. */
+  protected readonly experienceLabel = computed(() => {
+    const n = this.mechanic()?.experienceYears;
+    return n != null ? `${n} an${n > 1 ? 's' : ''} d'expérience` : null;
   });
 
-  protected readonly stars = [1, 2, 3, 4, 5] as const;
+  protected readonly initiale = computed(
+    () => this.mechanic()?.fullName.slice(0, 1).toUpperCase() ?? '?',
+  );
 
   protected specialtyIcon(specialty: string): IconName {
     const normalized = specialty
