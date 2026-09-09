@@ -33,6 +33,13 @@ interface BackendMechanic {
   validationStatus: 'PENDING' | 'APPROVED' | 'REJECTED' | null;
   latitude: number | null;
   longitude: number | null;
+  photoUrl: string | null;
+  openingHours: string | null;
+}
+
+interface BackendUpload {
+  secureUrl: string;
+  url: string;
 }
 
 const ROLE: Readonly<Record<string, ProfileRole>> = {
@@ -60,6 +67,8 @@ function toMechanic(m: BackendMechanic): MechanicProfile {
     isVerified: m.validationStatus === 'APPROVED',
     latitude: m.latitude,
     longitude: m.longitude,
+    photoUrl: m.photoUrl ?? null,
+    openingHours: m.openingHours ?? '',
   };
 }
 
@@ -108,8 +117,19 @@ export class HttpProfileRepository extends ProfileRepository {
         isAvailable: patch.isAvailable,
         latitude: patch.latitude,
         longitude: patch.longitude,
+        photoUrl: patch.photoUrl ?? '',
+        openingHours: patch.openingHours,
       })
       .pipe(switchMap(() => this.load()));
+  }
+
+  uploadPhoto(file: File): Observable<string> {
+    const form = new FormData();
+    form.append('file', file, file.name);
+    // Pas d'en-tête `Content-Type` : le navigateur pose la frontière multipart.
+    return this.http
+      .post<BackendUpload>(buildServiceUrl(this.config, 'files', 'profile-picture'), form)
+      .pipe(map((r) => r.secureUrl || r.url));
   }
 }
 

@@ -141,3 +141,49 @@
     }
   }
 }
+
+// --- Photo de profil (fiche mécanicien) ---
+.ap-profil__photo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.ap-profil__photo-preview,
+.ap-profil__photo-placeholder {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.ap-profil__photo-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #1d4ed8;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.ap-profil__photo-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.ap-profil__photo-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid #cfd4dc;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: #fff;
+}

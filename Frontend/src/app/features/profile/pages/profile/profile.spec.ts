@@ -23,6 +23,8 @@ const MECANO: Profile = {
     isVerified: true,
     latitude: null,
     longitude: null,
+    photoUrl: null,
+    openingHours: '',
   },
 };
 
@@ -32,6 +34,7 @@ class FakeRepo extends ProfileRepository {
   }
   accountPatches: AccountPatch[] = [];
   mechanicPatches: MechanicPatch[] = [];
+  uploads: File[] = [];
 
   load(): Observable<Profile> {
     return of(this.profile);
@@ -43,6 +46,10 @@ class FakeRepo extends ProfileRepository {
   saveMechanic(patch: MechanicPatch): Observable<Profile> {
     this.mechanicPatches.push(patch);
     return of(this.profile);
+  }
+  uploadPhoto(file: File): Observable<string> {
+    this.uploads.push(file);
+    return of('https://res.cloudinary.com/x/photo.png');
   }
 }
 
@@ -115,5 +122,28 @@ describe('ProfilePage', () => {
 
     expect(repo.mechanicPatches[0].latitude).toBe(14.693);
     expect(repo.mechanicPatches[0].longitude).toBe(-17.444);
+  });
+
+  it('téléverse une photo puis l’enregistre avec la fiche', async () => {
+    const repo = new FakeRepo(MECANO);
+    const fixture = await render(repo);
+
+    const input = hote(fixture).querySelector<HTMLInputElement>('input[type="file"]')!;
+    const file = new File(['x'], 'photo.png', { type: 'image/png' });
+    Object.defineProperty(input, 'files', { value: [file] });
+    input.dispatchEvent(new Event('change'));
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(repo.uploads).toEqual([file]);
+    expect(hote(fixture).querySelector('img.ap-profil__photo-preview')?.getAttribute('src')).toContain(
+      'cloudinary',
+    );
+
+    bouton(fixture, 'Enregistrer la fiche').click();
+    await fixture.whenStable();
+
+    expect(repo.mechanicPatches[0].photoUrl).toBe('https://res.cloudinary.com/x/photo.png');
+    expect(repo.mechanicPatches[0].openingHours).toBe('');
   });
 });

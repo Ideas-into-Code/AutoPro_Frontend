@@ -22,11 +22,15 @@ export interface Mechanic {
   workshopName: string;
   phone: string;
   email: string;
+  /** Photo de profil, ou `''` si le mécanicien n'en a pas mis. */
   avatarUrl: string;
   specialties: string[];
 
   /** Années d'expérience déclarées, ou `null` si non renseignées. */
   experienceYears: number | null;
+
+  /** Horaires d'ouverture en texte libre, ou `''`. */
+  openingHours: string;
 
   rating: number;
   reviewCount: number;

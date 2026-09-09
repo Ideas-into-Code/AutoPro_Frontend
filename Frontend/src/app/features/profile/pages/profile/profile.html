@@ -59,6 +59,34 @@
           </p>
         }
 
+        <!-- Photo de profil -->
+        <div class="ap-profil__photo">
+          @if (photoUrl(); as url) {
+            <img class="ap-profil__photo-preview" [src]="url" alt="Votre photo de profil" />
+          } @else {
+            <span class="ap-profil__photo-placeholder" aria-hidden="true">
+              {{ (compteForm.controls.firstName.value || '?').slice(0, 1) }}
+            </span>
+          }
+          <div class="ap-profil__photo-actions">
+            <label class="ap-profil__photo-btn">
+              {{ photoState() === 'uploading' ? 'Envoi…' : (photoUrl() ? 'Changer la photo' : 'Ajouter une photo') }}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                hidden
+                (change)="choisirPhoto($event)"
+              />
+            </label>
+            @if (photoUrl()) {
+              <button appButton variant="ghost" type="button" (click)="retirerPhoto()">Retirer</button>
+            }
+            @if (photoState() === 'error') {
+              <span class="ap-profil__ko" role="alert">Le téléversement a échoué. Réessayez.</span>
+            }
+          </div>
+        </div>
+
         <div class="ap-profil__grille">
           <label>
             Spécialité
@@ -73,6 +101,15 @@
         <label class="ap-profil__bloc">
           Présentation
           <textarea formControlName="bio" rows="3" placeholder="Décrivez votre atelier, vos prestations…"></textarea>
+        </label>
+
+        <label class="ap-profil__bloc">
+          Horaires d'ouverture
+          <input
+            formControlName="openingHours"
+            placeholder="Lun–Ven 8h–18h · Sam 9h–14h · Dim fermé"
+          />
+          <small>Texte libre, affiché sur votre fiche publique.</small>
         </label>
 
         <label class="ap-profil__switch">
