@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { InterventionRequest } from '../models/request.model';
+import { CancellationReason, InterventionRequest } from '../models/request.model';
 import { InterventionRequestDraft } from '../models/request-draft.model';
 
 /**
@@ -23,6 +23,9 @@ export abstract class RequestRepository {
   /** Une demande par son identifiant. */
   abstract findById(id: string): Observable<InterventionRequest>;
 
-  /** Annule une demande. Seul le client propriétaire peut le faire. */
-  abstract cancel(id: string): Observable<InterventionRequest>;
+  /**
+   * Annule une demande. Seul le client propriétaire peut le faire, et il doit
+   * indiquer un motif choisi dans la liste.
+   */
+  abstract cancel(id: string, reason: CancellationReason): Observable<InterventionRequest>;
 }

@@ -15,6 +15,17 @@ export type MechanicRequestStatus =
 
 export type MechanicPaymentStatus = 'en_attente' | 'encaisse' | 'annule';
 
+/** Motifs d'annulation, alignés sur l'enum backend `CancellationReason`. */
+export const CANCELLATION_REASON_LABELS: Readonly<Record<string, string>> = {
+  NO_LONGER_NEEDED: "Le client n'a plus besoin d'aide",
+  FOUND_ANOTHER_SOLUTION: 'Le client a trouvé une autre solution',
+  MECHANIC_TOO_SLOW: 'Intervention jugée trop lente',
+  PRICE_TOO_HIGH: 'Prix jugé trop élevé',
+  CREATED_BY_MISTAKE: 'Demande créée par erreur',
+  MECHANIC_UNAVAILABLE: 'Mécanicien indisponible',
+  OTHER: 'Autre raison',
+};
+
 export interface MechanicRequest {
   readonly id: string;
   readonly clientId: string;
@@ -25,6 +36,12 @@ export interface MechanicRequest {
   readonly address: string;
   readonly isEmergency: boolean;
   readonly status: MechanicRequestStatus;
+
+  /** Photos jointes par le client. */
+  readonly photoUrls: readonly string[];
+
+  /** Motif d'annulation, présent uniquement si `status === 'annulee'`. */
+  readonly cancellationReason: string | null;
 
   /** Prix convenu, `null` tant que le mécanicien ne l'a pas fixé. */
   readonly priceXOF: number | null;

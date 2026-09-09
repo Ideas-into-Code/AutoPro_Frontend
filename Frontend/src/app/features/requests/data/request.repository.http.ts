@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, map, switchMap } from 'rxjs';
 
-import { API_CONFIG, buildServiceUrl } from '@core';
-import { InterventionRequest } from '../models/request.model';
+import { API_CONFIG, ImageUploadService, buildServiceUrl } from '@core';
+import { CancellationReason, InterventionRequest } from '../models/request.model';
 import { InterventionRequestDraft } from '../models/request-draft.model';
 import {
   BackendServiceRequest,
@@ -15,22 +15,28 @@ import { RequestRepository } from './request.repository';
 /**
  * Demandes d'intervention contre le backend AutoPro (`/api/service-requests`).
  *
- * L'API est un monolithe : pas de microservice « requests » séparé. Les photos
- * ne sont pas encore envoyées ici (upload dédié à venir, cf. `FileUpload`) —
- * la création se fait en JSON.
+ * Les photos jointes sont d'abord téléversées (`POST /api/files/image`), puis
+ * leurs URLs partent avec la demande en JSON.
  */
 export class HttpRequestRepository extends RequestRepository {
   private readonly http = inject(HttpClient);
   private readonly config = inject(API_CONFIG);
+  private readonly images = inject(ImageUploadService);
 
   private url(path = ''): string {
     return buildServiceUrl(this.config, 'requests', path);
   }
 
   create(draft: InterventionRequestDraft): Observable<InterventionRequest> {
-    return this.http
-      .post<BackendServiceRequest>(this.url(), toCreatePayload(draft))
-      .pipe(map(toInterventionRequest));
+    return this.images.uploadAll(draft.photos).pipe(
+      switchMap((photoUrls) =>
+        this.http.post<BackendServiceRequest>(this.url(), {
+          ...toCreatePayload(draft),
+          ...(photoUrls.length > 0 ? { photoUrls } : {}),
+        }),
+      ),
+      map(toInterventionRequest),
+    );
   }
 
   list(): Observable<readonly InterventionRequest[]> {
@@ -45,9 +51,12 @@ export class HttpRequestRepository extends RequestRepository {
       .pipe(map(toInterventionRequest));
   }
 
-  cancel(id: string): Observable<InterventionRequest> {
+  cancel(id: string, reason: CancellationReason): Observable<InterventionRequest> {
     return this.http
-      .patch<BackendServiceRequest>(this.url(`${id}/status`), { status: 'CANCELLED' })
+      .patch<BackendServiceRequest>(this.url(`${id}/status`), {
+        status: 'CANCELLED',
+        cancellationReason: reason,
+      })
       .pipe(map(toInterventionRequest));
   }
 }
