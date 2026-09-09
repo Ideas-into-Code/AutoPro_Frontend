@@ -56,6 +56,13 @@
     </div>
   </app-header>
 
+  @if (enRoute()) {
+    <p class="ap-mecano-shell__tracking" role="status">
+      <span class="ap-mecano-shell__tracking-dot" aria-hidden="true"></span>
+      Partage de position activé — le client suit votre trajet en direct.
+    </p>
+  }
+
   <router-outlet />
 
   <!--

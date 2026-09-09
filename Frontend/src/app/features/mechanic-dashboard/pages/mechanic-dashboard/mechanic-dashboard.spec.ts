@@ -46,6 +46,9 @@ class DepotDeTest extends MechanicDashboardRepository {
 class DisponibiliteDeTest extends MechanicAvailabilityRepository {
   dernierEnvoi: boolean | null = null;
 
+  /** Erreur à lever à la place d'une panne réseau (ex. 403 profil non validé). */
+  erreurMetier: unknown = null;
+
   constructor(
     private enLigne: boolean,
     private readonly echoue = false,
@@ -60,6 +63,9 @@ class DisponibiliteDeTest extends MechanicAvailabilityRepository {
   update(isOnline: boolean): Observable<Availability> {
     this.dernierEnvoi = isOnline;
 
+    if (this.erreurMetier) {
+      return throwError(() => this.erreurMetier);
+    }
     if (this.echoue) {
       return throwError(() => new Error('réseau indisponible'));
     }
@@ -213,5 +219,20 @@ describe('MechanicDashboardPage', () => {
     await rendre({ demande: null });
 
     expect(popupOuverte()).toBe(false);
+  });
+
+  it('affiche le message du backend quand le profil n’est pas validé (403)', async () => {
+    await rendre({ enLigne: false });
+    disponibilite.erreurMetier = {
+      kind: 'forbidden',
+      status: 403,
+      message: 'Votre profil doit être validé par un administrateur avant de recevoir des demandes',
+    };
+
+    await basculer(true);
+
+    expect(hote().querySelector('[role="alert"]')?.textContent).toContain(
+      'validé par un administrateur',
+    );
   });
 });
