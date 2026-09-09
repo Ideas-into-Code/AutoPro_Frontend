@@ -63,17 +63,17 @@ export class AuthService {
 
   /** Inscription d'un client ou d'un mécanicien. */
   register(input: {
-    fullName: string;
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
     phone?: string;
     role: 'client' | 'mecanicien';
     workshopName?: string;
   }): Observable<AuthResponse> {
-    const [firstName, ...rest] = input.fullName.trim().split(/\s+/);
     const payload: SignUpPayload = {
-      firstName: firstName ?? input.fullName,
-      lastName: rest.join(' ') || firstName || '-',
+      firstName: input.firstName.trim(),
+      lastName: input.lastName.trim(),
       email: input.email.trim().toLowerCase(),
       password: input.password,
       phone: input.phone,
