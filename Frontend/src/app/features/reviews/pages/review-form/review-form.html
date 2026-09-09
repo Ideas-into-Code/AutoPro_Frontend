@@ -10,28 +10,30 @@
       <a appButton variant="primary" routerLink="/accueil">Retour à l'accueil</a>
     </section>
   } @else if (cibleResource.isLoading()) {
-    <p class="ap-review__state"><app-spinner label="Chargement de l'intervention" /></p>
+    <p class="ap-review__state"><app-spinner label="Chargement du mécanicien" /></p>
   } @else if (chargementFailed()) {
     <div class="ap-review__error" role="alert">
-      <p>L'intervention à noter n'a pas pu être chargée.</p>
+      <p>Le mécanicien à noter n'a pas pu être chargé.</p>
       <button appButton type="button" variant="secondary" size="sm" (click)="reessayerChargement()">
         Réessayer
       </button>
     </div>
-  } @else if (cibleResource.value(); as intervention) {
+  } @else if (cibleResource.value(); as mecanicien) {
     <header class="ap-review__intro">
-      <app-avatar [name]="intervention.mechanicName" size="lg" />
+      <app-avatar [name]="mecanicien.mechanicName" size="lg" />
 
       <h1 class="ap-review__title">Comment s'est passée l'intervention ?</h1>
 
       <p class="ap-review__lead">
         Notez votre expérience avec
-        <strong>{{ intervention.mechanicName }}</strong>
-        pour {{ intervention.serviceLabel | lowercase }}.
+        <strong>{{ mecanicien.mechanicName }}</strong><!--
+        -->@if (mecanicien.mechanicSpecialty) {<!--
+          --> ({{ mecanicien.mechanicSpecialty | lowercase }})<!--
+        -->}.
       </p>
     </header>
 
-    <!-- Tâche 1 — la note -->
+    <!-- La note -->
     <section class="ap-review__card">
       <p class="ap-review__hint">Touchez pour noter</p>
 
@@ -44,7 +46,7 @@
       />
     </section>
 
-    <!-- Tâche 1 (suite) — le commentaire -->
+    <!-- Le commentaire -->
     <section class="ap-review__block">
       <label class="ap-review__label" for="ap-review-comment">Votre commentaire</label>
 
@@ -59,25 +61,10 @@
           (input)="saisirCommentaire($any($event.target).value)"
         ></textarea>
 
-        <!--
-          Le compteur est annoncé poliment : quelqu'un qui dicte son texte doit
-          savoir qu'il approche de la limite, sans être interrompu à chaque
-          caractère.
-        -->
         <p class="ap-review__counter" aria-live="polite">{{ caracteres() }}/{{ commentaireMax }}</p>
       </div>
 
       <p class="ap-review__optional">Facultatif — la note seule suffit.</p>
-    </section>
-
-    <!-- Tâche 2 — les photos en preuve -->
-    <section class="ap-review__block">
-      <div class="ap-review__block-head">
-        <h2 class="ap-review__label">Preuve du travail</h2>
-        <span class="ap-review__optional">Facultatif</span>
-      </div>
-
-      <app-photo-upload [maxPhotos]="3" (photosChange)="changerPhotos($event)" />
     </section>
 
     @if (erreur(); as message) {
@@ -98,7 +85,8 @@
     </button>
 
     <p class="ap-review__legal">
-      Votre avis est public et signé de votre prénom. Il ne peut plus être modifié une fois envoyé.
+      Votre avis est public et signé de votre prénom. Un seul avis par mécanicien,
+      et il ne peut plus être modifié une fois envoyé.
     </p>
   }
 </div>

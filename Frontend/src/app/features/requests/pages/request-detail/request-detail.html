@@ -60,6 +60,17 @@
       </dd>
     </dl>
 
+    @if (d.status === 'terminee' && d.mechanicId) {
+      <a
+        appButton
+        variant="primary"
+        [routerLink]="['/avis/nouveau']"
+        [queryParams]="{ mecanicien: d.mechanicId }"
+      >
+        Noter {{ d.mechanicName || 'le mécanicien' }}
+      </a>
+    }
+
     @if (annulable()) {
       @if (erreurAnnulation()) {
         <p class="ap-req-detail__error" role="alert">{{ erreurAnnulation() }}</p>
