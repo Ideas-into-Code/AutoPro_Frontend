@@ -7,16 +7,16 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { take } from 'rxjs';
 
-import { PositionProvider } from '@core';
+import { NearbyMechanic, NearbyMechanicRepository, PositionProvider } from '@core';
 import { InteractiveMapComponent, InteractiveMapMarker } from '@shared/ui';
 
-import { MOCK_MAP_MECHANICS } from '../../data/mock-map-mechanics.data';
-import { MapCoordinates, MapMechanic } from '../../models/map-mechanic.model';
+import { MapCoordinates, MapMechanic, toMapMechanic } from '../../models/map-mechanic.model';
 
-export type FilterChip = 'near_me' | 'rating' | 'price' | 'diagnostic' | 'open_now';
+export type FilterChip = 'near_me' | 'rating' | 'diagnostic' | 'open_now';
 
 type LocationStatus = 'idle' | 'loading' | 'ready' | 'failed';
 
@@ -25,6 +25,9 @@ const DAKAR_CENTER: MapCoordinates = {
   longitude: -17.4441,
 };
 const DAKAR_LOCATION_RADIUS_KM = 80;
+
+/** Rayon de recherche autour du point courant. Large : Dakar est étendue. */
+const SEARCH_RADIUS_KM = 50;
 
 @Component({
   selector: 'app-interactive-map-page',
@@ -36,23 +39,48 @@ const DAKAR_LOCATION_RADIUS_KM = 80;
 })
 export class InteractiveMapPage implements OnInit {
   private readonly positions = inject(PositionProvider);
-
-  protected readonly allMechanics = signal<readonly MapMechanic[]>(MOCK_MAP_MECHANICS);
+  private readonly nearby = inject(NearbyMechanicRepository);
 
   protected readonly searchQuery = signal('');
   protected readonly activeFilter = signal<FilterChip | null>('near_me');
-  protected readonly userLocation = signal<MapCoordinates | null>(DAKAR_CENTER);
+  protected readonly userLocation = signal<MapCoordinates>(DAKAR_CENTER);
   protected readonly locationStatus = signal<LocationStatus>('idle');
 
   protected readonly isBottomSheetOpen = signal(false);
   protected readonly selectedMechanicId = signal<string | null>(null);
 
+  /**
+   * Mécaniciens réellement autour du point courant (`GET /api/mechanics/nearby`).
+   * `onlyAvailable: false` : on montre aussi les indisponibles, la carte les
+   * signale d'un point gris — les masquer donnerait une carte vide aux heures
+   * creuses.
+   */
+  protected readonly mechanicsResource = rxResource<readonly NearbyMechanic[], MapCoordinates>({
+    params: () => this.userLocation(),
+    stream: ({ params }) =>
+      this.nearby.findNearby({
+        latitude: params.latitude,
+        longitude: params.longitude,
+        radiusKm: SEARCH_RADIUS_KM,
+        onlyAvailable: false,
+      }),
+    defaultValue: [],
+  });
+
+  protected readonly allMechanics = computed<readonly MapMechanic[]>(() =>
+    this.mechanicsResource.value().map(toMapMechanic),
+  );
+
+  protected readonly chargementEnCours = computed(() => this.mechanicsResource.isLoading());
+  protected readonly chargementFailed = computed(
+    () => this.mechanicsResource.error() !== undefined,
+  );
+
   protected readonly filterChips: readonly { id: FilterChip; label: string; icon: string }[] = [
-    { id: 'near_me',    label: 'Près de moi',  icon: 'near_me' },
-    { id: 'rating',     label: 'Note 4.8+',    icon: 'star' },
-    { id: 'price',      label: 'Prix modéré',  icon: 'payments' },
-    { id: 'diagnostic', label: 'Diagnostic',   icon: 'build' },
-    { id: 'open_now',   label: 'Disponible',   icon: 'schedule' },
+    { id: 'near_me',    label: 'Près de moi', icon: 'near_me' },
+    { id: 'rating',     label: 'Note 4.5+',   icon: 'star' },
+    { id: 'diagnostic', label: 'Diagnostic',  icon: 'build' },
+    { id: 'open_now',   label: 'Disponible',  icon: 'schedule' },
   ];
 
   protected readonly filteredMechanics = computed(() => {
@@ -64,8 +92,7 @@ export class InteractiveMapPage implements OnInit {
         (m) =>
           m.fullName.toLowerCase().includes(query) ||
           m.workshopName.toLowerCase().includes(query) ||
-          m.specialties.some((s) => s.toLowerCase().includes(query)) ||
-          m.address.toLowerCase().includes(query),
+          m.specialties.some((s) => s.toLowerCase().includes(query)),
       );
     }
 
@@ -75,10 +102,7 @@ export class InteractiveMapPage implements OnInit {
         list.sort((a, b) => a.distanceKm - b.distanceKm);
         break;
       case 'rating':
-        list = list.filter((m) => m.rating >= 4.8);
-        break;
-      case 'price':
-        list = list.filter((m) => m.priceLevel <= 2);
+        list = list.filter((m) => m.rating >= 4.5);
         break;
       case 'diagnostic':
         list = list.filter((m) =>
@@ -101,15 +125,17 @@ export class InteractiveMapPage implements OnInit {
   });
 
   protected readonly mapMarkers = computed<readonly InteractiveMapMarker[]>(() =>
-    this.filteredMechanics().map((mechanic) => ({
-      id: mechanic.id,
-	      title: mechanic.workshopName || mechanic.fullName,
-	      subtitle: mechanic.specialties[0],
-	      ratingLabel: `${mechanic.rating.toFixed(1)} etoiles`,
-	      href: `/mecaniciens/${mechanic.profileId}`,
-	      coordinates: mechanic.location,
-	    })),
-	  );
+    this.filteredMechanics()
+      .filter((mechanic) => mechanic.location.latitude !== 0 || mechanic.location.longitude !== 0)
+      .map((mechanic) => ({
+        id: mechanic.id,
+        title: mechanic.workshopName || mechanic.fullName,
+        subtitle: mechanic.specialties[0],
+        ratingLabel: `${mechanic.rating.toFixed(1)} etoiles`,
+        href: `/mecaniciens/${mechanic.profileId}`,
+        coordinates: mechanic.location,
+      })),
+  );
 
   ngOnInit(): void {
     this.refreshLocation();
@@ -155,6 +181,10 @@ export class InteractiveMapPage implements OnInit {
           this.locationStatus.set('failed');
         },
       });
+  }
+
+  reessayer(): void {
+    this.mechanicsResource.reload();
   }
 
   toggleBottomSheet(): void {

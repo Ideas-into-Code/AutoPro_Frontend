@@ -115,6 +115,18 @@
 
       <!-- Liste des cartes -->
       <div class="ap-map-page__list" role="list">
+        @if (chargementEnCours()) {
+          <div class="ap-map-page__empty">
+            <span class="material-symbols-outlined">progress_activity</span>
+            <p>Recherche des mécaniciens autour de vous…</p>
+          </div>
+        } @else if (chargementFailed()) {
+          <div class="ap-map-page__empty">
+            <span class="material-symbols-outlined">wifi_off</span>
+            <p>La recherche a échoué.</p>
+            <button type="button" class="ap-map-page__chip" (click)="reessayer()">Réessayer</button>
+          </div>
+        } @else {
         @for (mec of filteredMechanics(); track mec.id) {
           <article
             class="ap-map-page__card"
@@ -174,7 +186,7 @@
                 <span class="ap-map-page__specialties">{{ mec.specialties.join(' · ') }}</span>
               </button>
 
-              <!-- Distance + horaire -->
+              <!-- Distance + disponibilité -->
               <div class="ap-map-page__card-meta">
                 <span class="ap-map-page__meta-item">
                   <span class="material-symbols-outlined">near_me</span>
@@ -183,7 +195,7 @@
                 <span class="ap-map-page__meta-sep" aria-hidden="true">·</span>
                 <span class="ap-map-page__meta-item ap-map-page__meta-hours">
                   <span class="material-symbols-outlined">schedule</span>
-                  {{ mec.opensAt }}
+                  {{ mec.isAvailable ? 'Disponible maintenant' : 'Indisponible' }}
                 </span>
               </div>
             </div>
@@ -200,8 +212,9 @@
         } @empty {
           <div class="ap-map-page__empty">
             <span class="material-symbols-outlined">search_off</span>
-            <p>Aucun mécanicien ne correspond à cette recherche.</p>
+            <p>Aucun mécanicien dans ce périmètre pour l'instant.</p>
           </div>
+        }
         }
       </div>
     </div>
