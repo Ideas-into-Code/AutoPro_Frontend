@@ -65,6 +65,18 @@
       }
     </dl>
 
+    @if (d.mechanicUserId && d.status !== 'en_attente' && d.status !== 'annulee') {
+      <a
+        appButton
+        variant="primary"
+        class="ap-req-detail__contact"
+        [routerLink]="['/messages']"
+        [queryParams]="{ peer: d.mechanicUserId }"
+      >
+        Contacter {{ d.mechanicName || 'le mécanicien' }} par message
+      </a>
+    }
+
     @if (d.photoUrls.length > 0) {
       <section class="ap-req-detail__photos" aria-label="Photos jointes">
         @for (url of d.photoUrls; track url) {
@@ -76,6 +88,10 @@
     }
 
     @if (suitLeMecanicien() && d.mechanicId) {
+      <p class="ap-req-detail__track-intro">
+        Votre mécanicien est en route. Suivez sa progression ci-dessous — vous
+        pouvez le joindre à tout moment par message.
+      </p>
       <app-live-tracking-card
         [mechanicId]="d.mechanicId"
         [mechanicName]="d.mechanicName"

@@ -34,6 +34,11 @@ export interface MechanicRequest {
   readonly problemLabel: string;
   readonly description: string;
   readonly address: string;
+
+  /** Position du client, géolocalisée à la création. `null` si non fournie. */
+  readonly latitude: number | null;
+  readonly longitude: number | null;
+
   readonly isEmergency: boolean;
   readonly status: MechanicRequestStatus;
 

@@ -1,0 +1,32 @@
+.ap-mmap {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 3rem;
+
+  &__title {
+    margin: 0 0 0.75rem;
+    font-size: 1.3rem;
+  }
+
+  &__lead,
+  &__empty {
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+    color: #1f2933;
+  }
+
+  &__empty {
+    padding: 0.9rem 1rem;
+    background: #f4f6f8;
+    border-radius: 10px;
+    color: #4b5563;
+  }
+
+  &__link {
+    display: inline-block;
+    margin-top: 0.25rem;
+    font-size: 0.9rem;
+    color: #1d76db;
+    text-decoration: none;
+  }
+}

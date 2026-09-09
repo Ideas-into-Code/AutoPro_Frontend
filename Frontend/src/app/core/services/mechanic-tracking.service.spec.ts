@@ -71,6 +71,14 @@ describe('MechanicTrackingService', () => {
     http.expectOne('/api/mechanics/9').flush({ latitude: null, longitude: null });
     expect(pos).toBeNull();
   });
+
+  it('watchOwnPosition ne lève jamais d’erreur et se souscrit proprement', () => {
+    let erreur: unknown = null;
+    const sub = service.watchOwnPosition().subscribe({ error: (e) => (erreur = e) });
+    expect(erreur).toBeNull();
+    // Le désabonnement doit couper le `watchPosition` sans jeter.
+    expect(() => sub.unsubscribe()).not.toThrow();
+  });
 });
 
 describe('haversineKm', () => {
