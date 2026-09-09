@@ -4,8 +4,10 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 
+import { ApiError } from '@core';
 import { Button, Spinner } from '@shared/ui';
 import {
+  CANCELLATION_REASON_LABELS,
   MECHANIC_REQUEST_STATUS_LABELS,
   MechanicRequest,
   actionsFor,
@@ -39,6 +41,7 @@ export class MechanicRequestDetailPage {
   });
 
   protected readonly STATUS_LABELS = MECHANIC_REQUEST_STATUS_LABELS;
+  protected readonly MOTIF_LABELS = CANCELLATION_REASON_LABELS;
 
   protected readonly busy = signal(false);
   protected readonly erreur = signal<string | null>(null);
@@ -49,6 +52,8 @@ export class MechanicRequestDetailPage {
     const d = this.demande.value();
     return d ? actionsFor(d) : [];
   });
+
+  protected readonly annulee = computed(() => this.demande.value()?.status === 'annulee');
 
   protected accepter(): void {
     this.run(this.repo.accept(this.id()));
@@ -98,9 +103,17 @@ export class MechanicRequestDetailPage {
         this.busy.set(false);
         this.demande.reload();
       },
-      error: (e: { message?: string }) => {
+      error: (e: ApiError) => {
         this.busy.set(false);
-        this.erreur.set(e?.message ?? "L'action a échoué. Réessayez.");
+        // La demande a pu changer entre-temps (le client l'a annulée pendant
+        // que le mécanicien avait l'écran ouvert) : on relit pour afficher le
+        // vrai statut et retirer les boutons devenus caduques.
+        this.demande.reload();
+        this.erreur.set(
+          e?.status === 400
+            ? "Cette demande n'est plus dans l'état attendu. Elle a peut-être été annulée par le client."
+            : (e?.message ?? "L'action a échoué. Réessayez."),
+        );
       },
     });
   }

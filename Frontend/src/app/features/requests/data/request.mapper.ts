@@ -1,4 +1,10 @@
-import { InterventionRequest, ProblemType, RequestPaymentStatus, RequestStatus } from '../models/request.model';
+import {
+  CancellationReason,
+  InterventionRequest,
+  ProblemType,
+  RequestPaymentStatus,
+  RequestStatus,
+} from '../models/request.model';
 import { InterventionRequestDraft } from '../models/request-draft.model';
 
 /**
@@ -30,6 +36,8 @@ export interface BackendServiceRequest {
   address: string | null;
   latitude: number | null;
   longitude: number | null;
+  photoUrls: string[] | null;
+  cancellationReason: CancellationReason | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -43,6 +51,7 @@ export interface CreateServiceRequestPayload {
   latitude?: number;
   longitude?: number;
   vehicleId?: number;
+  photoUrls?: string[];
 }
 
 const PROBLEM_TO_BACKEND: Record<ProblemType, BackendProblemType> = {
@@ -89,6 +98,8 @@ export function toInterventionRequest(b: BackendServiceRequest): InterventionReq
     locationAddress: b.address ?? '',
     latitude: b.latitude ?? undefined,
     longitude: b.longitude ?? undefined,
+    photoUrls: b.photoUrls ?? [],
+    cancellationReason: b.cancellationReason ?? undefined,
     mechanicId: b.mechanicId != null ? String(b.mechanicId) : undefined,
     mechanicUserId: b.mechanicUserId != null ? String(b.mechanicUserId) : undefined,
     mechanicName: b.mechanicName ?? undefined,

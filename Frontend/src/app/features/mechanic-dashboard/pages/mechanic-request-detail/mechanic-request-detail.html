@@ -30,6 +30,10 @@
       <dd>{{ d.description }}</dd>
       <dt>Lieu</dt>
       <dd>{{ d.address || 'Non précisé' }}</dd>
+      @if (d.status === 'annulee' && d.cancellationReason) {
+        <dt>Motif d'annulation</dt>
+        <dd>{{ MOTIF_LABELS[d.cancellationReason] || d.cancellationReason }}</dd>
+      }
       <dt>Prix convenu</dt>
       <dd>
         @if (d.priceXOF !== null) {
@@ -49,11 +53,33 @@
       </dd>
     </dl>
 
+    @if (d.photoUrls.length > 0) {
+      <section class="ap-mrd__photos" aria-label="Photos jointes par le client">
+        <h2 class="ap-mrd__photos-title">Photos du client</h2>
+        <div class="ap-mrd__photos-grid">
+          @for (url of d.photoUrls; track url) {
+            <a [href]="url" target="_blank" rel="noopener">
+              <img [src]="url" alt="Photo jointe par le client" />
+            </a>
+          }
+        </div>
+      </section>
+    }
+
+    @if (annulee()) {
+      <p class="ap-mrd__cancelled" role="status">
+        Cette demande a été annulée par le client.
+        @if (d.cancellationReason) {
+          Motif : {{ MOTIF_LABELS[d.cancellationReason] || d.cancellationReason }}.
+        }
+      </p>
+    }
+
     @if (erreur()) {
       <p class="ap-mrd__error" role="alert">{{ erreur() }}</p>
     }
 
-    @if (saisiePrix()) {
+    @if (saisiePrix() && !annulee()) {
       <div class="ap-mrd__price-form">
         <label for="ap-mrd-prix">Montant de l'intervention (FCFA)</label>
         <input
