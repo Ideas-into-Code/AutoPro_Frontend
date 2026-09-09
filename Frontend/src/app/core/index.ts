@@ -40,4 +40,9 @@ export {
 } from './services/position.provider';
 export type { Position, PositionErrorKind } from './services/position.provider';
 
+export { RealtimeSocketService } from './services/realtime-socket.service';
+export { MechanicTrackingService, haversineKm } from './services/mechanic-tracking.service';
+export type { BroadcastHandle } from './services/mechanic-tracking.service';
+export type { LiveLocation } from './models/live-location.model';
+
 export { provideCore } from './core.providers';

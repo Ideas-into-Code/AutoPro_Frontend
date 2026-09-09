@@ -1,9 +1,20 @@
-import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { DecimalPipe, isPlatformBrowser } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  PLATFORM_ID,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 
+import { BroadcastHandle, MechanicTrackingService } from '@core';
 import { Button, Spinner } from '@shared/ui';
 import {
   MECHANIC_REQUEST_STATUS_LABELS,
@@ -25,6 +36,8 @@ import { MechanicRequestRepository } from '../../data/mechanic-request.repositor
 })
 export class MechanicRequestDetailPage {
   private readonly repo = inject(MechanicRequestRepository);
+  private readonly tracking = inject(MechanicTrackingService);
+  private readonly platformId = inject(PLATFORM_ID);
 
   readonly id = input.required<string>();
 
@@ -36,6 +49,18 @@ export class MechanicRequestDetailPage {
 
   protected readonly STATUS_LABELS = MECHANIC_REQUEST_STATUS_LABELS;
 
+  /**
+   * Partage de position : actif tant que l'intervention qui m'est attribuée est
+   * acceptée ou en cours. Le client la voit avancer sur sa carte de suivi.
+   */
+  private broadcast: BroadcastHandle | null = null;
+  protected readonly partageActif = signal(false);
+
+  protected readonly enRoute = computed(() => {
+    const d = this.demande.value();
+    return !!d && d.assignedToMe && (d.status === 'acceptee' || d.status === 'en_cours');
+  });
+
   protected readonly busy = signal(false);
   protected readonly erreur = signal<string | null>(null);
   protected readonly saisiePrix = signal(false);
@@ -45,6 +70,33 @@ export class MechanicRequestDetailPage {
     const d = this.demande.value();
     return d ? actionsFor(d) : [];
   });
+
+  constructor() {
+    if (isPlatformBrowser(this.platformId)) {
+      effect(() => {
+        if (this.enRoute()) {
+          this.demarrerPartage();
+        } else {
+          this.arreterPartage();
+        }
+      });
+      inject(DestroyRef).onDestroy(() => this.arreterPartage());
+    }
+  }
+
+  private demarrerPartage(): void {
+    if (this.broadcast) {
+      return;
+    }
+    this.broadcast = this.tracking.startBroadcasting();
+    this.partageActif.set(true);
+  }
+
+  private arreterPartage(): void {
+    this.broadcast?.stop();
+    this.broadcast = null;
+    this.partageActif.set(false);
+  }
 
   protected accepter(): void {
     this.run(this.repo.accept(this.id()));
