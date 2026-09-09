@@ -3,7 +3,7 @@ import { Injectable, computed, effect, inject, signal } from '@angular/core';
 
 import { API_CONFIG, buildServiceUrl } from '@core';
 import { AuthService } from '@core/services/auth.service';
-import { ChatSocketService } from '@core/services/chat-socket.service';
+import { RealtimeSocketService } from '@core/services/realtime-socket.service';
 import { AppNotification, toAppNotification } from './notification.model';
 
 interface BackendNotification {
@@ -28,7 +28,7 @@ export class NotificationStore {
   private readonly http = inject(HttpClient);
   private readonly config = inject(API_CONFIG);
   private readonly auth = inject(AuthService);
-  private readonly socket = inject(ChatSocketService);
+  private readonly socket = inject(RealtimeSocketService);
 
   private readonly _items = signal<readonly AppNotification[]>([]);
   readonly items = this._items.asReadonly();
