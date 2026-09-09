@@ -49,13 +49,6 @@
       </dd>
     </dl>
 
-    @if (partageActif()) {
-      <p class="ap-mrd__tracking" role="status">
-        <span class="ap-mrd__tracking-dot" aria-hidden="true"></span>
-        Partage de votre position activé — le client suit votre trajet en direct.
-      </p>
-    }
-
     @if (erreur()) {
       <p class="ap-mrd__error" role="alert">{{ erreur() }}</p>
     }

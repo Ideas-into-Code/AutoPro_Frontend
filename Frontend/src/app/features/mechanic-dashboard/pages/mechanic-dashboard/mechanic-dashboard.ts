@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 
+import { ApiError } from '@core';
 import { Button, Spinner } from '@shared/ui';
 import {
   EarningsSummary,
@@ -121,14 +122,19 @@ export class MechanicDashboardPage {
         this.savingAvailability.set(false);
         this.bascule.set(confirmee.isOnline);
       },
-      error: () => {
+      error: (err: ApiError) => {
         this.savingAvailability.set(false);
         // Retour à l'état connu du serveur : laisser la bascule sur la
         // position choisie ferait croire au mécanicien qu'il est hors ligne
         // alors qu'il continue de recevoir des demandes.
         this.bascule.set(this.availabilityResource.value().isOnline);
+        // Le backend refuse la mise en ligne d'un profil non validé (403) avec
+        // un message clair — on le montre tel quel plutôt qu'un « vérifiez
+        // votre connexion » qui n'aide pas.
         this.availabilityError.set(
-          "Votre disponibilité n'a pas pu être enregistrée. Vérifiez votre connexion.",
+          err?.kind === 'forbidden' && err.message
+            ? err.message
+            : "Votre disponibilité n'a pas pu être enregistrée. Vérifiez votre connexion.",
         );
       },
     });

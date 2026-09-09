@@ -67,3 +67,28 @@
   align-items: center;
   gap: 0.35rem;
 }
+
+.ap-mecano-shell__tracking {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.55rem 1rem;
+  background: #ecfdf5;
+  border-bottom: 1px solid #a7f3d0;
+  font-size: 0.85rem;
+  color: #065f46;
+}
+
+.ap-mecano-shell__tracking-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  animation: ap-mecano-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes ap-mecano-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}

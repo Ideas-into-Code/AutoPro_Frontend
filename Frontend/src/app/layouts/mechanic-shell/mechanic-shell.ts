@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
+import { MechanicPresenceService } from '@core';
 import { AuthService } from '@core/services/auth.service';
 import { NotificationBell } from '@features/notifications/components/notification-bell/notification-bell';
 import { BottomNav, BottomNavItem, Footer, Header, PageShell } from '@shared/layout';
@@ -44,8 +45,20 @@ import { Avatar } from '@shared/ui';
 export class MechanicShell {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly presence = inject(MechanicPresenceService);
+
+  /** Partage de position actif tant qu'une intervention est en cours. */
+  protected readonly enRoute = this.presence.enRoute;
+
+  constructor() {
+    // Diffuse la position du mécanicien dès qu'une intervention lui est
+    // attribuée, quel que soit l'écran de l'espace — le client suit son trajet.
+    this.presence.start();
+    inject(DestroyRef).onDestroy(() => this.presence.stop());
+  }
 
   protected deconnexion(): void {
+    this.presence.stop();
     this.auth.logout();
     void this.router.navigate(['/compte/connexion']);
   }

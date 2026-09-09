@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 
+import { clientAreaGuard } from '@core/guards/auth.guard';
+
 /**
  * Table de routage racine.
  *
@@ -41,6 +43,16 @@ export const routes: Routes = [
   {
     path: 'compte',
     loadChildren: () => import('@features/auth/auth.routes').then((m) => m.authRoutes),
+  },
+
+  // --- Messagerie, hors coquille -------------------------------------------
+  // Partagée par le client et le mécanicien : elle ne peut vivre dans aucune
+  // des deux coquilles sans « faire basculer » l'autre persona dedans. Rendue
+  // en plein écran, avec son propre retour vers l'espace du rôle courant.
+  {
+    path: 'messages',
+    loadChildren: () =>
+      import('@features/messaging/messaging.routes').then((m) => m.messagingRoutes),
   },
 
   // --- Espace mécanicien, sous sa propre coquille ---------------------------
@@ -86,8 +98,12 @@ export const routes: Routes = [
   },
 
   // --- Espace client, sous la coquille commune ------------------------------
+  // `clientAreaGuard` : les pages publiques (accueil, carte, mécaniciens) restent
+  // ouvertes à tous, mais un mécanicien ou un admin connecté est renvoyé vers
+  // son propre espace plutôt que de se retrouver dans l'interface client.
   {
     path: '',
+    canMatch: [clientAreaGuard],
     loadComponent: () => import('./layouts/client-shell/client-shell').then((m) => m.ClientShell),
     children: [
       {
@@ -113,11 +129,6 @@ export const routes: Routes = [
         path: 'vehicules',
         loadChildren: () =>
           import('@features/vehicles/vehicles.routes').then((m) => m.vehiclesRoutes),
-      },
-      {
-        path: 'messages',
-        loadChildren: () =>
-          import('@features/messaging/messaging.routes').then((m) => m.messagingRoutes),
       },
       {
         path: 'profil',

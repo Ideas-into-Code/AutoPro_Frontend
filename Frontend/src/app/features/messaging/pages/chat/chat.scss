@@ -15,6 +15,14 @@
   border-radius: 12px;
   overflow: hidden;
 
+  &__back {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    color: #1d4ed8;
+    text-decoration: none;
+  }
+
   &__list {
     background: #fff;
     padding: 1rem;
@@ -122,6 +130,16 @@
       align-self: flex-end;
       background: #d7e6ff;
     }
+  }
+
+  &__msg-author {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #5b6672;
+  }
+
+  &__msg--mine &__msg-author {
+    color: #1d4ed8;
   }
 
   &__msg-body {
