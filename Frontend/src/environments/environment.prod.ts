@@ -1,16 +1,12 @@
 /**
  * Configuration de production (build Vercel).
  *
- * ⚠️ À RENSEIGNER APRÈS LE DÉPLOIEMENT DU BACKEND SUR RENDER :
- * remplacer la valeur de `apiBaseUrl` par l'URL publique de l'API Render,
- * suffixée par `/api`, puis committer et pousser (Vercel redéploie seul).
- *
- *   apiBaseUrl: 'https://autopro-backend-xxxx.onrender.com/api',
- *
- * L'URL WebSocket STOMP est déduite automatiquement
- * (`https://…/api` → `wss://…/ws`).
+ * `apiBaseUrl` pointe sur l'API Render (suffixe `/api`). L'URL WebSocket STOMP
+ * en est déduite automatiquement (`https://…/api` → `wss://…/ws`).
+ * Pour changer de backend : modifier cette ligne, committer, pousser — Vercel
+ * redéploie seul.
  */
 export const environment = {
   production: true,
-  apiBaseUrl: '/api',
+  apiBaseUrl: 'https://autopro-backend-62y8.onrender.com/api',
 };
