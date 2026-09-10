@@ -183,7 +183,11 @@ export class InteractiveMapComponent implements AfterViewInit, OnChanges, OnDest
   }
 
   private async initMap(): Promise<void> {
-    const leaflet = await import('leaflet');
+    // Leaflet est du CommonJS : selon l'optimisation du build, `import()` renvoie
+    // soit le module directement, soit `{ default: <module> }`. On normalise sur
+    // l'objet qui expose vraiment l'API (`.map`).
+    const mod = (await import('leaflet')) as unknown as typeof Leaflet & { default?: typeof Leaflet };
+    const leaflet: typeof Leaflet = typeof mod.map === 'function' ? mod : (mod.default as typeof Leaflet);
     this.leaflet = leaflet;
 
     const defaultCenter = this.userLocation() ?? { latitude: 14.6937, longitude: -17.4441 };
