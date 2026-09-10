@@ -66,6 +66,14 @@
       </section>
     }
 
+    @if (guidageVisible()) {
+      <app-client-location-card
+        [clientLocation]="lieuClient()"
+        [clientName]="d.clientName"
+        [address]="d.address"
+      />
+    }
+
     @if (annulee()) {
       <p class="ap-mrd__cancelled" role="status">
         Cette demande a été annulée par le client.

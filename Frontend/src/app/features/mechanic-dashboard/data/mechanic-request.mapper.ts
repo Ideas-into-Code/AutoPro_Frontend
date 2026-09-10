@@ -21,6 +21,8 @@ export interface BackendServiceRequest {
   price: number | null;
   payment: { status: BackendPayment } | null;
   address: string | null;
+  latitude: number | null;
+  longitude: number | null;
   photoUrls: string[] | null;
   cancellationReason: string | null;
   createdAt: string;
@@ -61,6 +63,8 @@ export function toMechanicRequest(
     problemLabel: PROBLEM_LABELS[b.problemType] ?? 'Autre problème',
     description: b.description,
     address: b.address ?? '',
+    latitude: b.latitude ?? null,
+    longitude: b.longitude ?? null,
     photoUrls: b.photoUrls ?? [],
     cancellationReason: b.cancellationReason ?? null,
     isEmergency: b.isEmergency,

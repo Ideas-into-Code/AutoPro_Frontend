@@ -1,0 +1,27 @@
+<section class="ap-mmap">
+  <h1 class="ap-mmap__title">Carte</h1>
+
+  @if (demandes.isLoading()) {
+    <app-spinner />
+  } @else if (active(); as d) {
+    <p class="ap-mmap__lead">
+      Intervention en cours pour <strong>{{ d.clientName }}</strong> — {{ d.problemLabel }}.
+    </p>
+
+    <app-client-location-card
+      [clientLocation]="lieuClient()"
+      [clientName]="d.clientName"
+      [address]="d.address"
+    />
+
+    <a class="ap-mmap__link" [routerLink]="['/mecanicien/demandes', d.id]">
+      Voir le détail de l'intervention
+    </a>
+  } @else {
+    <p class="ap-mmap__empty">
+      Aucune intervention en cours. Dès que vous acceptez une demande, vous
+      pourrez suivre ici le chemin jusqu'au client.
+    </p>
+    <a class="ap-mmap__link" routerLink="/mecanicien/demandes">Voir les demandes reçues</a>
+  }
+</section>

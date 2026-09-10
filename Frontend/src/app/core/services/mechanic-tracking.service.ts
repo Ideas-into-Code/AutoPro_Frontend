@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import { Observable, catchError, map, of } from 'rxjs';
+import { EMPTY, Observable, catchError, map, of } from 'rxjs';
 
 import { API_CONFIG, buildServiceUrl } from '../config/api.config';
 import { LiveLocation } from '../models/live-location.model';
@@ -74,6 +74,32 @@ export class MechanicTrackingService {
         ),
         catchError(() => of(null)),
       );
+  }
+
+  /**
+   * Position de l'appareil du mécanicien, rafraîchie à chaque relevé GPS.
+   *
+   * Sert à afficher, sur l'écran du mécanicien, où il se situe par rapport au
+   * client. N'émet rien pendant le rendu serveur ni sans géolocalisation :
+   * l'appelant garde alors sa dernière valeur connue (ou aucune).
+   */
+  watchOwnPosition(): Observable<{ latitude: number; longitude: number }> {
+    if (!isPlatformBrowser(this.platformId) || !('geolocation' in navigator)) {
+      return EMPTY;
+    }
+
+    return new Observable<{ latitude: number; longitude: number }>((subscriber) => {
+      const watchId = navigator.geolocation.watchPosition(
+        (pos) =>
+          subscriber.next({
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude,
+          }),
+        () => undefined,
+        { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 },
+      );
+      return () => navigator.geolocation.clearWatch(watchId);
+    });
   }
 
   /**

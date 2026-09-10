@@ -5,7 +5,8 @@ import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { ApiError } from '@core';
-import { Button, Spinner } from '@shared/ui';
+import { Button, MapCoordinates, Spinner } from '@shared/ui';
+import { ClientLocationCard } from '../../components/client-location-card/client-location-card';
 import {
   CANCELLATION_REASON_LABELS,
   MECHANIC_REQUEST_STATUS_LABELS,
@@ -24,7 +25,7 @@ import { MechanicRequestRepository } from '../../data/mechanic-request.repositor
  */
 @Component({
   selector: 'app-mechanic-request-detail',
-  imports: [RouterLink, DecimalPipe, Button, Spinner],
+  imports: [RouterLink, DecimalPipe, Button, Spinner, ClientLocationCard],
   templateUrl: './mechanic-request-detail.html',
   styleUrl: './mechanic-request-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,6 +55,21 @@ export class MechanicRequestDetailPage {
   });
 
   protected readonly annulee = computed(() => this.demande.value()?.status === 'annulee');
+
+  /** L'orientation vers le client n'a de sens qu'une fois l'intervention engagée. */
+  protected readonly guidageVisible = computed(() => {
+    const s = this.demande.value()?.status;
+    return s === 'acceptee' || s === 'en_cours';
+  });
+
+  /** Position du client, si elle a été géolocalisée à la création. */
+  protected readonly lieuClient = computed<MapCoordinates | null>(() => {
+    const d = this.demande.value();
+    if (d?.latitude == null || d?.longitude == null) {
+      return null;
+    }
+    return { latitude: d.latitude, longitude: d.longitude };
+  });
 
   protected accepter(): void {
     this.run(this.repo.accept(this.id()));
