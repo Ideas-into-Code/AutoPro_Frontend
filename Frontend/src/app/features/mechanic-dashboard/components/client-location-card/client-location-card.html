@@ -1,8 +1,13 @@
 <section class="ap-cloc">
   <header class="ap-cloc__head">
-    <h2 class="ap-cloc__title">Se rendre chez le client</h2>
+    <h2 class="ap-cloc__title">Trajet jusqu'au client</h2>
     @if (distanceKm() !== null) {
-      <span class="ap-cloc__distance" aria-live="polite">À environ {{ distanceKm() }} km</span>
+      <span class="ap-cloc__distance" aria-live="polite">
+        {{ distanceKm() }} km
+        @if (dureeMin() !== null) {
+          <span class="ap-cloc__eta">· env. {{ dureeMin() }} min</span>
+        }
+      </span>
     }
   </header>
 
@@ -11,6 +16,7 @@
       class="ap-cloc__map"
       [markers]="markers()"
       [userLocation]="maPosition()"
+      [routePath]="routePath()"
       [selectedMarkerId]="'client'"
     />
 
@@ -18,15 +24,18 @@
       <p class="ap-cloc__address">{{ address() }}</p>
     }
 
-    @if (itineraireUrl(); as url) {
-      <a class="ap-cloc__route" [href]="url" target="_blank" rel="noopener">
-        Ouvrir l'itinéraire dans une appli de navigation
-      </a>
-    }
+    <p class="ap-cloc__hint">
+      @if (routePath()) {
+        Suivez le tracé bleu jusqu'au client. La carte se met à jour au fur et à mesure de vos
+        déplacements.
+      } @else {
+        Activez la localisation de votre appareil pour voir le trajet se tracer sur la carte.
+      }
+    </p>
   } @else {
     <p class="ap-cloc__wait">
-      Le client n'a pas partagé sa position précise. Utilisez l'adresse indiquée
-      ci-dessus et appelez-le au besoin.
+      Le client n'a pas partagé sa position précise. Utilisez l'adresse indiquée ci-dessus et
+      appelez-le au besoin.
     </p>
   }
 </section>

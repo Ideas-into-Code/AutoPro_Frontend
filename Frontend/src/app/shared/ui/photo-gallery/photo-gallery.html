@@ -1,0 +1,51 @@
+<div class="ap-photo-gallery">
+  @for (url of photos(); track url; let i = $index) {
+    <button
+      type="button"
+      class="ap-photo-gallery__thumb"
+      (click)="open(i)"
+      [attr.aria-label]="'Agrandir la photo ' + (i + 1)"
+    >
+      <img [src]="url" [alt]="alt() + ' ' + (i + 1)" loading="lazy" decoding="async" />
+    </button>
+  }
+</div>
+
+@if (current(); as url) {
+  <div class="ap-photo-gallery__viewer" role="dialog" aria-modal="true" aria-label="Photo agrandie">
+    <button
+      type="button"
+      class="ap-photo-gallery__backdrop"
+      (click)="close()"
+      aria-label="Fermer la photo"
+    ></button>
+
+    <button type="button" class="ap-photo-gallery__close" (click)="close()" aria-label="Fermer">
+      &times;
+    </button>
+
+    @if (hasMultiple()) {
+      <button
+        type="button"
+        class="ap-photo-gallery__nav ap-photo-gallery__nav--prev"
+        (click)="prev($event)"
+        aria-label="Photo précédente"
+      >
+        &lsaquo;
+      </button>
+    }
+
+    <img class="ap-photo-gallery__full" [src]="url" [alt]="alt()" />
+
+    @if (hasMultiple()) {
+      <button
+        type="button"
+        class="ap-photo-gallery__nav ap-photo-gallery__nav--next"
+        (click)="next($event)"
+        aria-label="Photo suivante"
+      >
+        &rsaquo;
+      </button>
+    }
+  </div>
+}

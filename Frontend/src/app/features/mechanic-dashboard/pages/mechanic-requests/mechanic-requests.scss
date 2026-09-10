@@ -63,6 +63,12 @@
     border-color: #c5cdd6;
   }
 
+  // Le bloc texte doit pouvoir rétrécir sous la largeur de son contenu,
+  // sinon la description en `nowrap` déborde l'écran sur mobile.
+  > div:first-child {
+    min-width: 0;
+  }
+
   &__title {
     display: block;
     font-weight: 600;
@@ -80,18 +86,21 @@
     text-transform: uppercase;
   }
 
-  &__desc {
+  &__desc,
+  &__meta {
     display: block;
-    font-size: 0.875rem;
-    color: #3c4652;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  &__desc {
+    font-size: 0.875rem;
+    color: #3c4652;
     max-width: 46ch;
   }
 
   &__meta {
-    display: block;
     font-size: 0.8rem;
     color: #78838f;
   }

@@ -4,7 +4,9 @@
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 32rem;
+  // Garde-fou anti-effondrement uniquement. Chaque usage impose sa hauteur
+  // réelle (carte plein écran, vignette de suivi 260 px, etc.).
+  min-height: 12rem;
 }
 
 .ap-interactive-map {

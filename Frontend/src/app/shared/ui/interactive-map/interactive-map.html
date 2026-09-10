@@ -24,6 +24,26 @@
     </div>
   </div>
 
+  @if (fallbackRoutePoints(); as routePoints) {
+    <svg
+      class="ap-interactive-map__fallback-route"
+      [class.ap-interactive-map__fallback-route--hidden]="hasLoadedTiles()"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <polyline
+        [attr.points]="routePoints"
+        fill="none"
+        stroke="#1d4ed8"
+        stroke-width="3"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        vector-effect="non-scaling-stroke"
+      />
+    </svg>
+  }
+
   @for (point of fallbackMarkers(); track point.marker.id) {
     <div
       class="ap-interactive-map__fallback-marker"

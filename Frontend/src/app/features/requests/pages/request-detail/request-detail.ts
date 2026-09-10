@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { rxResource } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 
-import { Button, MapCoordinates, Spinner } from '@shared/ui';
+import { Button, MapCoordinates, PhotoGallery, Spinner } from '@shared/ui';
 import { LiveTrackingCard } from '../../components/live-tracking-card/live-tracking-card';
 import { PROBLEM_TYPE_LABELS } from '../../models/request-draft.model';
 import {
@@ -24,7 +24,7 @@ import { RequestRepository } from '../../data/request.repository';
  */
 @Component({
   selector: 'app-request-detail',
-  imports: [RouterLink, DecimalPipe, Button, Spinner, LiveTrackingCard],
+  imports: [RouterLink, DecimalPipe, Button, Spinner, LiveTrackingCard, PhotoGallery],
   templateUrl: './request-detail.html',
   styleUrl: './request-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

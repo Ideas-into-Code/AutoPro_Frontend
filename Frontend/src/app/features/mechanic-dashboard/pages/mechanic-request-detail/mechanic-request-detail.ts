@@ -5,7 +5,7 @@ import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { ApiError } from '@core';
-import { Button, MapCoordinates, Spinner } from '@shared/ui';
+import { Button, MapCoordinates, PhotoGallery, Spinner } from '@shared/ui';
 import { ClientLocationCard } from '../../components/client-location-card/client-location-card';
 import {
   CANCELLATION_REASON_LABELS,
@@ -25,7 +25,7 @@ import { MechanicRequestRepository } from '../../data/mechanic-request.repositor
  */
 @Component({
   selector: 'app-mechanic-request-detail',
-  imports: [RouterLink, DecimalPipe, Button, Spinner, ClientLocationCard],
+  imports: [RouterLink, DecimalPipe, Button, Spinner, ClientLocationCard, PhotoGallery],
   templateUrl: './mechanic-request-detail.html',
   styleUrl: './mechanic-request-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

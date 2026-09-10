@@ -19,6 +19,8 @@ export type { FormFieldType } from './form-field/form-field';
 export { Icon } from './icon/icon';
 export type { IconName, IconSize } from './icon/icon';
 
+export { PhotoGallery } from './photo-gallery/photo-gallery';
+
 export { PhotoUpload } from './photo-upload/photo-upload';
 
 export { RatingStars } from './rating-stars/rating-stars';

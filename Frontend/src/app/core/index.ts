@@ -43,6 +43,8 @@ export type { Position, PositionErrorKind } from './services/position.provider';
 export { RealtimeSocketService } from './services/realtime-socket.service';
 export { MechanicTrackingService, haversineKm } from './services/mechanic-tracking.service';
 export type { BroadcastHandle } from './services/mechanic-tracking.service';
+export { RoutingService } from './services/routing.service';
+export type { RoadRoute } from './services/routing.service';
 export { MechanicPresenceService } from './services/mechanic-presence.service';
 export { ImageUploadService } from './services/image-upload.service';
 export type { LiveLocation } from './models/live-location.model';

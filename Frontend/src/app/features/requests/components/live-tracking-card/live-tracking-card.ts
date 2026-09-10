@@ -60,6 +60,13 @@ export class LiveTrackingCard implements OnInit {
     return Math.round(haversineKm(pos, client) * 10) / 10;
   });
 
+  /** Trajet direct entre le mécanicien et le client, tracé sur la carte. */
+  protected readonly routePath = computed<readonly MapCoordinates[] | null>(() => {
+    const pos = this.position();
+    const client = this.clientLocation();
+    return pos && client ? [pos, client] : null;
+  });
+
   protected readonly markers = computed<readonly InteractiveMapMarker[]>(() => {
     const pos = this.position();
     if (!pos) {
