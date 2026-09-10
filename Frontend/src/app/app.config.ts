@@ -1,5 +1,4 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideClientHydration } from '@angular/platform-browser';
 import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 
 import { environment } from '../environments/environment';
@@ -19,7 +18,6 @@ export const appConfig: ApplicationConfig = {
       // Restaure la position de défilement lors d'un retour arrière.
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
     ),
-    provideClientHydration(),
     // `gateway` vient de l'environnement : `/api` en dev (proxy), URL absolue
     // du backend Render en prod.
     provideCore({ ...DEFAULT_API_CONFIG, gateway: environment.apiBaseUrl }),

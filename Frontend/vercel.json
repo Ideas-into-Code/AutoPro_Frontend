@@ -1,4 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "angular"
+  "framework": "angular",
+  "outputDirectory": "dist/Frontend/browser",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }
