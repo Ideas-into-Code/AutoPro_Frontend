@@ -217,3 +217,19 @@
     font-weight: var(--ap-font-weight-medium);
   }
 }
+
+.ap-report__done-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-2);
+}
+
+.ap-report__hint {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 0.8rem;
+  color: #78838f;
+
+  a {
+    color: #1d76db;
+  }
+}

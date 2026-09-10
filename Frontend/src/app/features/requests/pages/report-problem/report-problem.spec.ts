@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
 
-import { Position, PositionError, PositionProvider } from '@core';
+import { Position, PositionError, PositionProvider, Vehicle, VehicleRepository } from '@core';
 import { InterventionRequest } from '../../models/request.model';
 import { InterventionRequestDraft } from '../../models/request-draft.model';
 import { RequestRepository } from '../../data/request.repository';
@@ -20,6 +20,33 @@ class DepotDeTest extends RequestRepository {
     this.dernierBrouillon = draft;
 
     return this.reponse();
+  }
+
+  list(): Observable<readonly InterventionRequest[]> {
+    return of([]);
+  }
+
+  findById(): Observable<InterventionRequest> {
+    return this.reponse();
+  }
+
+  cancel(): Observable<InterventionRequest> {
+    return this.reponse();
+  }
+}
+
+class DepotVehiculesDeTest extends VehicleRepository {
+  list(): Observable<readonly Vehicle[]> {
+    return of([]);
+  }
+  create(): Observable<Vehicle> {
+    return throwError(() => new Error('non utilisé'));
+  }
+  update(): Observable<Vehicle> {
+    return throwError(() => new Error('non utilisé'));
+  }
+  remove(): Observable<void> {
+    return of(undefined);
   }
 }
 
@@ -41,8 +68,11 @@ const ENREGISTREE: InterventionRequest = {
   problemType: 'batterie',
   description: 'La voiture ne démarre plus depuis ce matin.',
   status: 'en_attente',
-  estimatedPriceXOF: 15000,
+  isEmergency: false,
+  priceXOF: null,
+  paymentStatus: null,
   locationAddress: 'Les Almadies, Dakar',
+  photoUrls: [],
   createdAt: '2026-07-31T10:00:00Z',
   updatedAt: '2026-07-31T10:00:00Z',
 };
@@ -65,6 +95,7 @@ describe('ReportProblemPage', () => {
       providers: [
         provideRouter([]),
         { provide: RequestRepository, useValue: depot },
+        { provide: VehicleRepository, useClass: DepotVehiculesDeTest },
         {
           provide: PositionProvider,
           useValue: new PositionsDeTest(
@@ -205,14 +236,14 @@ describe('ReportProblemPage', () => {
     });
   });
 
-  it("affiche un accusé de réception avec le numéro et l'estimation", async () => {
+  it('affiche un accusé de réception avec le numéro de demande', async () => {
     await rendre({});
     await remplirValide();
     await soumettre();
 
     expect(hote().textContent).toContain('Votre demande est partie');
     expect(hote().textContent).toContain('req-2026-001');
-    expect(hote().textContent).toContain('15000');
+    expect(hote().textContent).toContain("En attente d'un mécanicien");
     expect(hote().querySelector('form')).toBeNull();
   });
 

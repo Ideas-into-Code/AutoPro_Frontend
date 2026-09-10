@@ -1,0 +1,94 @@
+@use 'index' as ds;
+
+// La barre, le pied de page et les proportions viennent de `PageShell`,
+// `Header` et `Footer`, exactement comme dans la coquille client. Seuls les
+// repères propres à cet espace sont décrits ici.
+
+// Indispensable : l'hôte d'un composant est `inline` par défaut. `PageShell`
+// s'appuie sur `min-height: 100dvh` pour pousser le pied de page en bas ;
+// dans une boîte en ligne, cette hauteur ne s'applique pas et le pied
+// disparaît sous le contenu.
+:host {
+  display: block;
+}
+
+// Sur mobile, la barre basse remplace le pied de page, et le contenu réserve
+// sa hauteur pour ne pas finir masqué dessous.
+@media (max-width: 47.999em) {
+  :host {
+    padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .ap-mecano-shell__footer-desktop {
+    display: none;
+  }
+}
+
+// Le lien de la page courante. Le soulignement double la couleur : un écart de
+// teinte seul serait invisible pour une partie des daltoniens.
+.ap-mecano-shell__link--active {
+  color: var(--ap-color-primary);
+  font-weight: var(--ap-font-weight-semibold);
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+}
+
+.ap-mecano-shell__account {
+  display: inline-flex;
+  text-decoration: none;
+  border-radius: var(--ap-radius-full);
+
+  @include ds.focus-ring;
+}
+
+.ap-mecano-shell__logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  .material-symbols-outlined {
+    font-size: 20px;
+  }
+}
+
+.ap-mecano-shell__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.ap-mecano-shell__tracking {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.55rem 1rem;
+  background: #ecfdf5;
+  border-bottom: 1px solid #a7f3d0;
+  font-size: 0.85rem;
+  color: #065f46;
+}
+
+.ap-mecano-shell__tracking-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  animation: ap-mecano-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes ap-mecano-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}

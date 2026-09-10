@@ -1,25 +1,58 @@
 import { Routes } from '@angular/router';
 
+import { roleGuard } from '@core/guards/auth.guard';
+
+import {
+  AccountDirectoryRepository,
+  AccountModerationRepository,
+  MechanicApprovalRepository,
+  SystemOverviewRepository,
+} from './data/admin-dashboard.repository';
+import {
+  HttpAccountDirectoryRepository,
+  HttpAccountModerationRepository,
+  HttpMechanicApprovalRepository,
+  HttpSystemOverviewRepository,
+} from './data/admin-dashboard.repository.http';
+
 /**
- * Routes du domaine « Back-office ».
- * Validation des comptes, modération, supervision.
- *
- * Structure attendue dans ce dossier (CONVENTIONS.md §1) :
- *   data/        dépôts d'accès au microservice « admin »
- *   models/      types propres au domaine
- *   components/  composants réutilisés dans cette feature uniquement
- *   pages/       composants routés, à déclarer ci-dessous
- *
- * À remplir par le ticket dédié.
+ * Routes du back-office : supervision, gestion des comptes, validation des
+ * mécaniciens.
  */
 export const adminRoutes: Routes = [
   {
     path: '',
-    // Écran d'attente en place du domaine, tant qu'aucun ticket ne l'a rempli.
-    // Sans lui, un tableau de routes vide n'affiche rien du tout : l'utilisateur
-    // se retrouve devant une zone blanche sans savoir si l'application a planté.
-    // À remplacer par les vraies routes, pas à conserver.
-    loadComponent: () => import('@shared/pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
-    data: { fonctionnalite: "Le back-office d'administration" },
+
+    // Back-office réservé aux administrateurs authentifiés.
+    canMatch: [roleGuard('admin')],
+
+    /**
+     * Dépôts du back-office, tous branchés sur `/api/admin/**` :
+     * indicateurs (`/stats`), comptes (`/users` + `/mechanics`), modération
+     * (`PATCH /users/{id}/status`), validation (`/mechanics/pending`,
+     * `PATCH /mechanics/{id}/validate`).
+     *
+     * Fournis sur la route et non globalement : seul ce domaine s'en sert, et
+     * le code du back-office reste hors du bundle initial.
+     *
+     * Quatre contrats, quatre classes — chacune sans état : c'est le backend
+     * qui fait autorité sur le statut d'un compte, et l'écran relit après
+     * chaque écriture.
+     */
+    providers: [
+      { provide: SystemOverviewRepository, useClass: HttpSystemOverviewRepository },
+      { provide: AccountDirectoryRepository, useClass: HttpAccountDirectoryRepository },
+      { provide: AccountModerationRepository, useClass: HttpAccountModerationRepository },
+      { provide: MechanicApprovalRepository, useClass: HttpMechanicApprovalRepository },
+    ],
+
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/admin-dashboard/admin-dashboard').then((m) => m.AdminDashboardPage),
+        title: 'Back-office — AutoPro',
+      },
+    ],
   },
 ];

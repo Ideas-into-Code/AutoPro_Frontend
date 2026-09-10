@@ -4,7 +4,8 @@ import { Router, RouterLink } from '@angular/router';
 
 import { ServiceCategory, ServiceCategoryRepository, emptyPage } from '@core';
 import { Button, Icon, IconName, SearchBar, Spinner } from '@shared/ui';
-import { MOCK_NEARBY_MECHANICS, MOCK_RECENT_REQUESTS } from '../../data/mock-home-highlights.data';
+import { HomeHighlightsRepository } from '../../data/home-highlights.repository';
+import { NearbyMechanic, RecentRequest } from '../../models/home-cards.model';
 import { MapPreview } from '../../components/map-preview/map-preview';
 import { NearbyMechanics } from '../../components/nearby-mechanics/nearby-mechanics';
 import { RecentRequests } from '../../components/recent-requests/recent-requests';
@@ -31,6 +32,7 @@ const ECRAN_SIGNALEMENT = '/demandes/signaler';
 export class HomePage {
   private readonly router = inject(Router);
   private readonly repository = inject(ServiceCategoryRepository);
+  private readonly highlights = inject(HomeHighlightsRepository);
 
   protected readonly ecranMecaniciens = ECRAN_MECANICIENS;
   protected readonly ecranSignalement = ECRAN_SIGNALEMENT;
@@ -43,10 +45,19 @@ export class HomePage {
   protected readonly categories = computed(() => this.categoriesResource.value().items);
   protected readonly hasFailed = computed(() => this.categoriesResource.error() !== undefined);
 
-  /** 3 premiers mécaniciens du mock comme "proches" */
-  protected readonly nearbyMechanics = MOCK_NEARBY_MECHANICS;
+  /** Mécaniciens disponibles autour de Dakar (`/api/mechanics/nearby`). */
+  protected readonly nearbyResource = rxResource<readonly NearbyMechanic[], unknown>({
+    stream: () => this.highlights.nearbyMechanics(),
+    defaultValue: [],
+  });
+  protected readonly nearbyMechanics = computed(() => this.nearbyResource.value());
 
-  protected readonly recentRequests = MOCK_RECENT_REQUESTS;
+  /** Dernières demandes du client connecté (vide si anonyme). */
+  protected readonly recentResource = rxResource<readonly RecentRequest[], unknown>({
+    stream: () => this.highlights.recentRequests(),
+    defaultValue: [],
+  });
+  protected readonly recentRequests = computed(() => this.recentResource.value());
 
   protected categoryIcon(slug: string): IconName {
     const map: Record<string, IconName> = {

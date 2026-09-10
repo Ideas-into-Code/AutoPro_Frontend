@@ -1,265 +1,256 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-
+import { Location, isPlatformBrowser } from '@angular/common';
 import {
-  CLIENT_PROFILE,
-  MECHANIC_PROFILE,
-  MOCK_CONVERSATIONS,
-} from '../../data/mock-conversations.data';
-import { ChatConversation, ChatMessage, ChatParticipant, ChatParticipantRole } from '../../models/chat.model';
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  PLATFORM_ID,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
+import { ApiError } from '@core';
+import { AuthService } from '@core/services/auth.service';
+import { Spinner } from '@shared/ui';
+import { Conversation, Message } from '../../data/messaging.model';
+import { HttpMessagingRepository, MessagingRepository } from '../../data/messaging.repository';
+
+/**
+ * Messagerie réelle : liste des conversations + fil de discussion, branchée sur
+ * `/api/chat` (historique) et STOMP `/topic/chat/{id}` (temps réel).
+ */
 @Component({
   selector: 'app-chat-page',
-  imports: [RouterLink],
+  imports: [Spinner],
+  providers: [{ provide: MessagingRepository, useClass: HttpMessagingRepository }],
   templateUrl: './chat.html',
   styleUrl: './chat.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChatPage {
+  private readonly repo = inject(MessagingRepository);
   private readonly route = inject(ActivatedRoute);
-  private readonly conversations = signal<readonly ChatConversation[]>(MOCK_CONVERSATIONS);
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
+  private readonly auth = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-  protected readonly roleOptions: readonly { role: ChatParticipantRole; label: string }[] = [
-    { role: 'client', label: 'Client' },
-    { role: 'mechanic', label: 'Atelier' },
-  ];
-  protected readonly quickReplies = ['Où êtes-vous ?', 'Combien de temps ?', 'Je confirme'];
+  /**
+   * La messagerie n'a pas de coquille : « Retour » ramène à la page d'où l'on
+   * vient. Si on a ouvert `/messages` directement (lien, rafraîchissement),
+   * il n'y a pas d'historique applicatif — on retombe sur l'accueil du rôle.
+   */
+  private readonly hasAppHistory = this.router.getCurrentNavigation()?.previousNavigation != null;
 
-  protected readonly currentUserRole = signal<ChatParticipantRole>(this.initialRole());
-  protected readonly searchTerm = signal('');
-  protected readonly selectedConversationId = signal(this.initialConversationId());
-  protected readonly draftMessage = signal('');
+  protected retourner(): void {
+    if (this.hasAppHistory) {
+      this.location.back();
+    } else {
+      void this.router.navigateByUrl(this.auth.homeRoute());
+    }
+  }
 
-  protected readonly currentUser = computed<ChatParticipant>(() =>
-    this.currentUserRole() === 'client' ? CLIENT_PROFILE : MECHANIC_PROFILE,
+  protected readonly conversations = signal<readonly Conversation[]>([]);
+  protected readonly loadingList = signal(true);
+  protected readonly listError = signal(false);
+  protected readonly ouvertureError = signal<string | null>(null);
+
+  protected readonly selectedId = signal<string | null>(null);
+  protected readonly messages = signal<readonly Message[]>([]);
+  protected readonly loadingThread = signal(false);
+  protected readonly draft = signal('');
+  protected readonly peerTyping = signal(false);
+
+  /**
+   * Sur téléphone, une seule colonne est visible à la fois : la liste des
+   * conversations ou le fil ouvert. Sur grand écran les deux cohabitent et ce
+   * drapeau est sans effet (CSS).
+   */
+  protected readonly mobileView = signal<'list' | 'thread'>('list');
+
+  protected readonly selected = computed(
+    () => this.conversations().find((c) => c.id === this.selectedId()) ?? null,
   );
 
-  protected readonly currentUserId = computed(() => this.currentUser().id);
+  private liveSub?: Subscription;
+  private typingSub?: Subscription;
+  private typingTimeout?: ReturnType<typeof setTimeout>;
+  private peerTypingTimeout?: ReturnType<typeof setTimeout>;
 
-  protected readonly visibleConversations = computed(() => {
-    const userId = this.currentUserId();
-    return this.conversations().filter(
-      (conversation) => conversation.client.id === userId || conversation.mechanic.id === userId,
-    );
-  });
-
-  protected readonly filteredConversations = computed(() => {
-    const term = this.normalize(this.searchTerm());
-    if (term === '') {
-      return this.visibleConversations();
+  constructor() {
+    // Toute la messagerie (REST + WebSocket) est strictement navigateur.
+    if (!this.isBrowser) {
+      this.loadingList.set(false);
+      return;
     }
 
-    return this.visibleConversations().filter((conversation) => {
-      const remote = this.remoteParticipant(conversation);
-      const haystack = this.normalize(
-        [
-          remote.fullName,
-          remote.subtitle,
-          conversation.vehicleLabel,
-          conversation.requestLabel,
-          this.lastMessage(conversation)?.body ?? '',
-        ].join(' '),
-      );
+    this.loadConversations();
 
-      return haystack.includes(term);
+    // Ouvre la conversation demandée par l'URL (?conversation=id ou ?peer=userId).
+    effect(() => {
+      const list = this.conversations();
+      const convId = this.route.snapshot.queryParamMap.get('conversation');
+      const peerId = this.route.snapshot.queryParamMap.get('peer');
+      if (this.selectedId() !== null) {
+        return;
+      }
+      if (convId && list.some((c) => c.id === convId)) {
+        this.pick(convId);
+      } else if (peerId) {
+        this.openWithPeer(peerId);
+      } else if (list.length > 0) {
+        // Pré-charge le premier fil pour le grand écran, mais laisse le
+        // téléphone sur la liste tant que rien n'est choisi.
+        this.select(list[0].id);
+      }
     });
-  });
 
-  protected readonly selectedConversation = computed<ChatConversation | null>(() => {
-    const selectedId = this.selectedConversationId();
-    return this.visibleConversations().find((conversation) => conversation.id === selectedId) ?? null;
-  });
-
-  protected readonly totalUnread = computed(() =>
-    this.visibleConversations().reduce((total, conversation) => total + this.unreadCount(conversation), 0),
-  );
-
-  protected readonly audienceLabel = computed(() =>
-    this.currentUserRole() === 'client' ? 'Mécaniciens' : 'Clients',
-  );
-
-  protected readonly searchPlaceholder = computed(() =>
-    this.currentUserRole() === 'client'
-      ? 'Mécanicien, véhicule, demande...'
-      : 'Client, véhicule, demande...',
-  );
-
-  protected onSearch(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.searchTerm.set(input.value);
+    this.destroyRef.onDestroy(() => {
+      this.liveSub?.unsubscribe();
+      this.typingSub?.unsubscribe();
+    });
   }
 
-  protected switchRole(role: ChatParticipantRole): void {
-    this.currentUserRole.set(role);
-    const firstConversation = this.findConversationFromUrl(role) ?? this.firstConversationForRole(role);
-    this.selectedConversationId.set(firstConversation?.id ?? '');
-    this.draftMessage.set('');
+  private loadConversations(): void {
+    this.loadingList.set(true);
+    this.listError.set(false);
+    this.repo
+      .conversations()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (list) => {
+          this.conversations.set(list);
+          this.loadingList.set(false);
+        },
+        error: () => {
+          this.loadingList.set(false);
+          this.listError.set(true);
+        },
+      });
   }
 
-  protected clearSearch(): void {
-    this.searchTerm.set('');
-  }
-
-  protected selectConversation(conversation: ChatConversation): void {
-    this.selectedConversationId.set(conversation.id);
-    const userId = this.currentUserId();
-    this.conversations.update((conversations) =>
-      conversations.map((item) =>
-        item.id === conversation.id
-          ? {
-              ...item,
-              unreadByParticipant: {
-                ...item.unreadByParticipant,
-                [userId]: 0,
-              },
-            }
-          : item,
-      ),
-    );
-  }
-
-  protected onDraftInput(event: Event): void {
-    const textarea = event.target as HTMLTextAreaElement;
-    this.draftMessage.set(textarea.value);
-  }
-
-  protected sendMessage(): void {
-    const text = this.draftMessage().trim();
-    const conversation = this.selectedConversation();
-    if (!conversation || text === '') return;
-
-    const message: ChatMessage = {
-      id: `msg-local-${Date.now()}`,
-      authorId: this.currentUserId(),
-      body: text,
-      sentAt: new Date().toISOString(),
-      status: 'sent',
-    };
-
-    this.conversations.update((conversations) =>
-      conversations.map((item) =>
-        item.id === conversation.id
-          ? {
-              ...item,
-              lastActivityAt: message.sentAt,
-              typingParticipantId: undefined,
-              messages: [...item.messages, message],
-            }
-          : item,
-      ),
-    );
-    this.draftMessage.set('');
-  }
-
-  protected lastMessage(conversation: ChatConversation): ChatMessage | null {
-    return conversation.messages.at(-1) ?? null;
-  }
-
-  protected conversationPreview(conversation: ChatConversation): string {
-    return this.lastMessage(conversation)?.body ?? '';
-  }
-
-  protected remoteParticipant(conversation: ChatConversation): ChatParticipant {
-    return conversation.client.id === this.currentUserId() ? conversation.mechanic : conversation.client;
-  }
-
-  protected unreadCount(conversation: ChatConversation): number {
-    return conversation.unreadByParticipant[this.currentUserId()] ?? 0;
-  }
-
-  protected isRemoteTyping(conversation: ChatConversation): boolean {
-    return (
-      typeof conversation.typingParticipantId === 'string' &&
-      conversation.typingParticipantId !== this.currentUserId()
-    );
-  }
-
-  protected actionLink(conversation: ChatConversation): readonly string[] {
-    const remote = this.remoteParticipant(conversation);
-    return remote.role === 'mechanic' ? ['/mecaniciens', remote.id] : ['/demandes'];
-  }
-
-  protected actionLabel(conversation: ChatConversation): string {
-    return this.remoteParticipant(conversation).role === 'mechanic'
-      ? 'Voir le profil du mécanicien'
-      : 'Voir la demande du client';
-  }
-
-  protected applyQuickReply(reply: string): void {
-    this.draftMessage.set(reply);
-  }
-
-  protected timeLabel(value: string): string {
-    return new Intl.DateTimeFormat('fr-SN', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    }).format(new Date(value));
-  }
-
-  protected isMine(message: ChatMessage): boolean {
-    return message.authorId === this.currentUserId();
-  }
-
-  protected messageStatusLabel(status: ChatMessage['status']): string {
-    switch (status) {
-      case 'read':
-        return 'Lu';
-      case 'delivered':
-        return 'Reçu';
-      default:
-        return 'Envoyé';
-    }
-  }
-
-  private normalize(value: string): string {
-    return value
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase()
-      .trim();
-  }
-
-  private initialRole(): ChatParticipantRole {
-    const role = this.route.snapshot.queryParamMap.get('role') ?? this.route.snapshot.queryParamMap.get('vue');
-    return role === 'mechanic' || role === 'atelier' ? 'mechanic' : 'client';
-  }
-
-  private initialConversationId(): string {
-    const role = this.initialRole();
-    return (this.findConversationFromUrl(role) ?? this.firstConversationForRole(role))?.id ?? '';
-  }
-
-  private findConversationFromUrl(role: ChatParticipantRole): ChatConversation | undefined {
-    const params = this.route.snapshot.queryParamMap;
-    const conversationId = params.get('conversation');
-    const mechanicId = params.get('mecanicien') ?? params.get('mechanicId');
-    const clientId = params.get('client') ?? params.get('clientId');
-
-    if (conversationId) {
-      return this.conversations().find((conversation) => conversation.id === conversationId);
-    }
-
-    if (role === 'client' && mechanicId) {
-      return this.conversations().find(
-        (conversation) => conversation.client.id === CLIENT_PROFILE.id && conversation.mechanic.id === mechanicId,
+  protected openWithPeer(peerUserId: string): void {
+    if (peerUserId === this.auth.currentUser()?.id) {
+      // Arrive quand deux onglets d'un même navigateur partagent la session :
+      // le « correspondant » est en fait le compte connecté.
+      this.ouvertureError.set(
+        'Vous ne pouvez pas ouvrir une conversation avec vous-même. Pour tester les deux rôles, utilisez deux navigateurs distincts.',
       );
+      return;
     }
-
-    if (role === 'mechanic' && clientId) {
-      return this.conversations().find(
-        (conversation) => conversation.mechanic.id === MECHANIC_PROFILE.id && conversation.client.id === clientId,
-      );
-    }
-
-    return undefined;
+    this.ouvertureError.set(null);
+    this.repo
+      .openDirect(peerUserId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (conv) => {
+          this.conversations.update((list) =>
+            list.some((c) => c.id === conv.id) ? list : [conv, ...list],
+          );
+          this.pick(conv.id);
+        },
+        error: (err: ApiError) => {
+          this.ouvertureError.set(err?.message ?? "La conversation n'a pas pu être ouverte.");
+        },
+      });
   }
 
-  private firstConversationForRole(role: ChatParticipantRole): ChatConversation | undefined {
-    return this.conversations().find((conversation) =>
-      role === 'client'
-        ? conversation.client.id === CLIENT_PROFILE.id
-        : conversation.mechanic.id === MECHANIC_PROFILE.id,
+  /** Ouvre une conversation depuis la liste : bascule aussi la vue mobile. */
+  protected pick(id: string): void {
+    this.select(id);
+    this.mobileView.set('thread');
+  }
+
+  /** Retour à la liste sur téléphone (garde la conversation chargée en fond). */
+  protected backToList(): void {
+    this.mobileView.set('list');
+  }
+
+  protected select(id: string): void {
+    if (this.selectedId() === id) {
+      return;
+    }
+    this.selectedId.set(id);
+    this.messages.set([]);
+    this.peerTyping.set(false);
+    this.loadingThread.set(true);
+    this.draft.set('');
+
+    this.repo
+      .history(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (msgs) => {
+          this.messages.set(msgs);
+          this.loadingThread.set(false);
+        },
+        error: () => this.loadingThread.set(false),
+      });
+
+    this.liveSub?.unsubscribe();
+    this.liveSub = this.repo.liveMessages(id).subscribe((msg) => {
+      this.messages.update((list) => (list.some((m) => m.id === msg.id) ? list : [...list, msg]));
+      if (!msg.mine) {
+        this.peerTyping.set(false);
+      }
+      this.bumpConversation(id, msg);
+    });
+
+    this.typingSub?.unsubscribe();
+    this.typingSub = this.repo.liveTyping(id).subscribe((sig) => {
+      if (sig.userId === this.auth.currentUser()?.id) {
+        return;
+      }
+      this.peerTyping.set(sig.typing);
+      clearTimeout(this.peerTypingTimeout);
+      if (sig.typing) {
+        this.peerTypingTimeout = setTimeout(() => this.peerTyping.set(false), 4000);
+      }
+    });
+  }
+
+  protected onDraft(value: string): void {
+    this.draft.set(value);
+    const id = this.selectedId();
+    if (!id) {
+      return;
+    }
+    this.repo.notifyTyping(id, true);
+    clearTimeout(this.typingTimeout);
+    this.typingTimeout = setTimeout(() => this.repo.notifyTyping(id, false), 2500);
+  }
+
+  protected send(): void {
+    const id = this.selectedId();
+    const text = this.draft().trim();
+    if (!id || text === '') {
+      return;
+    }
+    this.repo.send(id, text);
+    this.repo.notifyTyping(id, false);
+    this.draft.set('');
+  }
+
+  private bumpConversation(id: string, msg: Message): void {
+    this.conversations.update((list) => {
+      const next = list.map((c) =>
+        c.id === id
+          ? { ...c, lastMessage: msg.body, lastMessageAt: msg.sentAt, lastMessageMine: msg.mine }
+          : c,
+      );
+      next.sort((a, b) => (b.lastMessageAt ?? '').localeCompare(a.lastMessageAt ?? ''));
+      return next;
+    });
+  }
+
+  protected heure(iso: string): string {
+    return new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' }).format(
+      new Date(iso),
     );
   }
 }

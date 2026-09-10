@@ -56,12 +56,15 @@ class DepotCategoriesDeTest extends ServiceCategoryRepository {
 
 const MECANICIEN: Mechanic = {
   id: 'mec-001',
+  userId: 'usr-001',
   fullName: 'Boubacar Sidibe',
   workshopName: 'Garage Sidibe Auto',
   phone: '+221 77 300 44 55',
   email: 'boubacar@example.sn',
   avatarUrl: '',
   specialties: ['Freinage'],
+  experienceYears: 8,
+  openingHours: '',
   rating: 4.9,
   reviewCount: 42,
   isAvailable: true,

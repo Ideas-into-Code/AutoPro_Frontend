@@ -1,0 +1,126 @@
+@use 'index' as ds;
+
+// Notification compacte, posée en haut de l'écran plutôt que centrée : une
+// boîte au milieu se lit comme une interruption, un bandeau haut comme une
+// alerte qu'on traite en passant.
+.ap-new-request {
+  width: min(100% - var(--ap-space-6), 21rem);
+
+  // Sous la barre du haut, dont la hauteur utile est de 4 rem : collée au
+  // sommet, la notification recouvrait le compte connecté et se lisait comme
+  // un empilement accidentel plutôt que comme un signal.
+  margin-top: 4.75rem;
+  margin-bottom: auto;
+  padding: var(--ap-space-4);
+  color: var(--ap-text-primary);
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-left: 3px solid var(--ap-color-primary);
+  border-radius: var(--ap-radius-lg);
+  box-shadow: var(--ap-shadow-lg);
+
+  &::backdrop {
+    // Voile discret : une notification signale, elle n'interrompt pas. Un fond
+    // franchement assombri donnait à cette petite carte l'allure d'une boîte
+    // de dialogue bloquante, disproportionnée pour un choix de deux secondes.
+    background-color: rgb(25 27 36 / 12%);
+  }
+
+  animation: ap-new-request-in var(--ap-duration-base) var(--ap-easing-standard);
+
+  @include ds.respect-reduced-motion {
+    animation: none;
+  }
+
+  @include ds.from(md) {
+    // Sur grand écran, elle se range en haut à droite, là où l'œil cherche
+    // les notifications.
+    margin-right: var(--ap-space-6);
+    margin-left: auto;
+  }
+}
+
+@keyframes ap-new-request-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+}
+
+.ap-new-request__eyebrow {
+  display: flex;
+  gap: var(--ap-space-2);
+  align-items: center;
+  margin: 0 0 var(--ap-space-2);
+  color: var(--ap-color-primary);
+  font-weight: var(--ap-font-weight-semibold);
+  font-size: var(--ap-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+// Point clignotant, seul rappel visuel qu'il s'agit d'un signal entrant.
+.ap-new-request__dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  background-color: var(--ap-color-primary);
+  border-radius: var(--ap-radius-full);
+  animation: ap-new-request-pulse 1.6s var(--ap-easing-standard) infinite;
+
+  @include ds.respect-reduced-motion {
+    animation: none;
+  }
+}
+
+@keyframes ap-new-request-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.ap-new-request__distance {
+  margin-left: auto;
+  color: var(--ap-text-secondary);
+  font-weight: var(--ap-font-weight-medium);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.ap-new-request__title {
+  margin: 0 0 var(--ap-space-1);
+  font-size: var(--ap-font-size-base);
+  line-height: var(--ap-line-height-tight);
+}
+
+.ap-new-request__detail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-2);
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0 0 var(--ap-space-4);
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-xs);
+}
+
+.ap-new-request__payout {
+  color: var(--ap-color-primary);
+  font-weight: var(--ap-font-weight-bold);
+  font-size: var(--ap-font-size-sm);
+  white-space: nowrap;
+}
+
+.ap-new-request__actions {
+  display: flex;
+  gap: var(--ap-space-2);
+}
+
+.ap-new-request__decline {
+  flex: 1;
+}
+
+// « Accepter » reste plus large : la hiérarchie des deux gestes se lit avant
+// même d'avoir déchiffré les libellés.
+.ap-new-request__accept {
+  flex: 2;
+}

@@ -3,6 +3,9 @@
  * contenu qu'on leur donne et ne connaissent ni les routes ni l'utilisateur.
  */
 
+export { BottomNav } from './bottom-nav/bottom-nav';
+export type { BottomNavItem } from './bottom-nav/bottom-nav';
+
 export { Footer } from './footer/footer';
 export { Header } from './header/header';
 export { PageShell } from './page-shell/page-shell';

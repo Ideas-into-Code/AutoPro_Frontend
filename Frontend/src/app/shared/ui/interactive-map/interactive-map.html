@@ -19,56 +19,85 @@
           [style.top.%]="tile.top"
           [style.width.%]="tile.width"
           [style.height.%]="tile.height"
-        >
+        />
       }
     </div>
   </div>
 
-	  @for (point of fallbackMarkers(); track point.marker.id) {
-	    <div
-	      class="ap-interactive-map__fallback-marker"
-	      [class.ap-interactive-map__fallback-marker--hidden]="hasLoadedTiles()"
-	      [class.ap-interactive-map__fallback-marker--selected]="selectedMarkerId() === point.marker.id"
-	      [style.left.%]="point.x"
-	      [style.top.%]="point.y"
-	    >
-	      <button
-	        type="button"
-	        class="ap-interactive-map__fallback-pin-action"
-	        (click)="markerSelect.emit(point.marker)"
-	        [attr.aria-label]="'Selectionner ' + point.marker.title"
-	      >
-	      <span class="ap-interactive-map__fallback-pin" aria-hidden="true">
-	        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-	          <path d="M15.2 6.2a4.2 4.2 0 0 0-5.7 5.7L3.6 17.8v2.6h2.6l5.9-5.9a4.2 4.2 0 0 0 5.7-5.7l-2.6 2.6-2.6-2.6Z" />
-	        </svg>
-	      </span>
-	      </button>
-	      @if (point.marker.href) {
-	        <a
-	          class="ap-interactive-map__fallback-card"
-	          [href]="point.marker.href"
-	          [attr.aria-label]="'Voir le profil de ' + point.marker.title"
-	        >
-	          <span>{{ point.marker.title }}</span>
-	          @if (point.marker.ratingLabel) {
-	            <small>{{ point.marker.ratingLabel }}</small>
-	          }
-	        </a>
-	      } @else {
-	        <button
-	          type="button"
-	          class="ap-interactive-map__fallback-card"
-	          (click)="markerSelect.emit(point.marker)"
-	        >
-	          <span>{{ point.marker.title }}</span>
-	          @if (point.marker.ratingLabel) {
-	            <small>{{ point.marker.ratingLabel }}</small>
-	          }
-	        </button>
-	      }
-	    </div>
-	  }
+  @if (fallbackRoutePoints(); as routePoints) {
+    <svg
+      class="ap-interactive-map__fallback-route"
+      [class.ap-interactive-map__fallback-route--hidden]="hasLoadedTiles()"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <polyline
+        [attr.points]="routePoints"
+        fill="none"
+        stroke="#1d4ed8"
+        stroke-width="3"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        vector-effect="non-scaling-stroke"
+      />
+    </svg>
+  }
+
+  @for (point of fallbackMarkers(); track point.marker.id) {
+    <div
+      class="ap-interactive-map__fallback-marker"
+      [class.ap-interactive-map__fallback-marker--hidden]="hasLoadedTiles()"
+      [class.ap-interactive-map__fallback-marker--selected]="selectedMarkerId() === point.marker.id"
+      [style.left.%]="point.x"
+      [style.top.%]="point.y"
+    >
+      <button
+        type="button"
+        class="ap-interactive-map__fallback-pin-action"
+        (click)="markerSelect.emit(point.marker)"
+        [attr.aria-label]="'Selectionner ' + point.marker.title"
+      >
+        <span class="ap-interactive-map__fallback-pin" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M15.2 6.2a4.2 4.2 0 0 0-5.7 5.7L3.6 17.8v2.6h2.6l5.9-5.9a4.2 4.2 0 0 0 5.7-5.7l-2.6 2.6-2.6-2.6Z"
+            />
+          </svg>
+        </span>
+      </button>
+      @if (point.marker.href) {
+        <a
+          class="ap-interactive-map__fallback-card"
+          [href]="point.marker.href"
+          [attr.aria-label]="'Voir le profil de ' + point.marker.title"
+        >
+          <span>{{ point.marker.title }}</span>
+          @if (point.marker.ratingLabel) {
+            <small>{{ point.marker.ratingLabel }}</small>
+          }
+        </a>
+      } @else {
+        <button
+          type="button"
+          class="ap-interactive-map__fallback-card"
+          (click)="markerSelect.emit(point.marker)"
+        >
+          <span>{{ point.marker.title }}</span>
+          @if (point.marker.ratingLabel) {
+            <small>{{ point.marker.ratingLabel }}</small>
+          }
+        </button>
+      }
+    </div>
+  }
 
   @if (fallbackUserPoint(); as userPoint) {
     <span
@@ -81,9 +110,7 @@
   }
 
   @if (hasTileError()) {
-    <p class="ap-interactive-map__tile-status" role="status">
-      Carte en cours de chargement
-    </p>
+    <p class="ap-interactive-map__tile-status" role="status">Carte en cours de chargement</p>
   }
 
   <div class="ap-interactive-map__controls" aria-label="Commandes de la carte">

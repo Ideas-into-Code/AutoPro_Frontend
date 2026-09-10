@@ -21,6 +21,73 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
+    /**
+     * La liste des mécaniciens vient de l'API : rendue à la demande plutôt que
+     * prérendue au build, où le backend n'est pas joignable.
+     */
+    path: 'mecaniciens',
+    renderMode: RenderMode.Server,
+  },
+  {
+    /**
+     * L'espace « Mes demandes » dépend de l'utilisateur connecté (session en
+     * `localStorage`, appels API authentifiés) : rien à prérendre au build,
+     * tout est rendu à la demande.
+     */
+    path: 'demandes',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'demandes/signaler',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'demandes/:id',
+    renderMode: RenderMode.Server,
+  },
+  {
+    // Parc de véhicules : données de l'utilisateur connecté, via l'API.
+    path: 'vehicules',
+    renderMode: RenderMode.Server,
+  },
+  {
+    // Messagerie : conversations du compte connecté + WebSocket (navigateur).
+    path: 'messages',
+    renderMode: RenderMode.Server,
+  },
+  {
+    // Carte interactive : mécaniciens proches via l'API + géoloc navigateur.
+    path: 'carte',
+    renderMode: RenderMode.Server,
+  },
+  {
+    // Profil : compte + fiche mécanicien du compte connecté, via l'API.
+    path: 'profil',
+    renderMode: RenderMode.Server,
+  },
+  {
+    /**
+     * Tout l'espace mécanicien dépend du compte connecté et de l'API :
+     * rendu à la demande.
+     */
+    path: 'mecanicien',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'mecanicien/**',
+    renderMode: RenderMode.Server,
+  },
+  {
+    // Back-office : indicateurs, comptes et file de validation, tous tirés de
+    // l'API sous session administrateur. Rendu à la demande.
+    path: 'admin',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'admin/**',
+    renderMode: RenderMode.Server,
+  },
+  {
     // Tout le reste est statique : prérendu au build, donc servi sans calcul
     // et affiché dès la première requête, même sur un réseau lent.
     path: '**',

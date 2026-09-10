@@ -44,6 +44,22 @@
   position: absolute;
 }
 
+.ap-interactive-map__fallback-route {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  opacity: 0.9;
+  transition: opacity var(--ap-duration-fast) var(--ap-easing-standard);
+}
+
+.ap-interactive-map__fallback-route--hidden {
+  opacity: 0;
+}
+
 .ap-interactive-map__tile-status {
   top: calc(var(--ap-space-4) + 5.75rem);
   left: 50%;

@@ -1,0 +1,100 @@
+<div class="ap-admin">
+  <header class="ap-admin__intro">
+    <h1 class="ap-admin__title">Vue d'ensemble du système</h1>
+    <p class="ap-admin__subtitle">Activité de la plateforme AutoPro et gestion des comptes.</p>
+  </header>
+
+  @if (actionError(); as message) {
+    <p class="ap-admin__error" role="alert">{{ message }}</p>
+  }
+
+  <!-- Tâche 1 — cartes de vue d'ensemble -->
+  <section class="ap-admin__section" aria-labelledby="ap-admin-indicateurs">
+    <h2 class="ap-admin__sr" id="ap-admin-indicateurs">Indicateurs</h2>
+
+    @if (metricsResource.isLoading()) {
+      <p class="ap-admin__state"><app-spinner label="Chargement des indicateurs" /></p>
+    } @else if (metricsFailed()) {
+      <div class="ap-admin__error" role="alert">
+        <p>Les indicateurs n'ont pas pu être chargés.</p>
+        <button
+          appButton
+          type="button"
+          variant="secondary"
+          size="sm"
+          (click)="rechargerIndicateurs()"
+        >
+          Réessayer
+        </button>
+      </div>
+    } @else {
+      <div class="ap-admin__metrics">
+        @for (indicateur of metricsResource.value(); track indicateur.id) {
+          <app-metric-card [metric]="indicateur" />
+        }
+      </div>
+    }
+  </section>
+
+  <!--
+    Les deux blocs suivants se partagent la largeur sur grand écran, et
+    s'empilent en dessous : la table demande de la place, la file beaucoup moins.
+  -->
+  <div class="ap-admin__columns">
+    <!-- Tâche 2 — table de gestion Utilisateurs / Mécaniciens -->
+    <section class="ap-admin__section" aria-labelledby="ap-admin-comptes">
+      <h2 class="ap-admin__heading" id="ap-admin-comptes">Utilisateurs et mécaniciens</h2>
+
+      @if (accountsResource.isLoading()) {
+        <p class="ap-admin__state"><app-spinner label="Chargement des comptes" /></p>
+      } @else if (accountsFailed()) {
+        <div class="ap-admin__error" role="alert">
+          <p>Les comptes n'ont pas pu être chargés.</p>
+          <button
+            appButton
+            type="button"
+            variant="secondary"
+            size="sm"
+            (click)="rechargerComptes()"
+          >
+            Réessayer
+          </button>
+        </div>
+      } @else {
+        <app-accounts-table
+          [accounts]="accountsResource.value()"
+          [savingId]="compteEnCours()"
+          (moderationRequested)="changerStatut($event)"
+        />
+      }
+    </section>
+
+    <!-- Tâche 3 — file de validation des mécaniciens -->
+    <section class="ap-admin__section" aria-labelledby="ap-admin-validation">
+      <h2 class="ap-admin__sr" id="ap-admin-validation">Validation des mécaniciens</h2>
+
+      @if (approvalsResource.isLoading()) {
+        <p class="ap-admin__state"><app-spinner label="Chargement des candidatures" /></p>
+      } @else if (approvalsFailed()) {
+        <div class="ap-admin__error" role="alert">
+          <p>Les candidatures n'ont pas pu être chargées.</p>
+          <button
+            appButton
+            type="button"
+            variant="secondary"
+            size="sm"
+            (click)="rechargerValidations()"
+          >
+            Réessayer
+          </button>
+        </div>
+      } @else {
+        <app-approval-queue
+          [applications]="approvalsResource.value()"
+          [savingId]="dossierEnCours()"
+          (decided)="trancher($event)"
+        />
+      }
+    </section>
+  </div>
+</div>

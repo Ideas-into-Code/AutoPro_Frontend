@@ -38,6 +38,14 @@
     </a>
     <a
       nav
+      routerLink="/vehicules"
+      routerLinkActive="ap-client-shell__link--active"
+      ariaCurrentWhenActive="page"
+    >
+      Mes véhicules
+    </a>
+    <a
+      nav
       routerLink="/messages"
       routerLinkActive="ap-client-shell__link--active"
       ariaCurrentWhenActive="page"
@@ -45,7 +53,24 @@
       Messages
     </a>
 
-    <a actions appButton variant="ghost" size="sm" routerLink="/compte/connexion">Se connecter</a>
+    <div actions class="ap-client-shell__actions">
+      @if (auth.isAuthenticated()) {
+        <app-notification-bell />
+        <a class="ap-client-shell__account" routerLink="/profil" aria-label="Mon profil">
+          <app-avatar [name]="nomAffiche()" size="sm" />
+        </a>
+        <button
+          type="button"
+          class="ap-client-shell__logout"
+          (click)="deconnexion()"
+          aria-label="Déconnexion"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+        </button>
+      } @else {
+        <a appButton variant="primary" size="sm" routerLink="/compte/connexion">Se connecter</a>
+      }
+    </div>
   </app-header>
 
   <router-outlet />
@@ -59,59 +84,4 @@
 </app-page-shell>
 
 <!-- ── Bottom Navigation Bar — mobile uniquement ── -->
-<nav class="ap-bottom-nav" aria-label="Navigation principale">
-  <a
-    class="ap-bottom-nav__item"
-    routerLink="/accueil"
-    routerLinkActive="ap-bottom-nav__item--active"
-    ariaCurrentWhenActive="page"
-    aria-label="Accueil"
-  >
-    <span class="material-symbols-outlined" aria-hidden="true">home</span>
-    <span>Accueil</span>
-  </a>
-
-  <a
-    class="ap-bottom-nav__item"
-    routerLink="/mecaniciens"
-    routerLinkActive="ap-bottom-nav__item--active"
-    ariaCurrentWhenActive="page"
-    aria-label="Mécaniciens"
-  >
-    <span class="material-symbols-outlined" aria-hidden="true">build</span>
-    <span>Mécanos</span>
-  </a>
-
-  <a
-    class="ap-bottom-nav__item"
-    routerLink="/carte"
-    routerLinkActive="ap-bottom-nav__item--active"
-    ariaCurrentWhenActive="page"
-    aria-label="Carte"
-  >
-    <span class="material-symbols-outlined" aria-hidden="true">map</span>
-    <span>Carte</span>
-  </a>
-
-  <a
-    class="ap-bottom-nav__item"
-    routerLink="/demandes"
-    routerLinkActive="ap-bottom-nav__item--active"
-    ariaCurrentWhenActive="page"
-    aria-label="Demandes"
-  >
-    <span class="material-symbols-outlined" aria-hidden="true">assignment</span>
-    <span>Demandes</span>
-  </a>
-
-  <a
-    class="ap-bottom-nav__item"
-    routerLink="/messages"
-    routerLinkActive="ap-bottom-nav__item--active"
-    ariaCurrentWhenActive="page"
-    aria-label="Messages"
-  >
-    <span class="material-symbols-outlined" aria-hidden="true">chat</span>
-    <span>Messages</span>
-  </a>
-</nav>
+<app-bottom-nav [items]="navItems" ariaLabel="Navigation principale" />

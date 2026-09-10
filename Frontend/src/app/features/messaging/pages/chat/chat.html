@@ -1,204 +1,94 @@
-<section class="ap-chat" aria-label="Messagerie AutoPro">
-  <aside class="ap-chat__sidebar" [class.ap-chat__sidebar--hidden]="selectedConversation() !== null">
-    <header class="ap-chat__sidebar-header">
-      <div>
-        <p class="ap-chat__eyebrow">Messagerie</p>
-        <h1 class="ap-chat__title">{{ audienceLabel() }}</h1>
-      </div>
-      @if (totalUnread() > 0) {
-        <span class="ap-chat__unread-total">{{ totalUnread() }}</span>
-      }
-    </header>
+<section class="ap-chat" [attr.data-mobile-view]="mobileView()">
+  <aside class="ap-chat__list">
+    <button type="button" class="ap-chat__back" (click)="retourner()">← Retour</button>
+    <h1>Messages</h1>
 
-    <div class="ap-chat__role-switch" aria-label="Vue de démonstration">
-      @for (option of roleOptions; track option.role) {
-        <button
-          type="button"
-          [class.ap-chat__role-switch-button--active]="currentUserRole() === option.role"
-          (click)="switchRole(option.role)"
-        >
-          {{ option.label }}
-        </button>
-      }
-    </div>
+    @if (ouvertureError()) {
+      <p class="ap-chat__error" role="alert">{{ ouvertureError() }}</p>
+    }
 
-    <form class="ap-chat__search" role="search" (submit)="$event.preventDefault()">
-      <span class="material-symbols-outlined" aria-hidden="true">search</span>
-      <input
-        type="search"
-        aria-label="Rechercher une conversation"
-        [placeholder]="searchPlaceholder()"
-        [value]="searchTerm()"
-        (input)="onSearch($event)"
-      />
-      @if (searchTerm() !== '') {
-        <button type="button" (click)="clearSearch()" aria-label="Effacer la recherche">
-          <span class="material-symbols-outlined" aria-hidden="true">close</span>
-        </button>
-      }
-    </form>
-
-    <div class="ap-chat__conversation-list" role="list">
-      @for (conversation of filteredConversations(); track conversation.id) {
-        @let remote = remoteParticipant(conversation);
-        @let unread = unreadCount(conversation);
-        <button
-          type="button"
-          class="ap-chat__conversation"
-          [class.ap-chat__conversation--active]="selectedConversationId() === conversation.id"
-          (click)="selectConversation(conversation)"
-          role="listitem"
-        >
-          <span class="ap-chat__avatar" [class.ap-chat__avatar--online]="remote.isOnline">
-            {{ remote.avatarInitials }}
-          </span>
-          <span class="ap-chat__conversation-main">
-            <span class="ap-chat__conversation-top">
-              <strong>{{ remote.fullName }}</strong>
-              <time [dateTime]="conversation.lastActivityAt">
-                {{ timeLabel(conversation.lastActivityAt) }}
-              </time>
-            </span>
-            <span class="ap-chat__conversation-meta">
-              {{ conversation.requestLabel }} · {{ conversation.vehicleLabel }}
-            </span>
-            @if (conversationPreview(conversation); as preview) {
-              <span class="ap-chat__preview">{{ preview }}</span>
-            }
-            @if (isRemoteTyping(conversation)) {
-              <span class="ap-chat__typing-label">{{ remote.fullName }} écrit...</span>
-            }
-          </span>
-          @if (unread > 0) {
-            <span class="ap-chat__unread">{{ unread }}</span>
-          }
-        </button>
-      } @empty {
-        <p class="ap-chat__empty">Aucune conversation ne correspond à cette recherche.</p>
-      }
-    </div>
+    @if (loadingList()) {
+      <app-spinner />
+    } @else if (listError()) {
+      <p class="ap-chat__error" role="alert">Impossible de charger vos conversations.</p>
+    } @else if (conversations().length === 0) {
+      <p class="ap-chat__empty">
+        Aucune conversation. Elles s'ouvrent depuis une demande ou un profil de mécanicien.
+      </p>
+    } @else {
+      <ul>
+        @for (c of conversations(); track c.id) {
+          <li>
+            <button
+              type="button"
+              class="ap-chat__conv"
+              [class.ap-chat__conv--active]="c.id === selectedId()"
+              (click)="pick(c.id)"
+            >
+              <span class="ap-chat__conv-title">{{ c.title }}</span>
+              <span class="ap-chat__conv-last">
+                @if (c.lastMessageMine) {
+                  <em>Vous : </em>
+                }
+                {{ c.lastMessage || 'Nouvelle conversation' }}
+              </span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
   </aside>
 
-  <section class="ap-chat__thread" aria-label="Fil de conversation">
-    @if (selectedConversation(); as conversation) {
-      @let remote = remoteParticipant(conversation);
-      <header class="ap-chat__thread-header">
+  <div class="ap-chat__thread">
+    @if (selected(); as conv) {
+      <header class="ap-chat__thread-head">
         <button
           type="button"
-          class="ap-chat__back"
+          class="ap-chat__thread-back"
+          (click)="backToList()"
           aria-label="Retour aux conversations"
-          (click)="selectedConversationId.set('')"
         >
-          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+          ←
         </button>
-
-        <span class="ap-chat__avatar ap-chat__avatar--header" [class.ap-chat__avatar--online]="remote.isOnline">
-          {{ remote.avatarInitials }}
-        </span>
-
-        <div class="ap-chat__thread-title">
-          <h2>{{ remote.fullName }}</h2>
-          <p>{{ remote.subtitle }} · {{ remote.isOnline ? 'En ligne' : 'Répond généralement vite' }}</p>
-        </div>
-
-        <button type="button" class="ap-chat__profile-link" aria-label="Appeler">
-          <span class="material-symbols-outlined" aria-hidden="true">call</span>
-        </button>
-
-        <a
-          class="ap-chat__profile-link"
-          [routerLink]="actionLink(conversation)"
-          [attr.aria-label]="actionLabel(conversation)"
-        >
-          <span class="material-symbols-outlined" aria-hidden="true">more_vert</span>
-        </a>
+        <span class="ap-chat__thread-title">{{ conv.title }}</span>
+        @if (peerTyping()) {
+          <span class="ap-chat__typing">écrit…</span>
+        }
       </header>
 
-      <div class="ap-chat__context">
-        <span class="material-symbols-outlined" aria-hidden="true">build_circle</span>
-        <div>
-          <strong>{{ conversation.requestLabel }}</strong>
-          <span>{{ conversation.vehicleLabel }} · {{ conversation.requestId }}</span>
-        </div>
-      </div>
-
-      <div class="ap-chat__messages" aria-live="polite">
-        @for (message of conversation.messages; track message.id) {
-          <article class="ap-chat__message" [class.ap-chat__message--mine]="isMine(message)">
-            @if (message.body) {
-              <p>{{ message.body }}</p>
-            }
-            @if (message.attachments?.length) {
-              <div class="ap-chat__attachments">
-                @for (attachment of message.attachments; track attachment.id) {
-                  <a class="ap-chat__attachment" [href]="attachment.url ?? '#'" [attr.aria-label]="attachment.name">
-                    <span class="material-symbols-outlined" aria-hidden="true">
-                      {{ attachment.type === 'image' ? 'image' : 'description' }}
-                    </span>
-                    <span>
-                      <strong>{{ attachment.name }}</strong>
-                      <small>{{ attachment.sizeLabel }}</small>
-                    </span>
-                  </a>
-                }
-              </div>
-            }
-            <footer>
-              <time [dateTime]="message.sentAt">{{ timeLabel(message.sentAt) }}</time>
-              @if (isMine(message)) {
-                <span>{{ messageStatusLabel(message.status) }}</span>
-              }
-            </footer>
-          </article>
-        }
-        @if (isRemoteTyping(conversation)) {
-          <div class="ap-chat__typing" aria-label="Message en cours de saisie">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
+      <div class="ap-chat__messages">
+        @if (loadingThread()) {
+          <app-spinner />
+        } @else if (messages().length === 0) {
+          <p class="ap-chat__empty">Démarrez la conversation.</p>
+        } @else {
+          @for (m of messages(); track m.id) {
+            <div class="ap-chat__msg" [class.ap-chat__msg--mine]="m.mine">
+              <span class="ap-chat__msg-author">{{ m.mine ? 'Vous' : m.senderName }}</span>
+              <span class="ap-chat__msg-body">{{ m.body }}</span>
+              <span class="ap-chat__msg-time">{{ heure(m.sentAt) }}</span>
+            </div>
+          }
         }
       </div>
 
-      <div class="ap-chat__quick-replies" aria-label="Réponses rapides">
-        @for (reply of quickReplies; track reply) {
-          <button type="button" (click)="applyQuickReply(reply)">{{ reply }}</button>
-        }
-      </div>
-
-      <form class="ap-chat__composer" (submit)="$event.preventDefault(); sendMessage()">
-        <button type="button" class="ap-chat__tool-button" aria-label="Joindre une photo">
-          <span class="material-symbols-outlined" aria-hidden="true">add_circle</span>
-        </button>
-        <label class="ap-chat__composer-label" for="chat-message">Message</label>
-        <textarea
-          id="chat-message"
-          rows="1"
-          placeholder="Écrire un message..."
-          [value]="draftMessage()"
-          (input)="onDraftInput($event)"
-        ></textarea>
-        <button type="button" class="ap-chat__tool-button" aria-label="Partager une position">
-          <span class="material-symbols-outlined" aria-hidden="true">location_on</span>
-        </button>
-        <button type="button" class="ap-chat__tool-button" aria-label="Prendre une photo">
-          <span class="material-symbols-outlined" aria-hidden="true">photo_camera</span>
-        </button>
-        <button
-          type="submit"
-          class="ap-chat__send"
-          [disabled]="draftMessage().trim() === ''"
-          aria-label="Envoyer le message"
-        >
-          <span class="material-symbols-outlined" aria-hidden="true">send</span>
-        </button>
+      <form class="ap-chat__compose" (submit)="$event.preventDefault(); send()">
+        <input
+          type="text"
+          placeholder="Votre message…"
+          [value]="draft()"
+          (input)="onDraft($any($event.target).value)"
+          aria-label="Message"
+        />
+        <button type="submit" [disabled]="draft().trim() === ''">Envoyer</button>
       </form>
     } @else {
-      <div class="ap-chat__placeholder">
-        <span class="material-symbols-outlined" aria-hidden="true">forum</span>
-        <h2>Sélectionne une conversation</h2>
-        <p>Les échanges avec les mécaniciens apparaîtront ici.</p>
+      <div class="ap-chat__thread-empty">
+        <p class="ap-chat__empty">Sélectionnez une conversation pour l'afficher.</p>
+        <button type="button" class="ap-chat__thread-back-link" (click)="backToList()">
+          ← Voir mes conversations
+        </button>
       </div>
     }
-  </section>
+  </div>
 </section>

@@ -112,7 +112,13 @@
         </a>
       </div>
 
-      <app-nearby-mechanics [mechanics]="nearbyMechanics" />
+      @if (nearbyMechanics().length > 0) {
+        <app-nearby-mechanics [mechanics]="nearbyMechanics()" />
+      } @else {
+        <p class="ap-home__section-empty">
+          Aucun mécanicien disponible autour de Dakar pour le moment.
+        </p>
+      }
     </div>
   </section>
 
@@ -132,7 +138,7 @@
             </a>
           </div>
 
-          <app-recent-requests [requests]="recentRequests" />
+          <app-recent-requests [requests]="recentRequests()" />
         </div>
 
         <!-- Aperçu carte -->
@@ -140,7 +146,7 @@
           <h2 class="ap-home__section-title ap-home__section-title--spaced">
             Services à proximité
           </h2>
-          <app-map-preview [mechanicCount]="nearbyMechanics.length" />
+          <app-map-preview [mechanicCount]="nearbyMechanics().length" />
         </div>
       </div>
     </div>

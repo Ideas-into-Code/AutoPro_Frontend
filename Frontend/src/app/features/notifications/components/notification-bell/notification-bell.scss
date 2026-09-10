@@ -1,0 +1,142 @@
+.ap-bell {
+  position: relative;
+  display: inline-flex;
+
+  &__trigger {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    .material-symbols-outlined {
+      font-size: 22px;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 3px;
+    border-radius: 999px;
+    background: #d73a3a;
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+  }
+
+  &__panel {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    width: 320px;
+    max-width: 88vw;
+    max-height: 420px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #e5e8ec;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    z-index: 60;
+
+    // Sur téléphone la pastille n'est pas au bord de l'écran : un panneau
+    // ancré à droite déborderait à gauche. On le passe en feuille calée sous
+    // la barre, marges égales des deux côtés.
+    @media (max-width: 30rem) {
+      position: fixed;
+      top: 3.75rem;
+      right: 0.5rem;
+      left: 0.5rem;
+      width: auto;
+      max-width: none;
+      max-height: 75vh;
+    }
+  }
+
+  &__panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #eef1f4;
+
+    button {
+      border: 0;
+      background: transparent;
+      color: #1d76db;
+      font: inherit;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+  }
+
+  &__empty {
+    padding: 1.25rem 1rem;
+    margin: 0;
+    font-size: 0.875rem;
+    color: #78838f;
+    text-align: center;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__item {
+    width: 100%;
+    text-align: left;
+    border: 0;
+    background: transparent;
+    padding: 0.7rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f2f4f6;
+    font: inherit;
+
+    &:hover {
+      background: #f7f9fb;
+    }
+
+    &--unread {
+      background: #eef5ff;
+
+      .ap-bell__item-title {
+        font-weight: 700;
+      }
+    }
+  }
+
+  &__item-title {
+    font-size: 0.88rem;
+    color: #1f2933;
+  }
+
+  &__item-body {
+    font-size: 0.8rem;
+    color: #52606d;
+  }
+
+  &__item-age {
+    font-size: 0.72rem;
+    color: #9aa5b1;
+  }
+}

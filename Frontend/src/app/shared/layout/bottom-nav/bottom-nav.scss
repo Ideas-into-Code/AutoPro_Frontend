@@ -1,0 +1,125 @@
+@use 'index' as ds;
+
+// Barre réservée au mobile : sur un écran large, la navigation du header et le
+// pied de page suffisent, et une barre flottante y mangerait de la place.
+:host {
+  display: none;
+}
+
+@media (max-width: 47.999em) {
+  :host {
+    display: block;
+  }
+
+  .ap-bottom-nav {
+    position: fixed;
+    // `max(...)` avec les encoches : la barre ne passe ni sous le bord arrondi
+    // de l'écran, ni sous le geste de retour des téléphones récents.
+    right: max(var(--ap-space-3), env(safe-area-inset-right, 0px));
+    bottom: max(var(--ap-space-3), env(safe-area-inset-bottom, 0px));
+    left: max(var(--ap-space-3), env(safe-area-inset-left, 0px));
+    z-index: var(--ap-z-sticky);
+    display: grid;
+    // Colonnes déduites du nombre d'entrées : la barre s'adapte, qu'elle en
+    // porte trois ou cinq, sans règle par espace.
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: var(--ap-space-1);
+    max-width: 31rem;
+    min-height: 4.45rem;
+    margin-inline: auto;
+    padding: 0.45rem;
+    background-color: var(--ap-surface-raised);
+    border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+    border-radius: var(--ap-radius-xl);
+    box-shadow: var(--ap-shadow-lg);
+  }
+
+  .ap-bottom-nav__item {
+    display: grid;
+    min-width: 0;
+    // 3,5 rem : au-delà des 44 px de cible tactile exigés par les conventions.
+    min-height: 3.5rem;
+    place-items: center;
+    align-content: center;
+    gap: var(--ap-space-1);
+    padding: var(--ap-space-1);
+    color: var(--ap-text-muted);
+    font-weight: var(--ap-font-weight-semibold);
+    font-size: var(--ap-font-size-xs);
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
+    border-radius: var(--ap-radius-lg);
+    transition:
+      color var(--ap-duration-fast) var(--ap-easing-standard),
+      background-color var(--ap-duration-fast) var(--ap-easing-standard);
+
+    @include ds.focus-ring(-2px);
+
+    &:hover {
+      color: var(--ap-color-primary);
+      background-color: var(--ap-color-primary-50);
+    }
+
+    @include ds.respect-reduced-motion {
+      transition: none;
+    }
+  }
+
+  .ap-bottom-nav__icon {
+    display: grid;
+    width: 2.05rem;
+    height: 2.05rem;
+    place-items: center;
+    border-radius: var(--ap-radius-lg);
+    transition:
+      color var(--ap-duration-fast) var(--ap-easing-standard),
+      background-color var(--ap-duration-fast) var(--ap-easing-standard);
+
+    @include ds.respect-reduced-motion {
+      transition: none;
+    }
+  }
+
+  .ap-bottom-nav__label {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // L'entrée courante se distingue par la pastille pleine et par le fond de
+  // l'entrée. L'inversion de la pastille est un contraste de forme, pas
+  // seulement de teinte : le repère tient donc sans dépendre de la perception
+  // des couleurs, et `aria-current` l'annonce aux lecteurs d'écran.
+  .ap-bottom-nav__item--active {
+    color: var(--ap-color-primary);
+    background-color: var(--ap-color-primary-50);
+
+    .ap-bottom-nav__icon {
+      color: var(--ap-text-on-primary);
+      background-color: var(--ap-color-primary);
+    }
+  }
+}
+
+// Très petits écrans : on resserre plutôt que de laisser les libellés se
+// tronquer les uns après les autres.
+@media (max-width: 22.5em) {
+  .ap-bottom-nav {
+    right: var(--ap-space-2);
+    left: var(--ap-space-2);
+    min-height: 4.15rem;
+    padding: var(--ap-space-1);
+  }
+
+  .ap-bottom-nav__item {
+    min-height: 3.35rem;
+  }
+
+  .ap-bottom-nav__icon {
+    width: 1.9rem;
+    height: 1.9rem;
+  }
+}

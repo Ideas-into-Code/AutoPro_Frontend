@@ -91,6 +91,12 @@ export class InteractiveMapComponent implements AfterViewInit, OnChanges, OnDest
   public readonly selectedMarkerId = input<string | null>(null);
   public readonly mode = input<'view' | 'picker'>('view');
 
+  /**
+   * Tracé à dessiner sur la carte (itinéraire vers le client, par exemple).
+   * Liste ordonnée de points ; `null` ou moins de deux points = aucun tracé.
+   */
+  public readonly routePath = input<readonly MapCoordinates[] | null>(null);
+
   public readonly markerSelect = output<InteractiveMapMarker>();
   public readonly locationSelect = output<MapCoordinates>();
 
@@ -110,10 +116,25 @@ export class InteractiveMapComponent implements AfterViewInit, OnChanges, OnDest
     return loc ? coordinatesToFallbackPoint(loc) : null;
   });
 
+  /** Tracé projeté sur le fond de carte de repli, sous forme `"x,y x,y …"`. */
+  protected readonly fallbackRoutePoints = computed<string | null>(() => {
+    const path = this.routePath();
+    if (!path || path.length < 2) {
+      return null;
+    }
+    return path
+      .map((point) => {
+        const { x, y } = coordinatesToFallbackPoint(point);
+        return `${x},${y}`;
+      })
+      .join(' ');
+  });
+
   private leaflet?: typeof Leaflet;
   private map?: Leaflet.Map;
   private markerLayer?: Leaflet.LayerGroup;
   private userMarker?: Leaflet.Marker;
+  private routeLine?: Leaflet.Polyline;
   private resizeObserver?: ResizeObserver;
 
   ngAfterViewInit(): void {
@@ -135,6 +156,9 @@ export class InteractiveMapComponent implements AfterViewInit, OnChanges, OnDest
     }
     if (changes['selectedMarkerId']) {
       this.highlightSelectedMarker();
+    }
+    if (changes['routePath']) {
+      this.updateRoute();
     }
   }
 
@@ -174,15 +198,11 @@ export class InteractiveMapComponent implements AfterViewInit, OnChanges, OnDest
       preferCanvas: true,
     });
 
-    const tiles = leaflet.tileLayer(
-      'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-      {
-        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-        maxZoom: 19,
-        subdomains: 'abcd',
-        detectRetina: true,
-      },
-    );
+    const tiles = leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 19,
+      crossOrigin: true,
+    });
 
     tiles.on('tileload', () => {
       this.hasLoadedTiles.set(true);
@@ -195,6 +215,7 @@ export class InteractiveMapComponent implements AfterViewInit, OnChanges, OnDest
 
     this.updateUserMarker();
     this.updateMarkers();
+    this.updateRoute();
     this.fitToVisiblePoints();
 
     if (this.mode() === 'picker') {
@@ -244,6 +265,35 @@ export class InteractiveMapComponent implements AfterViewInit, OnChanges, OnDest
     } else {
       this.userMarker.setLatLng([loc.latitude, loc.longitude]);
       this.userMarker.setIcon(icon);
+    }
+  }
+
+  private updateRoute(): void {
+    if (!this.map || !this.leaflet) return;
+
+    const path = this.routePath();
+    const points =
+      path && path.length >= 2
+        ? path.map((p) => this.leaflet!.latLng(p.latitude, p.longitude))
+        : [];
+
+    if (points.length < 2) {
+      this.routeLine?.remove();
+      this.routeLine = undefined;
+      return;
+    }
+
+    if (!this.routeLine) {
+      this.routeLine = this.leaflet.polyline(points, {
+        color: '#1d4ed8',
+        weight: 5,
+        opacity: 0.85,
+        lineJoin: 'round',
+        lineCap: 'round',
+      });
+      this.routeLine.addTo(this.map);
+    } else {
+      this.routeLine.setLatLngs(points);
     }
   }
 
@@ -324,6 +374,10 @@ export class InteractiveMapComponent implements AfterViewInit, OnChanges, OnDest
       points.push(this.leaflet.latLng(loc.latitude, loc.longitude));
     }
 
+    (this.routePath() ?? []).forEach((p) => {
+      points.push(this.leaflet!.latLng(p.latitude, p.longitude));
+    });
+
     if (points.length === 0) return;
 
     if (points.length === 1) {
@@ -368,16 +422,13 @@ function coordinatesToFallbackPoint(coordinates: MapCoordinates): FallbackUserPo
 
 function buildFallbackTiles(): readonly FallbackTile[] {
   const tiles: FallbackTile[] = [];
-  const subdomains = ['a', 'b', 'c', 'd'];
   const width = 100 / FALLBACK_TILE_COLUMNS;
   const height = 100 / FALLBACK_TILE_ROWS;
 
   for (let tileY = FALLBACK_TILE_MIN_Y; tileY <= FALLBACK_TILE_MAX_Y; tileY += 1) {
     for (let tileX = FALLBACK_TILE_MIN_X; tileX <= FALLBACK_TILE_MAX_X; tileX += 1) {
-      const subdomain = subdomains[(tileX + tileY) % subdomains.length];
-
       tiles.push({
-        href: `https://${subdomain}.basemaps.cartocdn.com/rastertiles/voyager/${FALLBACK_TILE_ZOOM}/${tileX}/${tileY}.png`,
+        href: `https://tile.openstreetmap.org/${FALLBACK_TILE_ZOOM}/${tileX}/${tileY}.png`,
         left: (tileX - FALLBACK_TILE_MIN_X) * width,
         top: (tileY - FALLBACK_TILE_MIN_Y) * height,
         width,

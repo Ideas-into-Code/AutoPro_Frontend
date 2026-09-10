@@ -1,0 +1,166 @@
+<section class="ap-profil">
+  <h1 class="ap-profil__titre">Mon profil</h1>
+
+  @if (profil.isLoading()) {
+    <app-spinner />
+  } @else if (profil.error()) {
+    <p class="ap-profil__error" role="alert">
+      Impossible de charger votre profil.
+      <button type="button" (click)="profil.reload()">Réessayer</button>
+    </p>
+  } @else if (profil.value(); as p) {
+
+    <!-- ─── Compte ─── -->
+    <form [formGroup]="compteForm" (ngSubmit)="enregistrerCompte()" class="ap-profil__carte">
+      <h2>Compte</h2>
+
+      <div class="ap-profil__grille">
+        <label>
+          Prénom
+          <input formControlName="firstName" autocomplete="given-name" />
+        </label>
+        <label>
+          Nom
+          <input formControlName="lastName" autocomplete="family-name" />
+        </label>
+        <label>
+          Téléphone
+          <input formControlName="phone" inputmode="tel" placeholder="77 123 45 67" />
+        </label>
+        <label>
+          Adresse e-mail
+          <input [value]="p.account.email" disabled />
+          <small>L'adresse e-mail sert d'identifiant et n'est pas modifiable ici.</small>
+        </label>
+      </div>
+
+      <div class="ap-profil__actions">
+        <button appButton variant="primary" type="submit" [disabled]="compteForm.invalid || compteState() === 'saving'">
+          {{ compteState() === 'saving' ? 'Enregistrement…' : 'Enregistrer' }}
+        </button>
+        @if (compteState() === 'saved') {
+          <span class="ap-profil__ok" role="status">Compte mis à jour.</span>
+        }
+        @if (compteState() === 'error') {
+          <span class="ap-profil__ko" role="alert">Échec de l'enregistrement. Réessayez.</span>
+        }
+      </div>
+    </form>
+
+    <!-- ─── Fiche mécanicien ─── -->
+    @if (estMecanicien() && p.mechanic; as m) {
+      <form [formGroup]="mecanoForm" (ngSubmit)="enregistrerMecano()" class="ap-profil__carte">
+        <h2>Fiche mécanicien</h2>
+
+        @if (!m.isVerified) {
+          <p class="ap-profil__note" role="status">
+            Votre dossier est en attente de validation par un administrateur.
+            Vous pourrez vous rendre disponible une fois qu'il sera validé.
+          </p>
+        }
+
+        <!-- Photo de profil -->
+        <div class="ap-profil__photo">
+          @if (photoUrl(); as url) {
+            <img class="ap-profil__photo-preview" [src]="url" alt="Votre photo de profil" />
+          } @else {
+            <span class="ap-profil__photo-placeholder" aria-hidden="true">
+              {{ (compteForm.controls.firstName.value || '?').slice(0, 1) }}
+            </span>
+          }
+          <div class="ap-profil__photo-actions">
+            <label class="ap-profil__photo-btn">
+              {{ photoState() === 'uploading' ? 'Envoi…' : (photoUrl() ? 'Changer la photo' : 'Ajouter une photo') }}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                hidden
+                (change)="choisirPhoto($event)"
+              />
+            </label>
+            @if (photoUrl()) {
+              <button appButton variant="ghost" type="button" (click)="retirerPhoto()">Retirer</button>
+            }
+            @if (photoState() === 'error') {
+              <span class="ap-profil__ko" role="alert">Le téléversement a échoué. Réessayez.</span>
+            }
+          </div>
+        </div>
+
+        <div class="ap-profil__grille">
+          <label>
+            Spécialité
+            <input formControlName="specialization" placeholder="Diagnostic, freinage…" />
+          </label>
+          <label>
+            Années d'expérience
+            <input type="number" formControlName="experienceYears" min="0" max="60" />
+          </label>
+        </div>
+
+        <label class="ap-profil__bloc">
+          Présentation
+          <textarea formControlName="bio" rows="3" placeholder="Décrivez votre atelier, vos prestations…"></textarea>
+        </label>
+
+        <label class="ap-profil__bloc">
+          Horaires d'ouverture
+          <input
+            formControlName="openingHours"
+            placeholder="Lun–Ven 8h–18h · Sam 9h–14h · Dim fermé"
+          />
+          <small>Texte libre, affiché sur votre fiche publique.</small>
+        </label>
+
+        <label class="ap-profil__switch">
+          <input type="checkbox" formControlName="isAvailable" [disabled]="!peutBasculerDispo()" />
+          Disponible pour recevoir des demandes
+        </label>
+
+        <fieldset class="ap-profil__position">
+          <legend>Position de l'atelier</legend>
+          <p class="ap-profil__position-aide">
+            Votre position permet aux clients proches de vous trouver sur la carte.
+          </p>
+
+          @if (aUnePosition()) {
+            <p class="ap-profil__position-valeur">
+              {{ coords().lat }}, {{ coords().lng }}
+            </p>
+          } @else {
+            <p class="ap-profil__position-valeur ap-profil__position-valeur--vide">
+              Aucune position enregistrée.
+            </p>
+          }
+
+          <div class="ap-profil__actions">
+            <button appButton variant="ghost" type="button" (click)="utiliserMaPosition()"
+                    [disabled]="positionState() === 'loading'">
+              {{ positionState() === 'loading' ? 'Localisation…' : 'Utiliser ma position actuelle' }}
+            </button>
+            @if (aUnePosition()) {
+              <button appButton variant="ghost" type="button" (click)="effacerPosition()">Effacer</button>
+            }
+          </div>
+          @if (positionState() === 'error') {
+            <span class="ap-profil__ko" role="alert">
+              Position indisponible. Autorisez la géolocalisation, puis réessayez.
+            </span>
+          }
+        </fieldset>
+
+        <div class="ap-profil__actions">
+          <button appButton variant="primary" type="submit" [disabled]="mecanoForm.invalid || mecanoState() === 'saving'">
+            {{ mecanoState() === 'saving' ? 'Enregistrement…' : 'Enregistrer la fiche' }}
+          </button>
+          @if (mecanoState() === 'saved') {
+            <span class="ap-profil__ok" role="status">Fiche mise à jour.</span>
+          }
+          @if (mecanoState() === 'error') {
+            <span class="ap-profil__ko" role="alert">Échec de l'enregistrement. Réessayez.</span>
+          }
+        </div>
+      </form>
+    }
+  }
+</section>

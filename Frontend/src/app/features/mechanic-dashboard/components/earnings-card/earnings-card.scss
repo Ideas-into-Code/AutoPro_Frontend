@@ -1,0 +1,107 @@
+@use 'index' as ds;
+
+// Carte pleine couleur, reprise de la maquette : les gains sont l'information
+// que le mécanicien cherche en premier en ouvrant l'application.
+:host {
+  display: block;
+  position: relative;
+  padding: var(--ap-space-6);
+  overflow: hidden;
+  color: var(--ap-text-on-primary);
+  background-color: var(--ap-color-primary);
+  border-radius: var(--ap-radius-xl);
+}
+
+.ap-earnings__label {
+  margin: 0 0 var(--ap-space-1);
+  font-weight: var(--ap-font-weight-medium);
+  font-size: var(--ap-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.9;
+}
+
+.ap-earnings__total-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-3);
+  align-items: baseline;
+  margin-bottom: var(--ap-space-5);
+}
+
+.ap-earnings__total {
+  margin: 0;
+  font-weight: var(--ap-font-weight-bold);
+  font-size: var(--ap-font-size-2xl);
+  line-height: var(--ap-line-height-tight);
+
+  @include ds.from(sm) {
+    font-size: var(--ap-font-size-3xl);
+  }
+}
+
+.ap-earnings__currency {
+  font-weight: var(--ap-font-weight-medium);
+  font-size: var(--ap-font-size-base);
+  opacity: 0.7;
+}
+
+.ap-earnings__trend {
+  display: inline-flex;
+  gap: var(--ap-space-1);
+  align-items: center;
+  margin: 0;
+  padding: var(--ap-space-1) var(--ap-space-2);
+  font-weight: var(--ap-font-weight-semibold);
+  font-size: var(--ap-font-size-xs);
+  background-color: rgb(255 255 255 / 18%);
+  border-radius: var(--ap-radius-full);
+}
+
+// La baisse retourne la flèche : la couleur seule ne suffirait pas à la
+// distinguer sur un fond déjà coloré.
+.ap-earnings__trend--down .ap-earnings__trend-icon {
+  transform: scaleY(-1);
+}
+
+// Groupe compact aligné à gauche, comme sur la maquette : le graphique est un
+// repère de tendance, pas une figure à lire valeur par valeur. Les chiffres
+// exacts sont dans le résumé textuel.
+.ap-earnings__chart {
+  display: flex;
+  gap: var(--ap-space-1);
+  align-items: flex-end;
+  height: 3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ap-earnings__bar-slot {
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+}
+
+.ap-earnings__bar {
+  // Largeur fixe et étroite : des barres élargies à la place disponible
+  // deviennent des pavés dès qu'il y a peu de jours à montrer.
+  width: 0.5rem;
+  background-color: rgb(255 255 255 / 35%);
+  border-radius: var(--ap-radius-sm) var(--ap-radius-sm) 0 0;
+  transition: height var(--ap-duration-slow) var(--ap-easing-standard);
+
+  @include ds.respect-reduced-motion {
+    transition: none;
+  }
+}
+
+// Le jour en cours est plein, les précédents translucides : le repère se lit
+// sans légende.
+.ap-earnings__bar--current {
+  background-color: var(--ap-color-neutral-0);
+}
+
+.ap-earnings__chart-summary {
+  @include ds.visually-hidden;
+}

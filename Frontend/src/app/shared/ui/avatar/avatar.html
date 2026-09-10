@@ -1,0 +1,20 @@
+<!--
+  Silhouette dessinée pour un cadrage rond : les épaules débordent volontairement
+  du bas du `viewBox` et sont recoupées par la pastille. Un pictogramme carré du
+  jeu d'icônes donnait l'effet inverse — un trait d'épaules tranché en plein
+  vide, à distance du bord — d'où son remplacement par ce tracé plein.
+-->
+<span class="ap-avatar__photo" aria-hidden="true">
+  <svg class="ap-avatar__glyph" viewBox="0 0 40 40" focusable="false">
+    <circle cx="20" cy="15" r="6.6" />
+    <path d="M20 24c-7.3 0-13.2 4.4-13.2 9.8V40h26.4v-6.2C33.2 28.4 27.3 24 20 24Z" />
+  </svg>
+</span>
+
+<span class="ap-avatar__initials" aria-hidden="true">{{ initiales() }}</span>
+
+<!--
+  Le nom complet n'est pas affiché mais reste annoncé : deux initiales épelées
+  « M, B » n'apprendraient rien à qui ne voit pas la pastille.
+-->
+<span class="ap-avatar__name">{{ name() }}</span>

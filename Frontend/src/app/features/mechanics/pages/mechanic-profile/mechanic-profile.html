@@ -5,12 +5,9 @@
       <span class="material-symbols-outlined">arrow_back</span>
     </a>
     <p class="ap-mpr__eyebrow">Profil mécanicien</p>
-    <button class="ap-mpr__icon-btn" type="button" aria-label="Partager le profil">
-      <span class="material-symbols-outlined">ios_share</span>
-    </button>
+    <span class="ap-mpr__icon-btn ap-mpr__icon-btn--ghost" aria-hidden="true"></span>
   </header>
 
-  <!-- ─── Loading / Error ─── -->
   @if (mechanicResource.isLoading()) {
     <div class="ap-mpr__state">
       <app-spinner label="Chargement du profil" />
@@ -26,26 +23,27 @@
     <main class="ap-mpr__layout">
       <!-- ════════════ COLONNE GAUCHE ════════════ -->
       <div class="ap-mpr__left">
-        <!-- Hero Image -->
+        <!-- En-tête -->
         <section class="ap-mpr__hero" aria-labelledby="profile-title">
-          <figure class="ap-mpr__media">
-            <img
-              src="/images/tech_support.png"
-              [alt]="'Portrait atelier de ' + mec.fullName"
-              class="ap-mpr__photo"
-            />
-            <!-- Gradient overlay -->
-            <div class="ap-mpr__media-gradient" aria-hidden="true"></div>
+          <div class="ap-mpr__media">
+            @if (mec.avatarUrl) {
+              <img class="ap-mpr__avatar-img" [src]="mec.avatarUrl" [alt]="'Photo de ' + mec.fullName" />
+            } @else {
+              <span class="ap-mpr__avatar" aria-hidden="true">{{ initiale() }}</span>
+            }
 
-            <!-- Verified badge -->
             @if (mec.isVerified) {
               <div class="ap-mpr__verified">
                 <span class="material-symbols-outlined" aria-hidden="true">verified</span>
-                Expert vérifié
+                Profil vérifié
+              </div>
+            } @else {
+              <div class="ap-mpr__verified ap-mpr__verified--pending">
+                <span class="material-symbols-outlined" aria-hidden="true">hourglass_top</span>
+                En cours de validation
               </div>
             }
 
-            <!-- Disponibilité -->
             <div
               class="ap-mpr__availability"
               [class.ap-mpr__availability--open]="mec.isAvailable"
@@ -54,55 +52,35 @@
               <span class="ap-mpr__availability-dot" aria-hidden="true"></span>
               {{ mec.isAvailable ? 'Disponible' : 'Indisponible' }}
             </div>
+          </div>
 
-            <!-- Rating card flottante -->
-            <div class="ap-mpr__rating-card" aria-label="Note moyenne {{ mec.rating }} sur 5">
-              <span class="ap-mpr__rating-value">{{ mec.rating.toFixed(1) }}</span>
-              <div class="ap-mpr__stars" aria-hidden="true">
-                @for (star of stars; track star) {
-                  <span [class.ap-mpr__star--muted]="!isFilledStar(mec.rating, star)">★</span>
-                }
-              </div>
-              <span class="ap-mpr__rating-count">({{ mec.reviewCount }} avis)</span>
-            </div>
-          </figure>
-
-          <!-- Identité -->
           <div class="ap-mpr__identity">
             <h1 id="profile-title" class="ap-mpr__name">{{ mec.fullName }}</h1>
-            <p class="ap-mpr__workshop">
-              <span class="material-symbols-outlined" aria-hidden="true">handyman</span>
-              {{ mec.workshopName }}
-            </p>
-            <p class="ap-mpr__address">
-              <span class="material-symbols-outlined" aria-hidden="true">location_on</span>
-              {{ mec.address }}
-            </p>
+            @if (mec.workshopName) {
+              <p class="ap-mpr__workshop">
+                <span class="material-symbols-outlined" aria-hidden="true">handyman</span>
+                {{ mec.workshopName }}
+              </p>
+            }
+            @if (experienceLabel(); as exp) {
+              <p class="ap-mpr__workshop">
+                <span class="material-symbols-outlined" aria-hidden="true">workspace_premium</span>
+                {{ exp }}
+              </p>
+            }
           </div>
         </section>
 
-        <!-- Stats Grid -->
-        <section class="ap-mpr__stats" aria-label="Indicateurs clés du mécanicien">
-          <article class="ap-mpr__stat ap-mpr__stat--primary">
-            <div class="ap-mpr__stat-icon-wrap">
-              <span class="material-symbols-outlined">workspace_premium</span>
-            </div>
-            <span class="ap-mpr__stat-label">Expérience</span>
-            <strong class="ap-mpr__stat-value">{{ details().experience }}</strong>
-          </article>
-          <article class="ap-mpr__stat ap-mpr__stat--accent">
-            <div class="ap-mpr__stat-icon-wrap">
-              <span class="material-symbols-outlined">shield_with_heart</span>
-            </div>
-            <span class="ap-mpr__stat-label">Certification</span>
-            <strong class="ap-mpr__stat-value">{{ details().certificate }}</strong>
-          </article>
+        <!-- Note + avis -->
+        <section class="ap-mpr__stats" aria-label="Réputation du mécanicien">
           <article class="ap-mpr__stat ap-mpr__stat--star">
             <div class="ap-mpr__stat-icon-wrap">
               <span class="material-symbols-outlined">star</span>
             </div>
-            <span class="ap-mpr__stat-label">Note globale</span>
-            <strong class="ap-mpr__stat-value">{{ mec.rating.toFixed(1) }}/5</strong>
+            <span class="ap-mpr__stat-label">Note moyenne</span>
+            <strong class="ap-mpr__stat-value">
+              {{ mec.reviewCount > 0 ? mec.rating.toFixed(1) + '/5' : '—' }}
+            </strong>
           </article>
           <article class="ap-mpr__stat ap-mpr__stat--reviews">
             <div class="ap-mpr__stat-icon-wrap">
@@ -114,90 +92,57 @@
         </section>
 
         <!-- Spécialités -->
-        <section class="ap-mpr__section">
-          <h2 class="ap-mpr__section-title-text">
-            <span class="material-symbols-outlined" aria-hidden="true">build</span>
-            Spécialités & compétences
-          </h2>
-          <ul class="ap-mpr__chips" role="list">
-            @for (specialty of mec.specialties; track specialty) {
-              <li class="ap-mpr__chip">
-                <app-icon [name]="specialtyIcon(specialty)" size="sm" />
-                {{ specialty }}
-              </li>
-            }
-          </ul>
-        </section>
-
-        <!-- Marques -->
-        <section class="ap-mpr__section">
-          <h2 class="ap-mpr__section-title-text">
-            <span class="material-symbols-outlined" aria-hidden="true">directions_car</span>
-            Marques prises en charge
-          </h2>
-          <ul class="ap-mpr__brands" role="list">
-            @for (brand of details().brands; track brand) {
-              <li class="ap-mpr__brand">
-                <div class="ap-mpr__brand-logo" aria-hidden="true">
-                  {{ brand.slice(0, 1) }}
-                </div>
-                <span>{{ brand }}</span>
-              </li>
-            }
-          </ul>
-        </section>
+        @if (mec.specialties.length > 0) {
+          <section class="ap-mpr__section">
+            <h2 class="ap-mpr__section-title-text">
+              <span class="material-symbols-outlined" aria-hidden="true">build</span>
+              Spécialités
+            </h2>
+            <ul class="ap-mpr__chips" role="list">
+              @for (specialty of mec.specialties; track specialty) {
+                <li class="ap-mpr__chip">
+                  <app-icon [name]="specialtyIcon(specialty)" size="sm" />
+                  {{ specialty }}
+                </li>
+              }
+            </ul>
+          </section>
+        }
 
         <!-- Horaires -->
-        <section class="ap-mpr__hours-card">
-          <div class="ap-mpr__hours-header">
+        @if (mec.openingHours) {
+          <section class="ap-mpr__section">
             <h2 class="ap-mpr__section-title-text">
               <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
               Horaires
             </h2>
-            <span
-              class="ap-mpr__status-pill"
-              [class.ap-mpr__status-pill--open]="mec.isAvailable"
-              [class.ap-mpr__status-pill--closed]="!mec.isAvailable"
-            >
-              {{ mec.isAvailable ? 'Ouvert maintenant' : 'Fermé' }}
-            </span>
-          </div>
-          <dl class="ap-mpr__schedule">
-            @for (hour of details().hours; track hour.day) {
-              <div class="ap-mpr__schedule-row" [class.ap-mpr__schedule-row--muted]="hour.isMuted">
-                <dt>{{ hour.day }}</dt>
-                <dd>{{ hour.value }}</dd>
-              </div>
-            }
-          </dl>
-        </section>
+            <p class="ap-mpr__hours">{{ mec.openingHours }}</p>
+          </section>
+        }
       </div>
       <!-- /left -->
 
       <!-- ════════════ COLONNE DROITE ════════════ -->
       <div class="ap-mpr__right">
-        <!-- CTA Actions — sticky -->
         <aside class="ap-mpr__actions" aria-label="Actions de contact">
           <h3 class="ap-mpr__actions-title">Contacter ce mécanicien</h3>
           <div class="ap-mpr__actions-btns">
-            <a class="ap-mpr__action-btn ap-mpr__action-btn--outline" [href]="'tel:' + mec.phone">
-              <span class="material-symbols-outlined">phone</span>
-              Appeler
-            </a>
+            @if (mec.phone) {
+              <a class="ap-mpr__action-btn ap-mpr__action-btn--outline" [href]="'tel:' + mec.phone">
+                <span class="material-symbols-outlined">phone</span>
+                Appeler
+              </a>
+            }
             <a
               class="ap-mpr__action-btn ap-mpr__action-btn--outline"
               routerLink="/messages"
-              [queryParams]="{ mecanicien: mec.id }"
+              [queryParams]="{ peer: mec.userId }"
             >
               <span class="material-symbols-outlined">chat</span>
               Message
             </a>
           </div>
-          <a
-            class="ap-mpr__action-btn ap-mpr__action-btn--primary"
-            routerLink="/demandes/signaler"
-            [queryParams]="{ mecanicien: mec.id }"
-          >
+          <a class="ap-mpr__action-btn ap-mpr__action-btn--primary" routerLink="/demandes/signaler">
             <span class="material-symbols-outlined">build_circle</span>
             Demander une intervention
           </a>
@@ -210,7 +155,6 @@
               <span class="material-symbols-outlined" aria-hidden="true">reviews</span>
               Avis clients
             </h2>
-            <button type="button" class="ap-mpr__see-all-btn">Voir tout</button>
           </div>
 
           @if (mec.reviews.length === 0) {
@@ -241,7 +185,9 @@
                       }
                     </div>
                   </header>
-                  <p class="ap-mpr__review-comment">{{ review.comment }}</p>
+                  @if (review.comment) {
+                    <p class="ap-mpr__review-comment">{{ review.comment }}</p>
+                  }
                 </article>
               }
             </div>

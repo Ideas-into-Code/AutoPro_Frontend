@@ -14,6 +14,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
 import { UserRole } from '../role-selection/role-selection';
 
 @Component({
@@ -28,6 +29,7 @@ export class RegisterComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly authService = inject(AuthService);
 
   protected readonly userRole = signal<UserRole>('client');
   protected readonly showPassword = signal(false);
@@ -37,7 +39,8 @@ export class RegisterComponent implements OnInit {
 
   protected readonly registerForm = this.fb.group(
     {
-      fullName: ['', [(c: AbstractControl) => Validators.required(c)]],
+      firstName: ['', [(c: AbstractControl) => Validators.required(c)]],
+      lastName: ['', [(c: AbstractControl) => Validators.required(c)]],
       email: [
         '',
         [
@@ -57,7 +60,9 @@ export class RegisterComponent implements OnInit {
         '',
         [
           (c: AbstractControl) => Validators.required(c),
-          (c: AbstractControl) => Validators.minLength(6)(c),
+          // Le backend exige 8 caractères minimum : on aligne pour éviter un
+          // « Requête invalide » incompréhensible après envoi.
+          (c: AbstractControl) => Validators.minLength(8)(c),
         ],
       ],
       confirmPassword: ['', [(c: AbstractControl) => Validators.required(c)]],
@@ -108,10 +113,40 @@ export class RegisterComponent implements OnInit {
 
     this.isLoading.set(true);
 
-    setTimeout(() => {
-      this.isLoading.set(false);
-      void this.router.navigate(['/compte/connexion']);
-    }, 800);
+    const v = this.registerForm.value;
+    this.authService
+      .register({
+        firstName: v.firstName!,
+        lastName: v.lastName!,
+        email: v.email!,
+        password: v.password!,
+        phone: v.phoneNumber ?? undefined,
+        role: this.userRole(),
+        workshopName: v.workshopName ?? undefined,
+      })
+      .subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          // L'utilisateur est connecté dès l'inscription : on l'amène directement
+          // dans son espace plutôt que de le renvoyer vers la page de connexion.
+          const target = this.userRole() === 'mecanicien' ? '/mecanicien' : '/accueil';
+          void this.router.navigate([target]);
+        },
+        error: (err: { message?: string; fieldErrors?: Record<string, string> }) => {
+          this.isLoading.set(false);
+          this.errorMessage.set(this.messageErreur(err, "Échec de l'inscription."));
+        },
+      });
+  }
+
+  /** Combine le message d'erreur et le détail par champ renvoyés par le backend. */
+  private messageErreur(
+    err: { message?: string; fieldErrors?: Record<string, string> },
+    fallback: string,
+  ): string {
+    const base = err?.message ?? fallback;
+    const details = err?.fieldErrors ? Object.values(err.fieldErrors) : [];
+    return details.length > 0 ? `${base} : ${details.join(' · ')}` : base;
   }
 
   onLogin(): void {

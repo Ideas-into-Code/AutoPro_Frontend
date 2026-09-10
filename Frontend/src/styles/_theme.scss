@@ -59,6 +59,12 @@
   --ap-color-info: #{t.$color-info};
   --ap-color-info-surface: #{t.$color-info-surface};
 
+  // --- Marques tierces --------------------------------------------------------
+  --ap-brand-wave: #{t.$brand-wave};
+  --ap-brand-wave-surface: #{t.$brand-wave-surface};
+  --ap-brand-max-it: #{t.$brand-max-it};
+  --ap-brand-max-it-surface: #{t.$brand-max-it-surface};
+
   // --- Rôles d'interface ------------------------------------------------------
   // Les composants visent ces rôles, pas les teintes brutes : basculer le
   // thème (mode sombre) ne demandera que de réaffecter ce bloc.

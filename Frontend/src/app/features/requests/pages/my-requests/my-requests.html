@@ -1,0 +1,45 @@
+<section class="ap-my-requests">
+  <header class="ap-my-requests__header">
+    <h1>Mes demandes</h1>
+    <a routerLink="/demandes/signaler" class="ap-my-requests__new">Nouvelle demande</a>
+  </header>
+
+  @if (demandes.isLoading()) {
+    <app-spinner />
+  } @else if (demandes.error()) {
+    <p class="ap-my-requests__error" role="alert">
+      Impossible de charger vos demandes pour le moment.
+      <button type="button" (click)="demandes.reload()">Réessayer</button>
+    </p>
+  } @else if (demandes.value().length === 0) {
+    <p class="ap-my-requests__empty">
+      Vous n'avez pas encore de demande.
+      <a routerLink="/demandes/signaler">Signaler un problème</a>
+    </p>
+  } @else {
+    <ul class="ap-my-requests__list">
+      @for (demande of demandes.value(); track demande.id) {
+        <li>
+          <a [routerLink]="['/demandes', demande.id]" class="ap-req-card">
+            <div class="ap-req-card__main">
+              <span class="ap-req-card__type">
+                {{ PROBLEM_LABELS[demande.problemType] }}
+                @if (demande.isEmergency) {
+                  <span class="ap-req-card__urgent">Urgent</span>
+                }
+              </span>
+              <span class="ap-req-card__desc">{{ demande.description }}</span>
+              <span class="ap-req-card__meta">{{ demande.locationAddress }}</span>
+            </div>
+            <div class="ap-req-card__side">
+              <span [class]="classeStatut(demande.status)">{{ STATUS_LABELS[demande.status] }}</span>
+              @if (demande.priceXOF !== null) {
+                <span class="ap-req-card__price">{{ demande.priceXOF | number: '1.0-0' }} FCFA</span>
+              }
+            </div>
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</section>

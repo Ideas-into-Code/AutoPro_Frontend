@@ -338,3 +338,23 @@
 @keyframes apSpin {
   to { transform: rotate(360deg); }
 }
+
+.ap-login-card__alert {
+  margin: 0 0 1rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  line-height: 1.35;
+
+  &--error {
+    background: #fdecec;
+    color: #b3261e;
+    border: 1px solid #f5c2c0;
+  }
+
+  &--info {
+    background: #e8f0fe;
+    color: #1a56c4;
+    border: 1px solid #c2d5f5;
+  }
+}

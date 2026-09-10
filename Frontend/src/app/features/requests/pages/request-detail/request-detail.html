@@ -1,0 +1,152 @@
+<section class="ap-req-detail">
+  <a routerLink="/demandes" class="ap-req-detail__back">← Mes demandes</a>
+
+  @if (demande.isLoading()) {
+    <app-spinner />
+  } @else if (demande.error()) {
+    <p class="ap-req-detail__error" role="alert">
+      Demande introuvable ou inaccessible.
+      <button type="button" (click)="demande.reload()">Réessayer</button>
+    </p>
+  } @else if (demande.value(); as d) {
+    <header class="ap-req-detail__head">
+      <h1>{{ PROBLEM_LABELS[d.problemType] }}</h1>
+      <span [class]="'ap-req-status ap-req-status--' + d.status">{{
+        STATUS_LABELS[d.status]
+      }}</span>
+    </header>
+
+    @if (d.isEmergency) {
+      <p class="ap-req-detail__urgent">Demande signalée comme urgente (véhicule immobilisé).</p>
+    }
+
+    <dl class="ap-req-detail__facts">
+      <dt>Description</dt>
+      <dd>{{ d.description }}</dd>
+
+      <dt>Lieu</dt>
+      <dd>{{ d.locationAddress || 'Non précisé' }}</dd>
+
+      <dt>Téléphone de rappel</dt>
+      <dd>{{ d.clientPhone || 'Non précisé' }}</dd>
+
+      @if (d.vehicleLabel) {
+        <dt>Véhicule</dt>
+        <dd>{{ d.vehicleLabel }}</dd>
+      }
+
+      <dt>Mécanicien</dt>
+      <dd>
+        {{ d.mechanicName || "En attente d'attribution" }}
+        @if (d.mechanicUserId) {
+          · <a [routerLink]="['/messages']" [queryParams]="{ peer: d.mechanicUserId }">Contacter</a>
+        }
+      </dd>
+
+      <dt>Prix convenu</dt>
+      <dd>
+        @if (d.priceXOF !== null) {
+          {{ d.priceXOF | number: '1.0-0' }} FCFA
+        } @else {
+          Sera fixé par le mécanicien après diagnostic
+        }
+      </dd>
+
+      <dt>Paiement</dt>
+      <dd>
+        @if (d.paymentStatus !== null) {
+          {{ PAYMENT_LABELS[d.paymentStatus] }}
+        } @else {
+          En espèces, à la fin de l'intervention
+        }
+      </dd>
+
+      @if (d.status === 'annulee' && d.cancellationReason) {
+        <dt>Motif d'annulation</dt>
+        <dd>{{ MOTIF_LABELS[d.cancellationReason] }}</dd>
+      }
+    </dl>
+
+    @if (d.mechanicUserId && d.status !== 'en_attente' && d.status !== 'annulee') {
+      <a
+        appButton
+        variant="primary"
+        class="ap-req-detail__contact"
+        [routerLink]="['/messages']"
+        [queryParams]="{ peer: d.mechanicUserId }"
+      >
+        Contacter {{ d.mechanicName || 'le mécanicien' }} par message
+      </a>
+    }
+
+    @if (d.photoUrls.length > 0) {
+      <section class="ap-req-detail__photos" aria-label="Photos jointes">
+        <app-photo-gallery [photos]="d.photoUrls" alt="Photo jointe à la demande" />
+      </section>
+    }
+
+    @if (suitLeMecanicien() && d.mechanicId) {
+      <p class="ap-req-detail__track-intro">
+        Votre mécanicien est en route. Suivez sa progression ci-dessous — vous pouvez le joindre à
+        tout moment par message.
+      </p>
+      <app-live-tracking-card
+        [mechanicId]="d.mechanicId"
+        [mechanicName]="d.mechanicName"
+        [clientLocation]="lieuIntervention()"
+      />
+    }
+
+    @if (d.status === 'terminee' && d.mechanicId) {
+      <a
+        appButton
+        variant="primary"
+        [routerLink]="['/avis/nouveau']"
+        [queryParams]="{ mecanicien: d.mechanicId }"
+      >
+        Noter {{ d.mechanicName || 'le mécanicien' }}
+      </a>
+    }
+
+    @if (annulable()) {
+      @if (erreurAnnulation()) {
+        <p class="ap-req-detail__error" role="alert">{{ erreurAnnulation() }}</p>
+      }
+
+      @if (!choixMotif()) {
+        <button appButton variant="ghost" type="button" (click)="ouvrirChoixMotif()">
+          Annuler la demande
+        </button>
+      } @else {
+        <fieldset class="ap-req-detail__cancel">
+          <legend>Pourquoi annulez-vous ?</legend>
+          @for (r of MOTIFS; track r) {
+            <label class="ap-req-detail__cancel-opt">
+              <input
+                type="radio"
+                name="motif-annulation"
+                [checked]="motif() === r"
+                (change)="choisirMotif(r)"
+              />
+              {{ MOTIF_LABELS[r] }}
+            </label>
+          }
+          <div class="ap-req-detail__cancel-actions">
+            <button
+              appButton
+              variant="primary"
+              type="button"
+              [disabled]="motif() === null || annulationEnCours()"
+              (click)="confirmerAnnulation()"
+            >
+              {{ annulationEnCours() ? 'Annulation…' : 'Confirmer l’annulation' }}
+            </button>
+            <button appButton variant="ghost" type="button" (click)="fermerChoixMotif()">
+              Retour
+            </button>
+          </div>
+        </fieldset>
+      }
+    }
+  }
+</section>

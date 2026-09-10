@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 
+import { clientAreaGuard } from '@core/guards/auth.guard';
+
 /**
  * Table de routage racine.
  *
@@ -43,9 +45,65 @@ export const routes: Routes = [
     loadChildren: () => import('@features/auth/auth.routes').then((m) => m.authRoutes),
   },
 
+  // --- Messagerie, hors coquille -------------------------------------------
+  // Partagée par le client et le mécanicien : elle ne peut vivre dans aucune
+  // des deux coquilles sans « faire basculer » l'autre persona dedans. Rendue
+  // en plein écran, avec son propre retour vers l'espace du rôle courant.
+  {
+    path: 'messages',
+    loadChildren: () =>
+      import('@features/messaging/messaging.routes').then((m) => m.messagingRoutes),
+  },
+
+  // --- Espace mécanicien, sous sa propre coquille ---------------------------
+  // Séparé de l'espace client : un mécanicien n'a que faire d'un menu qui
+  // propose « Mécaniciens » ou « Mes demandes ». Deux personas, deux
+  // navigations, donc deux coquilles.
+  {
+    path: 'mecanicien',
+    loadComponent: () =>
+      import('./layouts/mechanic-shell/mechanic-shell').then((m) => m.MechanicShell),
+    children: [
+      {
+        // Profil professionnel du mécanicien. Feature à part, montée aussi sous
+        // `/profil` (coquille client) : un seul écran pour les deux personas.
+        path: 'profil',
+        loadChildren: () =>
+          import('@features/profile/profile.routes').then((m) => m.profileRoutes),
+      },
+      {
+        path: '',
+        loadChildren: () =>
+          import('@features/mechanic-dashboard/mechanic-dashboard.routes').then(
+            (m) => m.mechanicDashboardRoutes,
+          ),
+      },
+    ],
+  },
+
+  // --- Back-office, sous sa propre coquille ---------------------------------
+  // Sorti de la coquille client, où il était jusqu'ici : le menu y proposait
+  // « Mécaniciens » et « Mes demandes » à un administrateur, c'est-à-dire les
+  // entrées de quelqu'un qui *cherche* un mécanicien plutôt que de celui qui
+  // les valide. Troisième persona, troisième navigation.
+  {
+    path: 'admin',
+    loadComponent: () => import('./layouts/admin-shell/admin-shell').then((m) => m.AdminShell),
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('@features/admin/admin.routes').then((m) => m.adminRoutes),
+      },
+    ],
+  },
+
   // --- Espace client, sous la coquille commune ------------------------------
+  // `clientAreaGuard` : les pages publiques (accueil, carte, mécaniciens) restent
+  // ouvertes à tous, mais un mécanicien ou un admin connecté est renvoyé vers
+  // son propre espace plutôt que de se retrouver dans l'interface client.
   {
     path: '',
+    canMatch: [clientAreaGuard],
     loadComponent: () => import('./layouts/client-shell/client-shell').then((m) => m.ClientShell),
     children: [
       {
@@ -68,9 +126,14 @@ export const routes: Routes = [
           import('@features/requests/requests.routes').then((m) => m.requestsRoutes),
       },
       {
-        path: 'messages',
+        path: 'vehicules',
         loadChildren: () =>
-          import('@features/messaging/messaging.routes').then((m) => m.messagingRoutes),
+          import('@features/vehicles/vehicles.routes').then((m) => m.vehiclesRoutes),
+      },
+      {
+        path: 'profil',
+        loadChildren: () =>
+          import('@features/profile/profile.routes').then((m) => m.profileRoutes),
       },
       {
         path: 'avis',
@@ -81,12 +144,6 @@ export const routes: Routes = [
       {
         path: 'tarifs',
         loadChildren: () => import('@features/pricing/pricing.routes').then((m) => m.pricingRoutes),
-      },
-
-      // --- Back-office ------------------------------------------------------
-      {
-        path: 'admin',
-        loadChildren: () => import('@features/admin/admin.routes').then((m) => m.adminRoutes),
       },
 
       // --- Repli ------------------------------------------------------------

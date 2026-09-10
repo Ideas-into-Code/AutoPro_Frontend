@@ -1,0 +1,78 @@
+<app-page-shell>
+  <app-header
+    header
+    brand="AutoPro"
+    brandLink="/mecanicien"
+    brandLabel="AutoPro — Tableau de bord mécanicien"
+  >
+    <!--
+      Toutes les destinations restent sous `/mecanicien` : un lien vers une
+      route cliente ferait sortir de cet espace, coquille comprise.
+    -->
+    <a
+      nav
+      routerLink="/mecanicien"
+      routerLinkActive="ap-mecano-shell__link--active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      ariaCurrentWhenActive="page"
+    >
+      Accueil
+    </a>
+    <a
+      nav
+      routerLink="/mecanicien/carte"
+      routerLinkActive="ap-mecano-shell__link--active"
+      ariaCurrentWhenActive="page"
+    >
+      Carte
+    </a>
+    <a
+      nav
+      routerLink="/mecanicien/demandes"
+      routerLinkActive="ap-mecano-shell__link--active"
+      ariaCurrentWhenActive="page"
+    >
+      Demandes
+    </a>
+
+    <!--
+      La pastille seule : deux initiales suffisent à identifier qui est
+      connecté, et la barre reste dégagée. Le nom complet n'est pas affiché,
+      seulement annoncé aux lecteurs d'écran par l'avatar lui-même.
+    -->
+    <div actions class="ap-mecano-shell__actions">
+      <app-notification-bell />
+      <a class="ap-mecano-shell__account" routerLink="/mecanicien/profil">
+        <app-avatar [name]="nomAffiche()" size="sm" />
+      </a>
+      <button
+        type="button"
+        class="ap-mecano-shell__logout"
+        (click)="deconnexion()"
+        aria-label="Déconnexion"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+      </button>
+    </div>
+  </app-header>
+
+  @if (enRoute()) {
+    <p class="ap-mecano-shell__tracking" role="status">
+      <span class="ap-mecano-shell__tracking-dot" aria-hidden="true"></span>
+      Partage de position activé — le client suit votre trajet en direct.
+    </p>
+  }
+
+  <router-outlet />
+
+  <!--
+    Le pied de page cède la place à la barre basse sur mobile : afficher les
+    deux ferait deux navigations empilées au même endroit.
+  -->
+  <app-footer footer class="ap-mecano-shell__footer-desktop">
+    <a link routerLink="/mecanicien">Tableau de bord</a>
+    <a link routerLink="/mecanicien/profil">Mon profil</a>
+  </app-footer>
+</app-page-shell>
+
+<app-bottom-nav [items]="navItems" ariaLabel="Navigation mécanicien" />

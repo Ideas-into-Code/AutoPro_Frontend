@@ -8,12 +8,16 @@ import { InjectionToken } from '@angular/core';
 export type MicroserviceName =
   | 'auth'
   | 'users'
+  | 'vehicles'
   | 'mechanics'
   | 'requests'
   | 'pricing'
   | 'reviews'
   | 'messaging'
+  | 'notifications'
   | 'geolocation'
+  | 'payments'
+  | 'files'
   | 'admin';
 
 /**
@@ -44,15 +48,21 @@ export const API_CONFIG = new InjectionToken<ApiConfig>('AutoPro.ApiConfig');
  */
 export const DEFAULT_API_CONFIG: ApiConfig = {
   gateway: '/api',
+  // Le backend est un monolithe : chaque « service » correspond en fait à un
+  // préfixe de route Spring, pas à un microservice distinct.
   services: {
     auth: 'auth',
     users: 'users',
+    vehicles: 'vehicles',
     mechanics: 'mechanics',
-    requests: 'requests',
+    requests: 'service-requests',
     pricing: 'pricing',
     reviews: 'reviews',
-    messaging: 'messaging',
-    geolocation: 'geolocation',
+    messaging: 'chat',
+    notifications: 'notifications',
+    geolocation: 'mechanics',
+    payments: 'service-requests',
+    files: 'files',
     admin: 'admin',
   },
   // Volontairement généreux : le réseau mobile sénégalais peut être instable
@@ -63,11 +73,19 @@ export const DEFAULT_API_CONFIG: ApiConfig = {
 /**
  * Construit l'URL d'une ressource d'un microservice.
  * Fonction pure, donc testable sans conteneur d'injection.
+ *
+ * `gateway` peut être relatif (`/api`, même origine) ou absolu
+ * (`https://mon-back.onrender.com/api`, appel direct) : les deux formes
+ * produisent une URL correcte.
  */
 export function buildServiceUrl(config: ApiConfig, service: MicroserviceName, path = ''): string {
-  const segments = [config.gateway, config.services[service], path]
+  const tail = [config.services[service], path]
     .filter((segment) => segment !== '')
-    .map((segment) => segment.replace(/^\/+|\/+$/g, ''));
+    .map((segment) => segment.replace(/^\/+|\/+$/g, ''))
+    .join('/');
 
-  return `/${segments.join('/')}`;
+  const base = config.gateway.replace(/\/+$/, '');
+  const root = /^https?:\/\//i.test(base) ? base : `/${base.replace(/^\/+/, '')}`;
+
+  return `${root}/${tail}`;
 }

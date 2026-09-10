@@ -12,7 +12,9 @@
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   border-bottom: 1px solid rgba(195, 198, 216, 0.4);
-  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(255,255,255,0.5) inset;
+  box-shadow:
+    0 1px 20px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -118,7 +120,9 @@
   font-weight: var(--ap-font-weight-medium);
   color: var(--ap-text-secondary);
   text-decoration: none;
-  transition: color 0.18s ease, background-color 0.18s ease;
+  transition:
+    color 0.18s ease,
+    background-color 0.18s ease;
   white-space: nowrap;
 
   /* Indicateur actif animé en bas */
@@ -168,35 +172,15 @@
   }
 }
 
-/* Override du bouton "Se connecter" projeté via [actions] */
+/* Conteneur des actions projetées ([actions]).
+   Simple boîte flex : chaque action porte son propre style (pastille de
+   notification, avatar, bouton « Se connecter » via appButton). Pas de fond
+   ici — sinon l'ensemble déborde la barre sur mobile. */
 :host ::ng-deep [actions] {
   display: inline-flex;
   align-items: center;
   gap: var(--ap-space-2);
-  padding: var(--ap-space-2) var(--ap-space-4);
-  background: linear-gradient(135deg, var(--ap-color-primary) 0%, #0040b3 100%);
-  color: #fff !important;
-  border-radius: var(--ap-radius-lg);
-  font-size: var(--ap-font-size-sm);
-  font-weight: var(--ap-font-weight-semibold);
-  text-decoration: none;
-  box-shadow: 0 2px 10px rgba(0, 76, 205, 0.35);
-  transition: all 0.18s ease;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-
-  &:hover {
-    background: linear-gradient(135deg, #1a60d0 0%, #003699 100%);
-    box-shadow: 0 4px 16px rgba(0, 76, 205, 0.45);
-    transform: translateY(-1px);
-    text-decoration: none;
-    color: #fff !important;
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
+  min-width: 0;
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -212,7 +196,9 @@
   background: none;
   border: 1.5px solid var(--ap-border-subtle);
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 
   &:hover {
     background-color: rgba(0, 76, 205, 0.06);
@@ -243,7 +229,10 @@
     height: 1.5px;
     background-color: var(--ap-text-primary);
     border-radius: 2px;
-    transition: transform 0.22s ease, opacity 0.22s ease, width 0.22s ease;
+    transition:
+      transform 0.22s ease,
+      opacity 0.22s ease,
+      width 0.22s ease;
     transform-origin: center;
   }
 
@@ -268,14 +257,35 @@
    NAVIGATION MOBILE — positionnement complet
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @media (max-width: 47.999em) {
+  // Rangée unique : marque à gauche, actions + menu poussés à droite ; la
+  // navigation dépliée passe en dessous sur toute la largeur.
   .ap-header__bar {
-    grid-template-columns: auto 1fr auto;
+    display: flex;
     flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ap-space-2);
+    min-height: 3.5rem;
+  }
+
+  .ap-header__brand {
+    min-width: 0;
+    margin-right: auto;
+  }
+
+  .ap-header__brand-name {
+    font-size: 1.05rem;
+  }
+
+  .ap-header__actions {
+    flex: 0 0 auto;
   }
 
   .ap-header__nav {
-    grid-column: 1 / -1;
     order: 10;
+    flex-basis: 100%;
+    width: 100%;
+    max-height: 70vh;
+    overflow-y: auto;
   }
 
   :host ::ng-deep [nav] {

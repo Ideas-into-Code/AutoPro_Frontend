@@ -1,0 +1,119 @@
+@use 'index' as ds;
+
+:host {
+  display: block;
+}
+
+.ap-photo-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-2);
+}
+
+.ap-photo-gallery__thumb {
+  width: 6.5rem;
+  height: 6.5rem;
+  padding: 0;
+  overflow: hidden;
+  background: var(--ap-surface-sunken);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-md);
+  cursor: zoom-in;
+  transition: transform var(--ap-duration-fast) var(--ap-easing-standard);
+
+  @include ds.focus-ring;
+
+  &:hover {
+    transform: scale(1.03);
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.ap-photo-gallery__viewer {
+  position: fixed;
+  inset: 0;
+  z-index: var(--ap-z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ap-space-4);
+  background: rgb(15 23 42 / 88%);
+}
+
+.ap-photo-gallery__backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: zoom-out;
+}
+
+.ap-photo-gallery__full {
+  position: relative;
+  z-index: 1;
+  max-width: min(92vw, 60rem);
+  max-height: 88vh;
+  object-fit: contain;
+  border-radius: var(--ap-radius-md);
+  box-shadow: var(--ap-shadow-lg);
+  pointer-events: none;
+}
+
+.ap-photo-gallery__close,
+.ap-photo-gallery__nav {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: rgb(255 255 255 / 12%);
+  border: var(--ap-border-width-thin) solid rgb(255 255 255 / 30%);
+  border-radius: var(--ap-radius-full);
+  cursor: pointer;
+
+  @include ds.focus-ring;
+
+  &:hover {
+    background: rgb(255 255 255 / 24%);
+  }
+}
+
+.ap-photo-gallery__close {
+  top: var(--ap-space-4);
+  right: var(--ap-space-4);
+  width: 2.75rem;
+  height: 2.75rem;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.ap-photo-gallery__nav {
+  top: 50%;
+  width: 3rem;
+  height: 3rem;
+  font-size: 2rem;
+  line-height: 1;
+  transform: translateY(-50%);
+
+  &--prev {
+    left: var(--ap-space-3);
+  }
+
+  &--next {
+    right: var(--ap-space-3);
+  }
+}
+
+@include ds.respect-reduced-motion {
+  .ap-photo-gallery__thumb {
+    transition: none;
+  }
+}

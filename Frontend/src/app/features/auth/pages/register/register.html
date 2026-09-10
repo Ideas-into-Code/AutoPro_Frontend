@@ -26,24 +26,49 @@
         </p>
       </div>
 
+      @if (errorMessage()) {
+        <p class="ap-register-card__alert" role="alert">{{ errorMessage() }}</p>
+      }
+
       <!-- Registration Form -->
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="ap-register-card__form">
-        <!-- Full Name Field -->
+        <!-- Prénom -->
         <div class="ap-field">
-          <label for="fullName" class="ap-field__label">Nom complet</label>
+          <label for="firstName" class="ap-field__label">Prénom</label>
           <div class="ap-field__input-box">
             <span class="material-symbols-outlined ap-field__icon" aria-hidden="true">person</span>
             <input
-              id="fullName"
+              id="firstName"
               type="text"
-              formControlName="fullName"
-              placeholder="Amadou Diallo"
+              formControlName="firstName"
+              placeholder="Amadou"
+              autocomplete="given-name"
               class="ap-field__input"
-              [class.ap-field__input--error]="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid"
+              [class.ap-field__input--error]="registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid"
             />
           </div>
-          @if (registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid) {
-            <span class="ap-field__error">Veuillez saisir votre nom complet.</span>
+          @if (registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid) {
+            <span class="ap-field__error">Veuillez saisir votre prénom.</span>
+          }
+        </div>
+
+        <!-- Nom -->
+        <div class="ap-field">
+          <label for="lastName" class="ap-field__label">Nom</label>
+          <div class="ap-field__input-box">
+            <span class="material-symbols-outlined ap-field__icon" aria-hidden="true">badge</span>
+            <input
+              id="lastName"
+              type="text"
+              formControlName="lastName"
+              placeholder="Diallo"
+              autocomplete="family-name"
+              class="ap-field__input"
+              [class.ap-field__input--error]="registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid"
+            />
+          </div>
+          @if (registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid) {
+            <span class="ap-field__error">Veuillez saisir votre nom.</span>
           }
         </div>
 
@@ -133,7 +158,7 @@
             </button>
           </div>
           @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
-            <span class="ap-field__error">Au moins 6 caractères requis.</span>
+            <span class="ap-field__error">Au moins 8 caractères requis.</span>
           }
         </div>
 

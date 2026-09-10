@@ -1,0 +1,92 @@
+<div class="ap-review">
+  @if (envoye()) {
+    <!-- Accusé de réception : sans lui, on ne saurait pas si l'avis est parti. -->
+    <section class="ap-review__done" role="status">
+      <p class="ap-review__done-badge" aria-hidden="true">★</p>
+      <h1 class="ap-review__done-title">Merci pour votre avis</h1>
+      <p class="ap-review__done-note">
+        Il aide les prochains clients à choisir, et votre mécanicien à s'améliorer.
+      </p>
+      <a appButton variant="primary" routerLink="/accueil">Retour à l'accueil</a>
+    </section>
+  } @else if (cibleResource.isLoading()) {
+    <p class="ap-review__state"><app-spinner label="Chargement du mécanicien" /></p>
+  } @else if (chargementFailed()) {
+    <div class="ap-review__error" role="alert">
+      <p>Le mécanicien à noter n'a pas pu être chargé.</p>
+      <button appButton type="button" variant="secondary" size="sm" (click)="reessayerChargement()">
+        Réessayer
+      </button>
+    </div>
+  } @else if (cibleResource.value(); as mecanicien) {
+    <header class="ap-review__intro">
+      <app-avatar [name]="mecanicien.mechanicName" size="lg" />
+
+      <h1 class="ap-review__title">Comment s'est passée l'intervention ?</h1>
+
+      <p class="ap-review__lead">
+        Notez votre expérience avec
+        <strong>{{ mecanicien.mechanicName }}</strong><!--
+        -->@if (mecanicien.mechanicSpecialty) {<!--
+          --> ({{ mecanicien.mechanicSpecialty | lowercase }})<!--
+        -->}.
+      </p>
+    </header>
+
+    <!-- La note -->
+    <section class="ap-review__card">
+      <p class="ap-review__hint">Touchez pour noter</p>
+
+      <app-rating-stars
+        size="lg"
+        legend="Votre note sur cette intervention"
+        [value]="note()"
+        [labels]="libelles"
+        (valueChange)="noter($event)"
+      />
+    </section>
+
+    <!-- Le commentaire -->
+    <section class="ap-review__block">
+      <label class="ap-review__label" for="ap-review-comment">Votre commentaire</label>
+
+      <div class="ap-review__field">
+        <textarea
+          id="ap-review-comment"
+          class="ap-review__textarea"
+          rows="4"
+          placeholder="Ce qui vous a plu, ou ce qui pourrait être amélioré…"
+          [value]="commentaire()"
+          [attr.maxlength]="commentaireMax"
+          (input)="saisirCommentaire($any($event.target).value)"
+        ></textarea>
+
+        <p class="ap-review__counter" aria-live="polite">{{ caracteres() }}/{{ commentaireMax }}</p>
+      </div>
+
+      <p class="ap-review__optional">Facultatif — la note seule suffit.</p>
+    </section>
+
+    @if (erreur(); as message) {
+      <p class="ap-review__error" role="alert">{{ message }}</p>
+    }
+
+    <button
+      appButton
+      type="button"
+      variant="primary"
+      size="lg"
+      fullWidth
+      [disabled]="!peutEnvoyer()"
+      [loading]="envoiEnCours()"
+      (click)="envoyer()"
+    >
+      Envoyer mon avis
+    </button>
+
+    <p class="ap-review__legal">
+      Votre avis est public et signé de votre prénom. Un seul avis par mécanicien,
+      et il ne peut plus être modifié une fois envoyé.
+    </p>
+  }
+</div>

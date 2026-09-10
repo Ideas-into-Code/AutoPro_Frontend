@@ -1,25 +1,48 @@
 import { Routes } from '@angular/router';
 
+import { authGuard } from '@core/guards/auth.guard';
+
+import { ReviewSubmissionRepository, ReviewTargetRepository } from './data/review.repository';
+import {
+  HttpReviewSubmissionRepository,
+  HttpReviewTargetRepository,
+} from './data/review.repository.http';
+
 /**
- * Routes du domaine « Avis ».
- * Notation par étoiles et avis qualitatifs.
+ * Routes du domaine « Avis » : notation d'un mécanicien après intervention.
  *
- * Structure attendue dans ce dossier (CONVENTIONS.md §1) :
- *   data/        dépôts d'accès au microservice « reviews »
- *   models/      types propres au domaine
- *   components/  composants réutilisés dans cette feature uniquement
- *   pages/       composants routés, à déclarer ci-dessous
- *
- * À remplir par le ticket dédié.
+ * Dépôts branchés sur `/api/mechanics/{id}` (fiche du mécanicien à noter) et
+ * `POST /api/mechanics/{id}/reviews` (envoi). Déposer un avis suppose d'être
+ * connecté — d'où `authGuard`.
  */
 export const reviewsRoutes: Routes = [
   {
     path: '',
-    // Écran d'attente en place du domaine, tant qu'aucun ticket ne l'a rempli.
-    // Sans lui, un tableau de routes vide n'affiche rien du tout : l'utilisateur
-    // se retrouve devant une zone blanche sans savoir si l'application a planté.
-    // À remplacer par les vraies routes, pas à conserver.
-    loadComponent: () => import('@shared/pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
-    data: { fonctionnalite: 'Les avis et notes' },
+    canMatch: [authGuard],
+    providers: [
+      { provide: ReviewTargetRepository, useClass: HttpReviewTargetRepository },
+      { provide: ReviewSubmissionRepository, useClass: HttpReviewSubmissionRepository },
+    ],
+
+    children: [
+      {
+        path: 'nouveau',
+        loadComponent: () =>
+          import('./pages/review-form/review-form').then((m) => m.ReviewFormPage),
+        title: 'Donner mon avis — AutoPro',
+      },
+
+      /**
+       * La liste des avis reçus n'a pas encore de ticket. Déclarée malgré tout :
+       * sans elle, `/avis` tomberait sur la route joker, c'est-à-dire une 404,
+       * alors que l'adresse figure dans la navigation.
+       */
+      {
+        path: '',
+        loadComponent: () =>
+          import('@shared/pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
+        data: { fonctionnalite: 'La liste de vos avis' },
+      },
+    ],
   },
 ];

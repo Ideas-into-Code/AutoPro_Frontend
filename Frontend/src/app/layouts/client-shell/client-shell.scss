@@ -30,143 +30,45 @@
   display: block;
 }
 
-.ap-bottom-nav {
-  display: none;
-}
-
 @media (max-width: 47.999em) {
   .ap-client-shell__footer-desktop {
     display: none;
   }
-
-  .ap-bottom-nav {
-    position: fixed;
-    right: max(var(--ap-space-3), env(safe-area-inset-right, 0px));
-    bottom: max(var(--ap-space-3), env(safe-area-inset-bottom, 0px));
-    left: max(var(--ap-space-3), env(safe-area-inset-left, 0px));
-    z-index: var(--ap-z-sticky);
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: var(--ap-space-1);
-    max-width: 31rem;
-    min-height: 4.45rem;
-    margin-inline: auto;
-    padding: 0.45rem;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.86)),
-      rgba(255, 255, 255, 0.88);
-    border: 1px solid rgba(195, 198, 216, 0.72);
-    border-radius: 1.55rem;
-    box-shadow:
-      0 1.35rem 3rem rgba(15, 23, 42, 0.18),
-      0 0.45rem 1.1rem rgba(0, 76, 205, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px) saturate(175%);
-    -webkit-backdrop-filter: blur(20px) saturate(175%);
-  }
-
-  .ap-bottom-nav__item {
-    position: relative;
-    display: grid;
-    min-width: 0;
-    min-height: 3.5rem;
-    place-items: center;
-    align-content: center;
-    gap: 0.18rem;
-    padding: 0.35rem 0.2rem;
-    color: var(--ap-text-muted);
-    font-size: 0.68rem;
-    font-weight: var(--ap-font-weight-semibold);
-    line-height: 1;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 1.15rem;
-    transition:
-      color 0.18s ease,
-      background-color 0.18s ease,
-      transform 0.18s ease;
-
-    @include ds.focus-ring;
-
-    .material-symbols-outlined {
-      display: grid;
-      width: 2.05rem;
-      height: 2.05rem;
-      place-items: center;
-      color: currentColor;
-      font-size: 1.35rem;
-      border-radius: 0.95rem;
-      transition:
-        color 0.18s ease,
-        background-color 0.18s ease,
-        box-shadow 0.18s ease,
-        transform 0.18s ease;
-    }
-
-    span:last-child {
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    &:hover {
-      color: var(--ap-color-primary);
-      background-color: rgba(0, 76, 205, 0.05);
-      text-decoration: none;
-    }
-  }
-
-  .ap-bottom-nav__item--active {
-    color: var(--ap-color-primary);
-    background: rgba(0, 76, 205, 0.08);
-
-    .material-symbols-outlined {
-      color: var(--ap-text-on-primary);
-      background: linear-gradient(135deg, var(--ap-color-primary), #0040b3);
-      box-shadow: 0 0.45rem 1rem rgba(0, 76, 205, 0.3);
-      transform: translateY(-0.12rem);
-      font-variation-settings: 'FILL' 1;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0.18rem;
-      left: 50%;
-      width: 0.28rem;
-      height: 0.28rem;
-      background: currentColor;
-      border-radius: var(--ap-radius-full);
-      transform: translateX(-50%);
-    }
-  }
 }
 
-@media (max-width: 22.5em) {
-  .ap-bottom-nav {
-    right: var(--ap-space-2);
-    left: var(--ap-space-2);
-    min-height: 4.15rem;
-    padding: 0.35rem;
-    border-radius: 1.25rem;
-  }
-
-  .ap-bottom-nav__item {
-    min-height: 3.35rem;
-    font-size: 0.62rem;
-
-    .material-symbols-outlined {
-      width: 1.9rem;
-      height: 1.9rem;
-      font-size: 1.22rem;
-    }
-  }
+.ap-client-shell__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
-@include ds.respect-reduced-motion {
-  .ap-bottom-nav__item,
-  .ap-bottom-nav__item .material-symbols-outlined {
-    transition: none;
+.ap-client-shell__account {
+  display: inline-flex;
+  text-decoration: none;
+  border-radius: var(--ap-radius-full);
+
+  @include ds.focus-ring;
+}
+
+.ap-client-shell__logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.06);
   }
+
+  .material-symbols-outlined {
+    font-size: 20px;
+  }
+
+  @include ds.focus-ring;
 }

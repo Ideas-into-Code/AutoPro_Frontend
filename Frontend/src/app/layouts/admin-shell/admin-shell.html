@@ -1,0 +1,49 @@
+<app-page-shell>
+  <app-header
+    header
+    brand="AutoPro"
+    brandLink="/admin"
+    brandLabel="AutoPro — Back-office d'administration"
+  >
+    <!--
+      Une seule entrée aujourd'hui, et elle reste sous `/admin` : un lien vers
+      une route cliente ferait sortir de cet espace, coquille comprise. Les
+      écrans à venir s'ajouteront ici.
+    -->
+    <a
+      nav
+      routerLink="/admin"
+      routerLinkActive="ap-admin-shell__link--active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      ariaCurrentWhenActive="page"
+    >
+      Tableau de bord
+    </a>
+
+    <!--
+      La pastille seule : deux initiales suffisent à identifier qui est
+      connecté, et la barre reste dégagée. Le nom complet n'est pas affiché,
+      seulement annoncé aux lecteurs d'écran par l'avatar lui-même.
+    -->
+    <div actions class="ap-admin-shell__actions">
+      <span class="ap-admin-shell__account">
+        <app-avatar [name]="nomAffiche()" size="sm" />
+      </span>
+      <button
+        type="button"
+        class="ap-admin-shell__logout"
+        (click)="deconnexion()"
+        aria-label="Déconnexion"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+      </button>
+    </div>
+  </app-header>
+
+  <router-outlet />
+
+  <app-footer footer>
+    <a link routerLink="/admin">Tableau de bord</a>
+    <a link routerLink="/accueil">Retour au site</a>
+  </app-footer>
+</app-page-shell>

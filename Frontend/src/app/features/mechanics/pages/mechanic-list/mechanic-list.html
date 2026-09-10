@@ -85,15 +85,19 @@
               <div class="ap-ml__card-body">
                 <h2 class="ap-ml__name">{{ mec.fullName }}</h2>
 
-                <p class="ap-ml__workshop">
-                  <app-icon name="cle" size="sm" />
-                  {{ mec.workshopName }}
-                </p>
+                @if (mec.workshopName) {
+                  <p class="ap-ml__workshop">
+                    <app-icon name="cle" size="sm" />
+                    {{ mec.workshopName }}
+                  </p>
+                }
 
-                <p class="ap-ml__address">
-                  <app-icon name="position" size="sm" />
-                  {{ mec.address }}
-                </p>
+                @if (mec.experienceYears !== null) {
+                  <p class="ap-ml__workshop">
+                    <app-icon name="valide" size="sm" />
+                    {{ mec.experienceYears }} an{{ mec.experienceYears > 1 ? 's' : '' }} d'expérience
+                  </p>
+                }
 
                 <!-- Spécialités -->
                 <ul class="ap-ml__specialties">

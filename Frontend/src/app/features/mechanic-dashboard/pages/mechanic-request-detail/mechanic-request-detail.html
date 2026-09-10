@@ -1,0 +1,202 @@
+<section class="ap-mrd">
+  <a routerLink="/mecanicien/demandes" class="ap-mrd__back">← Demandes reçues</a>
+
+  @if (demande.isLoading()) {
+    <app-spinner />
+  } @else if (demande.error()) {
+    <p class="ap-mrd__error" role="alert">
+      Demande introuvable ou inaccessible.
+      <button type="button" (click)="demande.reload()">Réessayer</button>
+    </p>
+  } @else if (demande.value(); as d) {
+    <article class="ap-mrd__card">
+      <header class="ap-mrd__head">
+        <h1>{{ d.problemLabel }}</h1>
+        <span [class]="'ap-mr-status ap-mr-status--' + d.status">{{
+          STATUS_LABELS[d.status]
+        }}</span>
+      </header>
+
+      @if (d.isEmergency) {
+        <p class="ap-mrd__urgent">Véhicule immobilisé — demande urgente.</p>
+      }
+
+      <div class="ap-mrd__client">
+        <div>
+          <p class="ap-mrd__client-name">{{ d.clientName }}</p>
+          <p class="ap-mrd__client-loc">{{ d.address || 'Lieu non précisé' }}</p>
+        </div>
+        <div class="ap-mrd__client-actions">
+          @if (d.clientPhone) {
+            <a class="ap-mrd__chip" [href]="'tel:' + d.clientPhone">Appeler</a>
+          }
+          <a class="ap-mrd__chip" [routerLink]="['/messages']" [queryParams]="{ peer: d.clientId }">
+            Message
+          </a>
+        </div>
+      </div>
+
+      <dl class="ap-mrd__facts">
+        <dt>Description</dt>
+        <dd>{{ d.description }}</dd>
+
+        <dt>Téléphone</dt>
+        <dd>{{ d.clientPhone || 'Non précisé' }}</dd>
+
+        @if (d.status === 'annulee' && d.cancellationReason) {
+          <dt>Motif d'annulation</dt>
+          <dd>{{ MOTIF_LABELS[d.cancellationReason] || d.cancellationReason }}</dd>
+        }
+
+        <dt>Prix convenu</dt>
+        <dd>
+          @if (d.priceXOF !== null) {
+            <strong>{{ d.priceXOF | number: '1.0-0' }} FCFA</strong>
+          } @else {
+            Non fixé
+          }
+        </dd>
+
+        <dt>Paiement</dt>
+        <dd>
+          @switch (d.paymentStatus) {
+            @case ('encaisse') {
+              Encaissé en espèces
+            }
+            @case ('en_attente') {
+              En attente d'encaissement (espèces)
+            }
+            @case ('annule') {
+              Annulé
+            }
+            @default {
+              —
+            }
+          }
+        </dd>
+      </dl>
+    </article>
+
+    @if (d.photoUrls.length > 0) {
+      <article class="ap-mrd__card">
+        <h2 class="ap-mrd__card-title">Photos du client</h2>
+        <app-photo-gallery [photos]="d.photoUrls" alt="Photo jointe par le client" />
+      </article>
+    }
+
+    @if (guidageVisible()) {
+      <app-client-location-card
+        [clientLocation]="lieuClient()"
+        [clientName]="d.clientName"
+        [address]="d.address"
+      />
+    }
+
+    @if (annulee()) {
+      <p class="ap-mrd__cancelled" role="status">
+        Cette demande a été annulée par le client.
+        @if (d.cancellationReason) {
+          Motif : {{ MOTIF_LABELS[d.cancellationReason] || d.cancellationReason }}.
+        }
+      </p>
+    }
+
+    @if ((actions().length > 0 || saisiePrix()) && !annulee()) {
+      <article class="ap-mrd__card ap-mrd__actions-card">
+        <h2 class="ap-mrd__card-title">Que voulez-vous faire ?</h2>
+
+        @if (erreur()) {
+          <p class="ap-mrd__error" role="alert">{{ erreur() }}</p>
+        }
+
+        @if (saisiePrix()) {
+          <div class="ap-mrd__price-form">
+            <label for="ap-mrd-prix">Montant de l'intervention (FCFA)</label>
+            <div class="ap-mrd__price-row">
+              <input
+                id="ap-mrd-prix"
+                type="number"
+                min="1"
+                step="500"
+                inputmode="numeric"
+                [value]="prix() ?? ''"
+                (input)="majPrix($any($event.target).value)"
+              />
+              <button
+                appButton
+                variant="primary"
+                type="button"
+                [disabled]="busy()"
+                (click)="validerPrix()"
+              >
+                Enregistrer le prix
+              </button>
+            </div>
+          </div>
+        }
+
+        <div class="ap-mrd__actions">
+          @for (a of actions(); track a) {
+            @switch (a) {
+              @case ('accepter') {
+                <button
+                  appButton
+                  variant="primary"
+                  type="button"
+                  [disabled]="busy()"
+                  (click)="accepter()"
+                >
+                  Accepter la demande
+                </button>
+              }
+              @case ('fixer_prix') {
+                <button
+                  appButton
+                  variant="ghost"
+                  type="button"
+                  [disabled]="busy()"
+                  (click)="ouvrirPrix()"
+                >
+                  {{ d.priceXOF === null ? 'Fixer le prix' : 'Modifier le prix' }}
+                </button>
+              }
+              @case ('demarrer') {
+                <button
+                  appButton
+                  variant="primary"
+                  type="button"
+                  [disabled]="busy()"
+                  (click)="demarrer()"
+                >
+                  Démarrer l'intervention
+                </button>
+              }
+              @case ('terminer') {
+                <button
+                  appButton
+                  variant="primary"
+                  type="button"
+                  [disabled]="busy()"
+                  (click)="terminer()"
+                >
+                  Marquer terminée
+                </button>
+              }
+              @case ('encaisser') {
+                <button
+                  appButton
+                  variant="primary"
+                  type="button"
+                  [disabled]="busy()"
+                  (click)="encaisser()"
+                >
+                  J'ai reçu le paiement en espèces
+                </button>
+              }
+            }
+          }
+        </div>
+      </article>
+    }
+  }
+</section>

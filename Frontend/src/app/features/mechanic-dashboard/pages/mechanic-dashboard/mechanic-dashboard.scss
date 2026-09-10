@@ -1,0 +1,54 @@
+@use 'index' as ds;
+
+.ap-mecano {
+  @include ds.container;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-5);
+  // Le tableau de bord se consulte au téléphone, souvent debout devant un
+  // véhicule : la colonne reste étroite même sur grand écran.
+  max-width: 32rem;
+  padding-block: var(--ap-space-6) var(--ap-space-12);
+}
+
+.ap-mecano__intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-1);
+}
+
+.ap-mecano__title {
+  margin: 0;
+  font-size: var(--ap-font-size-2xl);
+  line-height: var(--ap-line-height-tight);
+}
+
+.ap-mecano__subtitle {
+  margin: 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+}
+
+.ap-mecano__state {
+  display: flex;
+  margin: 0;
+  color: var(--ap-text-secondary);
+}
+
+.ap-mecano__error {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ap-space-3);
+  align-items: flex-start;
+  margin: 0;
+  padding: var(--ap-space-4);
+  color: var(--ap-color-danger);
+  font-size: var(--ap-font-size-sm);
+  background-color: var(--ap-color-danger-surface);
+  border-radius: var(--ap-radius-md);
+
+  p {
+    margin: 0;
+  }
+}

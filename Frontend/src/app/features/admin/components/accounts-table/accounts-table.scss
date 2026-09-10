@@ -1,0 +1,171 @@
+@use 'index' as ds;
+
+:host {
+  display: block;
+  background-color: var(--ap-surface-raised);
+  border: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+  border-radius: var(--ap-radius-xl);
+  box-shadow: var(--ap-shadow-sm);
+}
+
+.ap-accounts__bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ap-space-3);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ap-space-4);
+  border-bottom: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+}
+
+.ap-accounts__tabs {
+  display: flex;
+  gap: var(--ap-space-1);
+  padding: var(--ap-space-1);
+  background-color: var(--ap-surface-sunken);
+  border-radius: var(--ap-radius-full);
+}
+
+.ap-accounts__tab {
+  padding: var(--ap-space-2) var(--ap-space-4);
+  color: var(--ap-text-secondary);
+  font: inherit;
+  font-weight: var(--ap-font-weight-semibold);
+  font-size: var(--ap-font-size-sm);
+  background: none;
+  border: none;
+  border-radius: var(--ap-radius-full);
+  cursor: pointer;
+
+  @include ds.focus-ring;
+}
+
+.ap-accounts__tab--active {
+  color: var(--ap-color-primary);
+  background-color: var(--ap-surface-raised);
+  box-shadow: var(--ap-shadow-sm);
+}
+
+.ap-accounts__search {
+  flex: 1 1 16rem;
+  max-width: 24rem;
+}
+
+.ap-accounts__summary {
+  margin: 0;
+  padding: var(--ap-space-3) var(--ap-space-4) 0;
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-xs);
+}
+
+// La table déborde plutôt que de comprimer ses colonnes : six colonnes
+// écrasées sur un écran étroit deviennent illisibles, alors qu'un défilement
+// horizontal reste manipulable.
+.ap-accounts__scroll {
+  overflow-x: auto;
+}
+
+.ap-accounts__table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.ap-accounts__caption {
+  @include ds.visually-hidden;
+}
+
+.ap-accounts__table th,
+.ap-accounts__table td {
+  padding: var(--ap-space-3) var(--ap-space-4);
+  text-align: left;
+}
+
+.ap-accounts__table thead th {
+  color: var(--ap-text-secondary);
+  font-weight: var(--ap-font-weight-semibold);
+  font-size: var(--ap-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ap-accounts__table tbody tr {
+  border-top: var(--ap-border-width-thin) solid var(--ap-border-subtle);
+
+  &:hover {
+    background-color: var(--ap-surface-sunken);
+  }
+}
+
+.ap-accounts__identity {
+  display: inline-flex;
+  gap: var(--ap-space-3);
+  align-items: center;
+  font-weight: var(--ap-font-weight-regular);
+}
+
+.ap-accounts__identity-text {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.ap-accounts__name {
+  font-weight: var(--ap-font-weight-semibold);
+  font-size: var(--ap-font-size-sm);
+}
+
+.ap-accounts__email {
+  color: var(--ap-text-muted);
+  font-size: var(--ap-font-size-xs);
+}
+
+.ap-accounts__table td {
+  color: var(--ap-text-secondary);
+  font-size: var(--ap-font-size-sm);
+}
+
+// --- Statuts -----------------------------------------------------------------
+
+.ap-accounts__status {
+  display: inline-block;
+  padding: var(--ap-space-1) var(--ap-space-3);
+  font-weight: var(--ap-font-weight-semibold);
+  font-size: var(--ap-font-size-xs);
+  border-radius: var(--ap-radius-full);
+}
+
+.ap-accounts__status--actif {
+  color: var(--ap-color-success);
+  background-color: var(--ap-color-success-surface);
+}
+
+.ap-accounts__status--suspendu {
+  color: var(--ap-color-danger);
+  background-color: var(--ap-color-danger-surface);
+}
+
+.ap-accounts__status--attente {
+  color: var(--ap-color-warning);
+  background-color: var(--ap-color-warning-surface);
+}
+
+.ap-accounts__col-action {
+  text-align: right;
+}
+
+.ap-accounts__no-action {
+  color: var(--ap-text-muted);
+  font-size: var(--ap-font-size-xs);
+  font-style: italic;
+}
+
+.ap-accounts__empty {
+  padding-block: var(--ap-space-8);
+  color: var(--ap-text-muted);
+  text-align: center;
+  white-space: normal;
+}
+
+.ap-accounts__sr {
+  @include ds.visually-hidden;
+}
