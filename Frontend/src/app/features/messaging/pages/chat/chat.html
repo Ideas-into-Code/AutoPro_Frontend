@@ -1,6 +1,6 @@
-<section class="ap-chat">
+<section class="ap-chat" [attr.data-mobile-view]="mobileView()">
   <aside class="ap-chat__list">
-    <a class="ap-chat__back" [routerLink]="retour()">← Retour</a>
+    <button type="button" class="ap-chat__back" (click)="retourner()">← Retour</button>
     <h1>Messages</h1>
 
     @if (ouvertureError()) {
@@ -23,13 +23,14 @@
               type="button"
               class="ap-chat__conv"
               [class.ap-chat__conv--active]="c.id === selectedId()"
-              (click)="select(c.id)"
+              (click)="pick(c.id)"
             >
               <span class="ap-chat__conv-title">{{ c.title }}</span>
               <span class="ap-chat__conv-last">
-                @if (c.lastMessageMine) { <em>Vous : </em> }{{
-                  c.lastMessage || 'Nouvelle conversation'
-                }}
+                @if (c.lastMessageMine) {
+                  <em>Vous : </em>
+                }
+                {{ c.lastMessage || 'Nouvelle conversation' }}
               </span>
             </button>
           </li>
@@ -41,6 +42,14 @@
   <div class="ap-chat__thread">
     @if (selected(); as conv) {
       <header class="ap-chat__thread-head">
+        <button
+          type="button"
+          class="ap-chat__thread-back"
+          (click)="backToList()"
+          aria-label="Retour aux conversations"
+        >
+          ←
+        </button>
         <span class="ap-chat__thread-title">{{ conv.title }}</span>
         @if (peerTyping()) {
           <span class="ap-chat__typing">écrit…</span>
@@ -74,9 +83,12 @@
         <button type="submit" [disabled]="draft().trim() === ''">Envoyer</button>
       </form>
     } @else {
-      <p class="ap-chat__empty ap-chat__thread-empty">
-        Sélectionnez une conversation pour l'afficher.
-      </p>
+      <div class="ap-chat__thread-empty">
+        <p class="ap-chat__empty">Sélectionnez une conversation pour l'afficher.</p>
+        <button type="button" class="ap-chat__thread-back-link" (click)="backToList()">
+          ← Voir mes conversations
+        </button>
+      </div>
     }
   </div>
 </section>

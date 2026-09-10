@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { AuthService } from '@core/services/auth.service';
 import { NotificationBell } from '@features/notifications/components/notification-bell/notification-bell';
 import { BottomNav, BottomNavItem, Footer, Header, PageShell } from '@shared/layout';
-import { Button } from '@shared/ui';
+import { Avatar, Button } from '@shared/ui';
 
 /**
  * Coquille de l'espace client : en-tête, navigation, contenu, pied de page.
@@ -27,6 +27,7 @@ import { Button } from '@shared/ui';
     Header,
     Footer,
     Button,
+    Avatar,
     BottomNav,
     NotificationBell,
   ],
@@ -37,6 +38,9 @@ import { Button } from '@shared/ui';
 export class ClientShell {
   protected readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+
+  /** Initiales de la pastille de compte ; annoncées en entier aux lecteurs d'écran. */
+  protected readonly nomAffiche = computed(() => this.auth.currentUser()?.fullName ?? 'Mon compte');
 
   protected readonly navItems: readonly BottomNavItem[] = [
     { label: 'Accueil', icon: 'accueil', link: '/accueil' },

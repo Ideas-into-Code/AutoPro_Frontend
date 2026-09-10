@@ -18,9 +18,18 @@
   &__back {
     display: inline-block;
     margin-bottom: 0.5rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font: inherit;
     font-size: 0.85rem;
     color: #1d4ed8;
     text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   &__list {
@@ -88,14 +97,35 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    min-height: 0;
   }
 
   &__thread-head {
     padding: 0.85rem 1rem;
     border-bottom: 1px solid #e5e8ec;
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 0.6rem;
+  }
+
+  &__thread-back {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #1d4ed8;
+    font-size: 1.15rem;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+      background: #f0f4ff;
+    }
   }
 
   &__thread-title {
@@ -109,6 +139,7 @@
 
   &__messages {
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
     padding: 1rem;
     display: flex;
@@ -198,16 +229,55 @@
 
   &__thread-empty {
     margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  &__thread-back-link {
+    display: none;
+    border: 0;
+    background: transparent;
+    color: #1d4ed8;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
   }
 }
 
+// Téléphone : une seule colonne plein écran à la fois — la liste des
+// conversations OU le fil ouvert. `data-mobile-view` (porté par le composant)
+// dit lequel afficher ; le bouton « ← » du fil ramène à la liste.
 @media (max-width: 720px) {
   .ap-chat {
     grid-template-columns: 1fr;
-    height: auto;
+    grid-template-rows: 100%;
+    max-width: none;
+    height: 100dvh;
+    min-height: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+  }
 
-    &__thread {
-      min-height: 360px;
-    }
+  .ap-chat__list {
+    min-height: 0;
+    padding: 0.75rem;
+  }
+
+  .ap-chat[data-mobile-view='thread'] .ap-chat__list {
+    display: none;
+  }
+
+  .ap-chat[data-mobile-view='list'] .ap-chat__thread {
+    display: none;
+  }
+
+  .ap-chat__thread-back,
+  .ap-chat__thread-back-link {
+    display: inline-flex;
   }
 }

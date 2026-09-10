@@ -56,12 +56,19 @@
     <div actions class="ap-client-shell__actions">
       @if (auth.isAuthenticated()) {
         <app-notification-bell />
-        <a appButton variant="ghost" size="sm" routerLink="/profil">Mon profil</a>
-        <button appButton variant="ghost" size="sm" type="button" (click)="deconnexion()">
-          Déconnexion
+        <a class="ap-client-shell__account" routerLink="/profil" aria-label="Mon profil">
+          <app-avatar [name]="nomAffiche()" size="sm" />
+        </a>
+        <button
+          type="button"
+          class="ap-client-shell__logout"
+          (click)="deconnexion()"
+          aria-label="Déconnexion"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">logout</span>
         </button>
       } @else {
-        <a appButton variant="ghost" size="sm" routerLink="/compte/connexion">Se connecter</a>
+        <a appButton variant="primary" size="sm" routerLink="/compte/connexion">Se connecter</a>
       }
     </div>
   </app-header>

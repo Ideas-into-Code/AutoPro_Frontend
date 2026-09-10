@@ -52,7 +52,20 @@
     border: 1px solid #e5e8ec;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-    z-index: 50;
+    z-index: 60;
+
+    // Sur téléphone la pastille n'est pas au bord de l'écran : un panneau
+    // ancré à droite déborderait à gauche. On le passe en feuille calée sous
+    // la barre, marges égales des deux côtés.
+    @media (max-width: 30rem) {
+      position: fixed;
+      top: 3.75rem;
+      right: 0.5rem;
+      left: 0.5rem;
+      width: auto;
+      max-width: none;
+      max-height: 75vh;
+    }
   }
 
   &__panel-head {

@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+import { Location, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -10,7 +10,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { ApiError } from '@core';
@@ -25,7 +25,7 @@ import { HttpMessagingRepository, MessagingRepository } from '../../data/messagi
  */
 @Component({
   selector: 'app-chat-page',
-  imports: [Spinner, RouterLink],
+  imports: [Spinner],
   providers: [{ provide: MessagingRepository, useClass: HttpMessagingRepository }],
   templateUrl: './chat.html',
   styleUrl: './chat.scss',
@@ -34,12 +34,26 @@ import { HttpMessagingRepository, MessagingRepository } from '../../data/messagi
 export class ChatPage {
   private readonly repo = inject(MessagingRepository);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
   private readonly auth = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-  /** Retour vers l'espace du rôle courant — la messagerie n'a pas de coquille. */
-  protected readonly retour = this.auth.homeRoute;
+  /**
+   * La messagerie n'a pas de coquille : « Retour » ramène à la page d'où l'on
+   * vient. Si on a ouvert `/messages` directement (lien, rafraîchissement),
+   * il n'y a pas d'historique applicatif — on retombe sur l'accueil du rôle.
+   */
+  private readonly hasAppHistory = this.router.getCurrentNavigation()?.previousNavigation != null;
+
+  protected retourner(): void {
+    if (this.hasAppHistory) {
+      this.location.back();
+    } else {
+      void this.router.navigateByUrl(this.auth.homeRoute());
+    }
+  }
 
   protected readonly conversations = signal<readonly Conversation[]>([]);
   protected readonly loadingList = signal(true);
@@ -51,6 +65,13 @@ export class ChatPage {
   protected readonly loadingThread = signal(false);
   protected readonly draft = signal('');
   protected readonly peerTyping = signal(false);
+
+  /**
+   * Sur téléphone, une seule colonne est visible à la fois : la liste des
+   * conversations ou le fil ouvert. Sur grand écran les deux cohabitent et ce
+   * drapeau est sans effet (CSS).
+   */
+  protected readonly mobileView = signal<'list' | 'thread'>('list');
 
   protected readonly selected = computed(
     () => this.conversations().find((c) => c.id === this.selectedId()) ?? null,
@@ -79,10 +100,12 @@ export class ChatPage {
         return;
       }
       if (convId && list.some((c) => c.id === convId)) {
-        this.select(convId);
+        this.pick(convId);
       } else if (peerId) {
         this.openWithPeer(peerId);
       } else if (list.length > 0) {
+        // Pré-charge le premier fil pour le grand écran, mais laisse le
+        // téléphone sur la liste tant que rien n'est choisi.
         this.select(list[0].id);
       }
     });
@@ -129,14 +152,23 @@ export class ChatPage {
           this.conversations.update((list) =>
             list.some((c) => c.id === conv.id) ? list : [conv, ...list],
           );
-          this.select(conv.id);
+          this.pick(conv.id);
         },
         error: (err: ApiError) => {
-          this.ouvertureError.set(
-            err?.message ?? "La conversation n'a pas pu être ouverte.",
-          );
+          this.ouvertureError.set(err?.message ?? "La conversation n'a pas pu être ouverte.");
         },
       });
+  }
+
+  /** Ouvre une conversation depuis la liste : bascule aussi la vue mobile. */
+  protected pick(id: string): void {
+    this.select(id);
+    this.mobileView.set('thread');
+  }
+
+  /** Retour à la liste sur téléphone (garde la conversation chargée en fond). */
+  protected backToList(): void {
+    this.mobileView.set('list');
   }
 
   protected select(id: string): void {
