@@ -2,6 +2,8 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 
+import { environment } from '../environments/environment';
+import { DEFAULT_API_CONFIG } from './core/config/api.config';
 import { provideCore } from './core/core.providers';
 import { provideMockRepositories } from './core/data/repositories.providers';
 import { routes } from './app.routes';
@@ -18,11 +20,11 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
     ),
     provideClientHydration(),
-    provideCore(),
-    // Tant que le backend n'est pas en ligne, les dépôts servent des données
-    // fabriquées. Le jour où il l'est, cette ligne devient
-    // `provideHttpRepositories()` et rien d'autre ne bouge.
-    // Voir core/data/repositories.providers.ts.
+    // `gateway` vient de l'environnement : `/api` en dev (proxy), URL absolue
+    // du backend Render en prod.
+    provideCore({ ...DEFAULT_API_CONFIG, gateway: environment.apiBaseUrl }),
+    // `ServiceCategoryRepository` n'a pas encore d'endpoint backend (taxonomie
+    // fixe) : seul dépôt encore simulé. Tous les autres sont HTTP.
     provideMockRepositories(),
   ],
 };

@@ -3,6 +3,7 @@ import { DestroyRef, Injectable, PLATFORM_ID, inject, signal } from '@angular/co
 import { Client, IMessage } from '@stomp/stompjs';
 import { Observable } from 'rxjs';
 
+import { API_CONFIG } from '../config/api.config';
 import { AuthService } from './auth.service';
 
 /**
@@ -17,6 +18,7 @@ import { AuthService } from './auth.service';
 export class RealtimeSocketService {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly auth = inject(AuthService);
+  private readonly gateway = inject(API_CONFIG).gateway;
   private client: Client | null = null;
 
   /** `true` quand la connexion STOMP est établie. */
@@ -36,9 +38,8 @@ export class RealtimeSocketService {
       return;
     }
 
-    const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
     this.client = new Client({
-      brokerURL: `${scheme}://${window.location.host}/ws`,
+      brokerURL: this.brokerUrl(),
       connectHeaders: { Authorization: `Bearer ${token}` },
       reconnectDelay: 4000,
       heartbeatIncoming: 10000,
@@ -48,6 +49,22 @@ export class RealtimeSocketService {
       onStompError: () => this.connected.set(false),
     });
     this.client.activate();
+  }
+
+  /**
+   * URL du endpoint STOMP `/ws`, déduite de la passerelle d'API :
+   * - passerelle relative (`/api`) → même hôte que la page (`wss://<hôte>/ws`) ;
+   * - passerelle absolue (`https://back.onrender.com/api`) → même hôte que
+   *   l'API (`wss://back.onrender.com/ws`), pour un front et un back sur des
+   *   domaines distincts.
+   */
+  private brokerUrl(): string {
+    const match = /^https?:\/\/[^/]+/i.exec(this.gateway);
+    if (match) {
+      return `${match[0].replace(/^http/i, 'ws')}/ws`;
+    }
+    const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    return `${scheme}://${window.location.host}/ws`;
   }
 
   disconnect(): void {

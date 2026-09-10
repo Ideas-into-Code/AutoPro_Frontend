@@ -13,6 +13,9 @@
     "format:check": "prettier --check .",
     "serve:ssr:Frontend": "node dist/Frontend/server/server.mjs"
   },
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "private": true,
   "packageManager": "npm@11.12.1",
   "dependencies": {
